@@ -1,4 +1,7 @@
 ﻿using Capstone.Common;
+using Capstone.SpeechRecognition;
+using System;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

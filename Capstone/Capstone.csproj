@@ -159,6 +159,8 @@
     <Compile Include="RemindersPage.xaml.cs">
       <DependentUpon>RemindersPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpeechRecognition\AudioCapturePermissions.cs" />
+    <Compile Include="SpeechRecognition\SpeechRecogService.cs" />
     <Compile Include="VoiceMemosPage.xaml.cs">
       <DependentUpon>VoiceMemosPage.xaml</DependentUpon>
     </Compile>

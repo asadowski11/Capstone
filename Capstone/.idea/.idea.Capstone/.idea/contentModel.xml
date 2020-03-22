@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Adam\.nuget\packages\mstest.testadapter\1.4.0\build\_common\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll" t="Include" />
+    <e p="C:\Users\Adam\.nuget\packages\mstest.testadapter\1.4.0\build\_common\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll" t="Include" />
+    <e p="C:\Users\Adam\.nuget\packages\mstest.testadapter\1.4.0\build\uap10.0\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll" t="Include" />
+    <e p="C:\Users\Adam\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Adam\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_Capstone.-499410930.00" t="ExcludeRecursive" />
+    <e p="D:\School\Capstone\Capstone\Capstone" t="IncludeRecursive">
+      <e p="Actions" t="Include">
+        <e p="Action.cs" t="Include" />
+        <e p="ActionRouter.cs" t="Include" />
+        <e p="AlarmAction.cs" t="Include" />
+        <e p="DirectionsAction.cs" t="Include" />
+        <e p="ReminderAction.cs" t="Include" />
+        <e p="TimeAction.cs" t="Include" />
+        <e p="VoiceMemoAction.cs" t="Include" />
+        <e p="WeatherAction.cs" t="Include" />
+        <e p="WebsiteSearchAction.cs" t="Include" />
+      </e>
+      <e p="AlarmsFormPage.xaml" t="Include" />
+      <e p="AlarmsFormPage.xaml.cs" t="Include" />
+      <e p="AlarmsPage.xaml" t="Include" />
+      <e p="AlarmsPage.xaml.cs" t="Include" />
+      <e p="App.xaml" t="Include" />
+      <e p="App.xaml.cs" t="Include" />
+      <e p="Assets" t="Include">
+        <e p="LockScreenLogo.scale-200.png" t="Include" />
+        <e p="SplashScreen.scale-200.png" t="Include" />
+        <e p="Square150x150Logo.scale-200.png" t="Include" />
+        <e p="Square44x44Logo.scale-200.png" t="Include" />
+        <e p="Square44x44Logo.targetsize-24_altform-unplated.png" t="Include" />
+        <e p="StoreLogo.png" t="Include" />
+        <e p="Wide310x150Logo.scale-200.png" t="Include" />
+      </e>
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="Capstone.csproj" t="IncludeRecursive" />
+      <e p="Capstone.sln" t="IncludeFlat" />
+      <e p="Common" t="Include">
+        <e p="StringUtils.cs" t="Include" />
+        <e p="TextToSpeechEngine.cs" t="Include" />
+        <e p="UIUtils.cs" t="Include" />
+      </e>
+      <e p="Database" t="Include">
+        <e p="InitialScript.sql" t="Include" />
+      </e>
+      <e p="DataPrivacyTips.xaml" t="Include" />
+      <e p="DataPrivacyTips.xaml.cs" t="Include" />
+      <e p="MainPage.xaml" t="Include" />
+      <e p="MainPage.xaml.cs" t="Include" />
+      <e p="Models" t="Include">
+        <e p="Alarm.cs" t="Include" />
+        <e p="MapProvider.cs" t="Include" />
+        <e p="Reminder.cs" t="Include" />
+        <e p="SearchableWebsite.cs" t="Include" />
+        <e p="SearchEngine.cs" t="Include" />
+        <e p="Setting.cs" t="Include" />
+        <e p="VoiceMemo.cs" t="Include" />
+        <e p="WeatherInfo.cs" t="Include" />
+        <e p="WeatherProvider.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive">
+        <e p="x86" t="Include">
+          <e p="Debug" t="Include">
+            <e p="AlarmsFormPage.g.cs" t="Include" />
+            <e p="AlarmsFormPage.g.i.cs" t="Include" />
+            <e p="AlarmsPage.g.cs" t="Include" />
+            <e p="AlarmsPage.g.i.cs" t="Include" />
+            <e p="App.g.cs" t="Include" />
+            <e p="App.g.i.cs" t="Include" />
+            <e p="DataPrivacyTips.g.cs" t="Include" />
+            <e p="DataPrivacyTips.g.i.cs" t="Include" />
+            <e p="MainPage.g.cs" t="Include" />
+            <e p="MainPage.g.i.cs" t="Include" />
+            <e p="RemindersFormPage.g.cs" t="Include" />
+            <e p="RemindersFormPage.g.i.cs" t="Include" />
+            <e p="RemindersPage.g.cs" t="Include" />
+            <e p="RemindersPage.g.i.cs" t="Include" />
+            <e p="VoiceMemosPage.g.cs" t="Include" />
+            <e p="VoiceMemosPage.g.i.cs" t="Include" />
+            <e p="XamlTypeInfo.g.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Package.appxmanifest" t="Include" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+        <e p="Default.rd.xml" t="Include" />
+      </e>
+      <e p="RemindersFormPage.xaml" t="Include" />
+      <e p="RemindersFormPage.xaml.cs" t="Include" />
+      <e p="RemindersPage.xaml" t="Include" />
+      <e p="RemindersPage.xaml.cs" t="Include" />
+      <e p="SpeechRecognition" t="Include">
+        <e p="AudioCapturePermissions.cs" t="Include" />
+        <e p="SpeechRecogService.cs" t="Include" />
+      </e>
+      <e p="VoiceMemosPage.xaml" t="Include" />
+      <e p="VoiceMemosPage.xaml.cs" t="Include" />
+    </e>
+    <e p="D:\School\Capstone\Capstone\UnitTests" t="IncludeRecursive">
+      <e p="ActionRouterTests.cs" t="Include" />
+      <e p="AlarmsFormPageTests.cs" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive">
+        <e p="x86" t="Include">
+          <e p="Debug" t="Include">
+            <e p="UnitTestApp.g.cs" t="Include" />
+            <e p="UnitTestApp.g.i.cs" t="Include" />
+            <e p="XamlTypeInfo.g.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="Package.appxmanifest" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="RemindersFormPageTests.cs" t="Include" />
+      <e p="SSMLBuilderTests.cs" t="Include" />
+      <e p="StringUtilsTests.cs" t="Include" />
+      <e p="UnitTestApp.xaml" t="Include" />
+      <e p="UnitTestApp.xaml.cs" t="Include" />
+      <e p="UnitTests.csproj" t="IncludeRecursive" />
+    </e>
+  </component>
+</project>
