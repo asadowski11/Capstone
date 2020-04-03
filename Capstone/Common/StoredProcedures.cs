@@ -2,6 +2,7 @@ using Capstone.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -9,21 +10,37 @@ namespace Capstone.Common
 {
     class StoredProcedures
     {
-        public static async Task CreateDatabase()
+        public static void CreateDatabase()
         {
-            string targetDbPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "Database\\BobDB.db");
-            if (!File.Exists(targetDbPath))
+            var appData = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+
+            if (!File.Exists($"{appData}\\Database\\BobDB.sqlite"))
             {
-                var installedLocation = Windows.ApplicationModel.Package.Current.InstalledLocation;
-                using (var input = await installedLocation.OpenStreamForReadAsync("Assets\\BobDB.db"))
+                try
                 {
-                    using (var output = await Windows.Storage.ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync("Database\\BobDB.db", Windows.Storage.CreationCollisionOption.FailIfExists))
-                    {
-                        await input.CopyToAsync(output);
-                    }
+
+                    SQLiteConnection m_dbConnection = new SQLiteConnection($"Data Source={appData}\\Database\\BobDB.sqlite;Version=3;");
+                    m_dbConnection.Open();
+
+                    string script = File.ReadAllText($"{Windows.ApplicationModel.Package.Current.InstalledLocation.Path}\\Database\\InitialScript.sql");
+
+                    string sql = script;
+
+                    SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                    command.ExecuteNonQuery();
+
+                    m_dbConnection.Close();
                 }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine(e);
+                    throw;
+                }
+
             }
+
         }
+
         public static SqliteConnection OpenDatabase()
         {
             string targetDbPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "Database\\BobDB.db");

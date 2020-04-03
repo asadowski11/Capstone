@@ -40,7 +40,6 @@ CREATE TABLE "TSearchEngines"
 	 "searchEngineID"			INTEGER			PRIMARY KEY	NOT NULL
 	,"searchEngineName"			NVARCHAR(255)	NOT NULL
 	,"searchEngineBaseURL"		NVARCHAR(255)	NOT NULL
-	,"searchEngineQueryString"  NVARCHAR(255)	NOT NULL
 );
 
 CREATE TABLE "TSearchableWebsites"
@@ -187,3 +186,7 @@ CREATE TABLE "TWeatherProviderAccessTypes"
 	,"weatherProviderAccessType"    NVARCHAR(255)	NOT NULL
     ,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
 );
+
+INSERT INTO TSearchEngines ( searchEngineID, searchEngineName, searchEngineBaseURL )
+VALUES (1, 'Google', 'https://www.google.com')
+

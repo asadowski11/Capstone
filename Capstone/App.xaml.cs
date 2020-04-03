@@ -1,5 +1,7 @@
-﻿using Capstone.SpeechRecognition;
+﻿using Capstone.Common;
+using Capstone.SpeechRecognition;
 using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -22,6 +24,7 @@ namespace Capstone
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             StoredProcedures.CreateDatabase();
+
         }
 
         /// <summary>

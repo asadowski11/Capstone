@@ -38,6 +38,7 @@ namespace Capstone
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO navigate to settings screen (this.Frame.Navigate(typeof(screenName)))
+            this.Frame.Navigate(typeof(SettingsPage));
         }
 
         private void RemindersButton_Click(object sender, RoutedEventArgs e)
