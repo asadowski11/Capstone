@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Capstone.Common;
+using System;
 
 namespace Capstone.Actions
 {
@@ -12,6 +13,7 @@ namespace Capstone.Actions
         {
             this.ActionType = ActionType;
             this.CommandString = CommandString;
+            this.ActivateDateAndTime = RequestActivatedDateAndTime();
         }
 
         private string RequestTitle()
@@ -24,8 +26,18 @@ namespace Capstone.Actions
 
         private DateTime RequestActivatedDateAndTime()
         {
-            var activatedDateTime = System.DateTime.Now;
-            // TODO implement a text -> dateTime parser
+            DateTime activatedDateTime;
+
+            try
+            {
+                activatedDateTime = DateTimeParser.ParseDateTimeFromText(this.CommandString);
+            }
+            catch (DateParseException)
+            {
+                // TODO maybe log the exception
+                // TODO ask for the date and time since it could not be parsed
+                activatedDateTime = DateTime.Now;
+            }
 
             return activatedDateTime;
         }

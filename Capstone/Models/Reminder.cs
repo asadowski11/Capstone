@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.Sqlite;
+using System;
 
 namespace Capstone.Models
 {
@@ -30,6 +31,12 @@ namespace Capstone.Models
             this.ActivateDateAndTime = ActivateDateAndTime;
             this.Description = Description;
             this.IsDeleted = IsDeleted;
+        }
+
+        public static Reminder FromDataRow(SqliteDataReader reader)
+        {
+            Reminder createdReminder = new Reminder(int.Parse(reader["reminderID"].ToString()), reader["reminderTitle"].ToString(), DateTime.Parse($"{reader["reminderDate"]} {reader["reminderTime"]}"), reader["reminderDescription"].ToString(), Convert.ToBoolean((long)reader["isDeleted"]));
+            return createdReminder;
         }
     }
 }

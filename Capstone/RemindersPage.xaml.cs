@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Capstone.Models;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,7 +19,15 @@ namespace Capstone
         public RemindersPage()
         {
             this.InitializeComponent();
-            this.Reminders = this.GetRemindersFromDatabase();
+            this.Reminders = new List<Reminder>();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            // load in all reminders from the database
+            this.Reminders.Clear();
+            this.Reminders.AddRange(this.GetRemindersFromDatabase());
             this.PopulateScreenWithReminders();
         }
 
@@ -35,13 +44,23 @@ namespace Capstone
 
         private List<Reminder> GetRemindersFromDatabase()
         {
-            List<Reminder> Reminders = new List<Reminder>();
-            // TODO database stuff
+            List<Reminder> Reminders = StoredProcedures.QueryAllReminders();
             return Reminders;
         }
 
         private void PopulateScreenWithReminders()
         {
+            // clear all reminders and re-populate them
+            var children = this.VariableGrid.Children;
+            if (children.Count > 1)
+            {
+                // more than 1 means that there's reminders as the button is a child.
+                while (children.Count > 1)
+                {
+                    children.RemoveAt(children.Count - 1);
+                }
+                
+            }
             this.Reminders.ForEach(this.AddReminderToScreen);
         }
 
@@ -73,12 +92,12 @@ namespace Capstone
             // relatively place the delete button
             RelativePanel.SetAlignBottomWithPanel(deleteButton, true);
             RelativePanel.SetAlignLeftWithPanel(deleteButton, true);
-            RelativePanel.SetBelow(deleteButton, ReminderDateBlock);
+            RelativePanel.SetBelow(deleteButton, ReminderDescriptionBlock);
             RelativePanel.SetLeftOf(deleteButton, editButton);
             // relatively place the edit button
             RelativePanel.SetAlignBottomWithPanel(editButton, true);
             RelativePanel.SetAlignRightWithPanel(editButton, true);
-            RelativePanel.SetBelow(editButton, ReminderDateBlock);
+            RelativePanel.SetBelow(editButton, ReminderDescriptionBlock);
             this.VariableGrid.Children.Add(ReminderPanel);
         }
 
@@ -89,6 +108,7 @@ namespace Capstone
             ReminderTitleBlock.Margin = new Thickness(10);
             ReminderTitleBlock.TextWrapping = TextWrapping.Wrap;
             ReminderTitleBlock.MaxLines = 2;
+            ReminderTitleBlock.MaxWidth = 175;
             return ReminderTitleBlock;
         }
 
@@ -126,14 +146,18 @@ namespace Capstone
             var DescriptionBlock = new TextBlock();
             DescriptionBlock.TextWrapping = TextWrapping.Wrap;
             DescriptionBlock.MaxLines = 4;
-            DescriptionBlock.Margin = new Thickness(10, 0, 10, 0);
+            DescriptionBlock.Margin = new Thickness(10, 0, 10, 10);
             DescriptionBlock.Text = ReminderToAdd.Description;
             return DescriptionBlock;
         }
 
         private void DeleteReminder(Reminder ReminderToDelete)
         {
-            // TODO
+            StoredProcedures.DeleteReminder(ReminderToDelete.ReminderID);
+            // clear the list of reminders and re-populate them
+            this.Reminders.Clear();
+            this.Reminders.AddRange(GetRemindersFromDatabase());
+            this.PopulateScreenWithReminders();
         }
 
         private void editReminder(Reminder ReminderToEdit)

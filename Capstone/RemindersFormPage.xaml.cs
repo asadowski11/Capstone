@@ -1,6 +1,7 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Capstone.Models;
+using Capstone.Common;
 
 namespace Capstone
 {
@@ -52,7 +53,13 @@ namespace Capstone
             if (this.ValidateForm())
             {
                 this.PopulateReminderFromForm();
-                // TODO save Reminder to database once that's all set up
+                if(this.ReminderToEdit.ReminderID == -1)
+                {
+                    StoredProcedures.CreateReminder(this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description);
+                } else
+                {
+                    StoredProcedures.UpdateReminder(this.ReminderToEdit.ReminderID, this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description);
+                }
                 this.Frame.Navigate(typeof(RemindersPage));
             }
         }

@@ -48,17 +48,6 @@ namespace UnitTests
         }
 
         [UITestMethod]
-        public void TestValidateFormReturnsFalseForAlarmWithoutTitle()
-        {
-            var page = new AlarmsFormPage();
-            // make the time in the future so that that part passes
-            var alarmTime = System.DateTime.Now.AddHours(1);
-            page.AlarmToEdit = new Capstone.Models.Alarm(-1, "", alarmTime, false);
-            page.PopulateFormFromAlarm();
-            Assert.IsFalse(page.ValidateForm());
-        }
-
-        [UITestMethod]
         public void TestValidateTimeReturnsTrueIfDayIsSetForFuture()
         {
             var page = new AlarmsFormPage();

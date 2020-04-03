@@ -1,6 +1,7 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Capstone.Models;
+using Capstone.Common;
 
 namespace Capstone
 {
@@ -49,7 +50,14 @@ namespace Capstone
             if (this.ValidateForm())
             {
                 this.PopulateAlarmFromForm();
-                // TODO save alarm to database once that's all set up
+                if (this.AlarmToEdit.AlarmID == -1)
+                {
+                    StoredProcedures.CreateAlarm(this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime);
+                }
+                else
+                {
+                    StoredProcedures.UpdateAlarm(this.AlarmToEdit.AlarmID, this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime);
+                }
                 this.Frame.Navigate(typeof(AlarmsPage));
             }
         }
@@ -58,10 +66,6 @@ namespace Capstone
         {
             // make sure that the title is not empty or blank
             bool isValid = true;
-            if (Common.StringUtils.IsBlank(this.AlarmTitleInput.Text))
-            {
-                isValid = false;
-            }
             if (!this.ValidateTime())
             {
                 isValid = false;

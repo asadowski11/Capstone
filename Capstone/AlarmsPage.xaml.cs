@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Capstone.Models;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,8 +19,7 @@ namespace Capstone
         public AlarmsPage()
         {
             this.InitializeComponent();
-            this.Alarms = this.GetAlarmsFromDatabase();
-            this.PopulateScreenWithAlarms();
+            this.Alarms = new List<Alarm>();
         }
 
         private void BackButton_OnClick(object sender, RoutedEventArgs e)
@@ -33,15 +33,33 @@ namespace Capstone
             this.Frame.Navigate(typeof(AlarmsFormPage), NewAlarm);
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            this.Alarms.Clear();
+            this.Alarms.AddRange(this.GetAlarmsFromDatabase());
+            this.PopulateScreenWithAlarms();
+        }
+
         private List<Alarm> GetAlarmsFromDatabase()
         {
-            List<Alarm> alarms = new List<Alarm>();
-            // TODO database stuff
+            List<Alarm> alarms = StoredProcedures.QueryAllAlarms();
             return alarms;
         }
 
         private void PopulateScreenWithAlarms()
         {
+            // clear all alarms and re-populate them
+            var children = this.VariableGrid.Children;
+            if (children.Count > 1)
+            {
+                // more than 1 means that there's alarms, as the button is a child.
+                while (children.Count > 1)
+                {
+                    children.RemoveAt(children.Count - 1);
+                }
+
+            }
             this.Alarms.ForEach(this.AddAlarmToScreen);
         }
 
@@ -110,7 +128,7 @@ namespace Capstone
         private Button CreateEditButton(Alarm AlarmToAdd)
         {
             Button editButton = new Button();
-            editButton.Click += (sender, eventArgs) => this.editAlarm(AlarmToAdd);
+            editButton.Click += (sender, eventArgs) => this.EditAlarm(AlarmToAdd);
             editButton.Content = "Edit";
             editButton.Width = 150;
             editButton.Margin = new Thickness(0, 10, 10, 0);
@@ -119,10 +137,14 @@ namespace Capstone
 
         private void DeleteAlarm(Alarm AlarmToDelete)
         {
-            // TODO
+            StoredProcedures.DeleteAlarm(AlarmToDelete.AlarmID);
+            // clear the list of reminders and re-populate them
+            this.Alarms.Clear();
+            this.Alarms.AddRange(GetAlarmsFromDatabase());
+            this.PopulateScreenWithAlarms();
         }
 
-        private void editAlarm(Alarm AlarmToEdit)
+        private void EditAlarm(Alarm AlarmToEdit)
         {
             this.Frame.Navigate(typeof(AlarmsFormPage), AlarmToEdit);
         }

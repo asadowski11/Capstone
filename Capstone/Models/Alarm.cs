@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Data.Sqlite;
+using System;
 
 namespace Capstone.Models
 {
@@ -28,5 +29,10 @@ namespace Capstone.Models
             this.IsDeleted = IsDeleted;
         }
 
+        public static Alarm FromDataRow(SqliteDataReader reader)
+        {
+            Alarm createdReminder = new Alarm(int.Parse(reader["alarmID"].ToString()), reader["alarmTitle"].ToString(), DateTime.Parse($"{reader["alarmDate"]} {reader["alarmTime"]}"), Convert.ToBoolean((long)reader["isDeleted"]));
+            return createdReminder;
+        }
     }
 }
