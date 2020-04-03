@@ -54,9 +54,9 @@
             <TextBlock Text="Default Search Engine:" Style="{ThemeResource BaseTextBlockStyle}"/>
             <StackPanel Orientation="Horizontal">
                 <StackPanel>
-                    <RadioButton Content="DuckDuckGo" GroupName="SearchEngine" Tag="DDG" Checked="BorderRadioButton_Checked" IsChecked="True"/>
-                    <RadioButton Content="Google" GroupName="SearchEngine" Tag="Google" Checked="BorderRadioButton_Checked"/>
-                    <RadioButton Content="Bing" GroupName="SearchEngine" Tag="Bing"  Checked="BorderRadioButton_Checked"/>
+                    <RadioButton Content="DuckDuckGo" GroupName="SearchEngine" Tag="DDG" Name="DuckDuckGo" Checked="BorderRadioButton_Checked" IsChecked="True"/>
+                    <RadioButton Content="Google" GroupName="SearchEngine" Tag="Google" Name="Google" Checked="BorderRadioButton_Checked"/>
+                    <RadioButton Content="Bing" GroupName="SearchEngine" Tag="Bing" Name="Bing" Checked="BorderRadioButton_Checked"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

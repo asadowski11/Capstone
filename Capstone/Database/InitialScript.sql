@@ -188,5 +188,7 @@ CREATE TABLE "TWeatherProviderAccessTypes"
 );
 
 INSERT INTO TSearchEngines ( searchEngineID, searchEngineName, searchEngineBaseURL )
-VALUES (1, 'Google', 'https://www.google.com')
+VALUES  (1, 'Google', 'https://www.google.com'),
+		(2, 'DuckDuckGo', 'https://www.duckduckgo.com'),
+		(3, 'Bing', 'https://www.bing.com' )
 

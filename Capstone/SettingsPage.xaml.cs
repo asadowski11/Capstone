@@ -99,27 +99,45 @@ namespace Capstone
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var taskList = new List<Task>();
-            taskList.Add(SaveMapSelection());
+            //taskList.Add(SaveMapSelection());
+            taskList.Add(SaveSearchEngineSelection());
 
             await Task.WhenAll(taskList);
         }
 
-        private async Task SaveMapSelection()
+        private async Task SaveSearchEngineSelection()
         {
 
-            if (StreetMap.IsChecked == true)
+            if (DuckDuckGo.IsChecked == true)
             {
-                //StoredProcedures.UpdateSettings(1, false);
+                StoredProcedures.UpdateSettings(2, true);
             }
-            if (BingMap.IsChecked == true)
+            if (Google.IsChecked == true)
             {
-                //StoredProcedures.UpdateSettings(1, false);
+                StoredProcedures.UpdateSettings(1, true);
             }
-            if (GoogleMap.IsChecked == true)
+            if (Bing.IsChecked == true)
             {
-               // StoredProcedures.UpdateSettings(1, false);
+                StoredProcedures.UpdateSettings(3, true);
             }
         }
+
+        //private async Task SaveMapSelection()
+        //{
+        //
+        //    if (StreetMap.IsChecked == true)
+        //    {
+        //        StoredProcedures.UpdateSettings(1, false);
+        //    }
+        //    if (BingMap.IsChecked == true)
+        //    {
+        //        StoredProcedures.UpdateSettings(1, false);
+        //    }
+        //    if (GoogleMap.IsChecked == true)
+        //    {
+        //       StoredProcedures.UpdateSettings(1, false);
+        //    }
+        //}
 
 
     }

@@ -10,14 +10,13 @@ namespace Capstone.Common
 {
     class StoredProcedures
     {
+        static string appData = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+
         public static void CreateDatabase()
         {
-            var appData = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
 
             if (!File.Exists($"{appData}\\Database\\BobDB.sqlite"))
             {
-                try
-                {
 
                     SQLiteConnection m_dbConnection = new SQLiteConnection($"Data Source={appData}\\Database\\BobDB.sqlite;Version=3;");
                     m_dbConnection.Open();
@@ -29,13 +28,7 @@ namespace Capstone.Common
                     SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                     command.ExecuteNonQuery();
 
-                    m_dbConnection.Close();
-                }
-                catch (Exception e)
-                {
-                    System.Console.WriteLine(e);
-                    throw;
-                }
+                    m_dbConnection.Close();                
 
             }
 
@@ -308,15 +301,15 @@ namespace Capstone.Common
 
         public static void UpdateSettings(int ID, bool IsSelected)
         {
-            int intID = ID;
-            bool boolIsSelected = IsSelected;
-            int intIsSelected = boolIsSelected ? 1 : 0;
-            SqliteConnection conn = OpenDatabase();
-            conn.Open();
-            SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Update TSettingOptions Set isSelected = {intIsSelected} Where settingOptionID = {intID};";
+            SQLiteConnection m_dbConnection = new SQLiteConnection($"Data Source={appData}\\Database\\BobDB.sqlite;Version=3;");
+            m_dbConnection.Open();           
+
+            string sql = "";
+
+            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
             command.ExecuteNonQuery();
-            conn.Close();
+
+            m_dbConnection.Close();
         }
         public static Setting QuerySetting(int ID = -1)
         {
