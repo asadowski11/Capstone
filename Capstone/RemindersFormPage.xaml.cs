@@ -2,6 +2,7 @@
 using Windows.UI.Xaml.Navigation;
 using Capstone.Models;
 using Capstone.Common;
+using Windows.UI;
 
 namespace Capstone
 {
@@ -53,12 +54,13 @@ namespace Capstone
             if (this.ValidateForm())
             {
                 this.PopulateReminderFromForm();
-                if(this.ReminderToEdit.ReminderID == -1)
+                if (this.ReminderToEdit.ReminderID == -1)
                 {
                     StoredProcedures.CreateReminder(this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description);
-                } else
+                }
+                else
                 {
-                    StoredProcedures.UpdateReminder(this.ReminderToEdit.ReminderID, this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description);
+                    StoredProcedures.UpdateReminder(this.ReminderToEdit.ReminderID, this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description, false);
                 }
                 this.Frame.Navigate(typeof(RemindersPage));
             }
@@ -66,14 +68,19 @@ namespace Capstone
 
         public bool ValidateForm()
         {
+            // remove highlighting from our title and time fields
+            UIUtils.HighlightUIElement(this.ReminderTitleInput, Colors.Transparent);
+            UIUtils.HighlightUIElement(this.ReminderTimePicker, Colors.Transparent);
             // make sure that the title is not empty or blank
             bool isValid = true;
             if (Common.StringUtils.IsBlank(this.ReminderTitleInput.Text))
             {
                 isValid = false;
+                UIUtils.HighlightUIElement(this.ReminderTitleInput);
             }
             if (!this.ValidateTime())
             {
+                UIUtils.HighlightUIElement(this.ReminderTimePicker);
                 isValid = false;
             }
             // don't need to validate date since the earliest it can go is today, and description is optional

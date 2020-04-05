@@ -5,6 +5,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Capstone.Models;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Text;
+using Windows.UI;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -59,7 +61,7 @@ namespace Capstone
                 {
                     children.RemoveAt(children.Count - 1);
                 }
-                
+
             }
             this.Reminders.ForEach(this.AddReminderToScreen);
         }
@@ -109,6 +111,13 @@ namespace Capstone
             ReminderTitleBlock.TextWrapping = TextWrapping.Wrap;
             ReminderTitleBlock.MaxLines = 2;
             ReminderTitleBlock.MaxWidth = 175;
+            // if the reminder is expired, gray out the text and strike through it
+            if (ReminderToAdd.IsExpired)
+            {
+                ReminderTitleBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                ReminderTitleBlock.Foreground = grayBrush;
+            }
             return ReminderTitleBlock;
         }
 
@@ -118,6 +127,13 @@ namespace Capstone
             ReminderDateBlock.Text = ReminderToAdd.ActivateDateAndTime.ToString("g");
             ReminderDateBlock.Margin = new Thickness(10);
             ReminderDateBlock.TextAlignment = TextAlignment.Right;
+            // if the reminder is expired, gray out the text and strike through it
+            if (ReminderToAdd.IsExpired)
+            {
+                ReminderDateBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                ReminderDateBlock.Foreground = grayBrush;
+            }
             return ReminderDateBlock;
         }
 
@@ -148,6 +164,13 @@ namespace Capstone
             DescriptionBlock.MaxLines = 4;
             DescriptionBlock.Margin = new Thickness(10, 0, 10, 10);
             DescriptionBlock.Text = ReminderToAdd.Description;
+            // if the reminder is expired, gray out the text and strike through it
+            if (ReminderToAdd.IsExpired)
+            {
+                DescriptionBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                DescriptionBlock.Foreground = grayBrush;
+            }
             return DescriptionBlock;
         }
 

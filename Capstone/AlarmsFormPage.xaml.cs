@@ -2,6 +2,7 @@
 using Windows.UI.Xaml.Navigation;
 using Capstone.Models;
 using Capstone.Common;
+using Windows.UI;
 
 namespace Capstone
 {
@@ -56,7 +57,7 @@ namespace Capstone
                 }
                 else
                 {
-                    StoredProcedures.UpdateAlarm(this.AlarmToEdit.AlarmID, this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime);
+                    StoredProcedures.UpdateAlarm(this.AlarmToEdit.AlarmID, this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime, false);
                 }
                 this.Frame.Navigate(typeof(AlarmsPage));
             }
@@ -64,11 +65,14 @@ namespace Capstone
 
         public bool ValidateForm()
         {
+            // remove highlighting from the time field
+            UIUtils.HighlightUIElement(this.AlarmTimePicker, Colors.Transparent);
             // make sure that the title is not empty or blank
             bool isValid = true;
             if (!this.ValidateTime())
             {
                 isValid = false;
+                UIUtils.HighlightUIElement(this.AlarmTimePicker);
             }
             // don't need to validate date since the earliest it can go is today
             return isValid;

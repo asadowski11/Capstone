@@ -5,6 +5,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Capstone.Models;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Text;
+using Windows.UI;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -103,6 +105,13 @@ namespace Capstone
             alarmTitleBlock.FontSize = 32;
             alarmTitleBlock.TextWrapping = TextWrapping.Wrap;
             alarmTitleBlock.MaxLines = 2;
+            // if the alarm is expired, gray out the text and strike through it
+            if (AlarmToAdd.IsExpired)
+            {
+                alarmTitleBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                alarmTitleBlock.Foreground = grayBrush;
+            }
             return alarmTitleBlock;
         }
 
@@ -112,6 +121,13 @@ namespace Capstone
             alarmDateBlock.Text = AlarmToAdd.ActivateDateAndTime.ToString("g");
             alarmDateBlock.FontSize = 24;
             alarmDateBlock.Margin = new Thickness(10);
+            // if the reminder is expired, gray out the text and strike through it
+            if (AlarmToAdd.IsExpired)
+            {
+                alarmDateBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                alarmDateBlock.Foreground = grayBrush;
+            }
             return alarmDateBlock;
         }
 

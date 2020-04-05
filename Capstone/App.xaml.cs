@@ -24,7 +24,11 @@ namespace Capstone
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             StoredProcedures.CreateDatabase();
-
+            // start the alarm tracker
+            if (!AlarmAndReminderTracker.hasStarted)
+            {
+                AlarmAndReminderTracker.Start();
+            }
         }
 
         /// <summary>

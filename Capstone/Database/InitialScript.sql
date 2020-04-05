@@ -56,13 +56,14 @@ CREATE TABLE "TAlarms"
 	,"alarmTime"    TIME			NOT NULL
 	,"alarmTitle"   NVARCHAR(255)	NOT NULL
 	,"isDeleted"    BIT				NOT NULL
+	,"isExpired"	BIT				NOT NULL
 );
 
 CREATE TABLE "TAlarmDates"
 (						
 	 "alarmDateID"  INTEGER			PRIMARY KEY NOT NULL
 	,"alarmID"	    INTEGER			NOT NULL
-	,"alarmDate"	DATETIME		NOT NULL
+	,"alarmDate"	DATE			NOT NULL
     ,FOREIGN KEY ( alarmID ) REFERENCES TAlarms ( alarmID )
 );
 
@@ -73,13 +74,14 @@ CREATE TABLE "TReminders"
 	,"reminderTime"	       TIME			    NOT NULL
 	,"reminderDescription" NVARCHAR(1024)   NOT NULL
 	,"isDeleted"		   BIT				NOT NULL
+	,"isExpired"		   BIT				NOT NULL
 );
 
 CREATE TABLE "TReminderDates"
 (
 	 "reminderDateID"   INTEGER			PRIMARY KEY NOT NULL
 	,"reminderID"	    INTEGER			NOT NULL
-	,"reminderDate"     DATETIME		NOT NULL
+	,"reminderDate"     DATE			NOT NULL
     ,FOREIGN KEY ( reminderID ) REFERENCES TReminders ( reminderID )
 );
 
