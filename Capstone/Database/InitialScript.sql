@@ -2,8 +2,8 @@ DROP TABLE IF EXISTS "TSettings";
 DROP TABLE IF EXISTS "TSettingOptions";
 DROP TABLE IF EXISTS "TSearchEngines";
 DROP TABLE IF EXISTS "TSearchableWebsites";
-DROP TABLE IF EXISTS "TAlarms";
 DROP TABLE IF EXISTS "TAlarmDates";
+DROP TABLE IF EXISTS "TAlarms";
 DROP TABLE IF EXISTS "TReminderDates";
 DROP TABLE IF EXISTS "TReminders";
 DROP TABLE IF EXISTS "TMapProviders";
@@ -15,10 +15,10 @@ DROP TABLE IF EXISTS "TUserInfos";
 DROP TABLE IF EXISTS "TCaches";
 DROP TABLE IF EXISTS "TBobResponses";
 DROP TABLE IF EXISTS "TBobResponseInputs";
-DROP TABLE IF EXISTS "TWeatherProviders";
 DROP TABLE IF EXISTS "TWeatherProviderURLS";
 DROP TABLE IF EXISTS "TWeatherProviderURLParts";
 DROP TABLE IF EXISTS "TWeatherProviderAccessTypes";
+DROP TABLE IF EXISTS "TWeatherProviders";
 
 CREATE TABLE "TSettings"
 (
@@ -194,3 +194,9 @@ VALUES  (1, 'Google', 'https://www.google.com'),
 		(2, 'DuckDuckGo', 'https://www.duckduckgo.com'),
 		(3, 'Bing', 'https://www.bing.com' )
 
+/*INSERT STATEMENTS*/
+INSERT INTO "TWeatherProviders" ("weatherProviderID", "weatherProviderName") VALUES ('1', 'National Weather Service');
+INSERT INTO "TWeatherProviderAccessTypes" ("weatherProviderAccessTypeID", "weatherProviderID", "weatherProviderAccessType") VALUES ('1', '1', 'CURL');
+INSERT INTO "TWeatherProviderURLParts" ("weatherProviderURLPartID", "weatherProviderID", "weatherProviderURLPartURLString") VALUES ('1', '1', '/gridpoints/:office/:gridX,:gridY/forecast');
+INSERT INTO "TWeatherProviderURLParts" ("weatherProviderURLPartID", "weatherProviderID", "weatherProviderURLPartURLString") VALUES ('2', '1', '/points/:latitude,:longitude');
+INSERT INTO "TWeatherProviderURLS" ("weatherProviderURLID", "weatherProviderID", "weatherProviderURL") VALUES ('1', '1', 'https://api.weather.gov');

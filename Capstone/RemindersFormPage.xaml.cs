@@ -62,7 +62,7 @@ namespace Capstone
                 {
                     StoredProcedures.UpdateReminder(this.ReminderToEdit.ReminderID, this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description, false);
                 }
-                this.Frame.Navigate(typeof(RemindersPage));
+                UIUtils.GoBack(this, typeof(RemindersPage));
             }
         }
 
@@ -100,7 +100,7 @@ namespace Capstone
         private void CancelReminderButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             // TODO maybe we should add a confirmation box? or maybe we shouldn't because of how simple it is to create a Reminder
-            this.Frame.Navigate(typeof(RemindersPage));
+            UIUtils.GoBack(this, typeof(RemindersPage));
         }
     }
 }

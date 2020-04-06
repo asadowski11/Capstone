@@ -49,12 +49,26 @@ namespace Capstone.Common
 
         public SSMLBuilder()
         {
-            this.ssmlText = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>";
+        }
+
+        public SSMLBuilder Add(string text)
+        {
+            this.ssmlText += text;
+            return this;
         }
 
         public string Build()
         {
             this.ssmlText += "</speak>";
+            return "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>" + this.ssmlText;
+        }
+
+        /// <summary>
+        /// Returns the built ssmlText without the enclosing speakElement, useful if you want to build a piece of ssml text and then wrap it all in another piece of ssml, like a prosody element for example.
+        /// </summary>
+        /// <returns></returns>
+        public string BuildWithoutWrapperElement()
+        {
             return this.ssmlText;
         }
 

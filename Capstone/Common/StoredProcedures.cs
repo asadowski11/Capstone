@@ -181,6 +181,44 @@ namespace Capstone.Common
             }
         }
 
+        public static Reminder QueryLatestReminder()
+        {
+            Reminder queriedReminder = null;
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand latestIDCommand = conn.CreateCommand())
+                {
+                    latestIDCommand.CommandText = "SELECT MAX(reminderID) as reminderID from TReminders";
+                    SqliteDataReader reader = latestIDCommand.ExecuteReader();
+                    reader.Read();
+                    int id = int.Parse(reader["reminderID"].ToString());
+                    queriedReminder = QueryReminder(id);
+                    reader.Close();
+                }
+            }
+            return queriedReminder;
+        }
+
+        public static void DeleteLatestReminder()
+        {
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand maxIDCommand = conn.CreateCommand())
+                using (SqliteCommand deleteLatestCommand = conn.CreateCommand())
+                {
+                    maxIDCommand.CommandText = "SELECT MAX(reminderID) as reminderID FROM TReminders";
+                    SqliteDataReader reader = maxIDCommand.ExecuteReader();
+                    reader.Read();
+                    int reminderID = int.Parse(reader["reminderID"].ToString());
+                    deleteLatestCommand.CommandText = $"UPDATE TReminders SET isDeleted = 1 WHERE reminderID = {reminderID}";
+                    deleteLatestCommand.ExecuteNonQuery();
+                    reader.Close();
+                }
+            }
+        }
+
         public static void CreateAlarm(string Title, DateTime AlarmDateTime)
         {
             // escape the single ticks
@@ -237,34 +275,56 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
+        public static Alarm QueryLatestAlarm()
+        {
+            Alarm queriedAlarm = null;
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand latestIDCommand = conn.CreateCommand())
+                {
+                    latestIDCommand.CommandText = "SELECT MAX(alarmID) as alarmID from TAlarms";
+                    SqliteDataReader reader = latestIDCommand.ExecuteReader();
+                    reader.Read();
+                    int id = int.Parse(reader["alarmID"].ToString());
+                    queriedAlarm = QueryAlarm(id);
+                    reader.Close();
+                }
+            }
+            return queriedAlarm;
+        }
+
+        public static void DeleteLatestAlarm()
+        {
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand maxIDCommand = conn.CreateCommand())
+                using (SqliteCommand deleteLatestCommand = conn.CreateCommand())
+                {
+                    maxIDCommand.CommandText = "SELECT MAX(alarmID) as alarmID FROM TAlarms";
+                    SqliteDataReader reader = maxIDCommand.ExecuteReader();
+                    reader.Read();
+                    int alarmID = int.Parse(reader["alarmID"].ToString());
+                    deleteLatestCommand.CommandText = $"UPDATE TAlarms SET isDeleted = 1 WHERE alarmID = {alarmID}";
+                    deleteLatestCommand.ExecuteNonQuery();
+                    reader.Close();
+                }
+            }
+        }
+
         public static Alarm QueryAlarm(int ID = -1)
         {
             Alarm alarm = new Alarm();
-            string intID;
-            if (ID == -1)
-            {
-                intID = "null";
-            }
-            else
-            {
-                intID = ID.ToString();
-            }
-
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TAlarms.AlarmID, TAlarms.AlarmTitle, TAlarms.AlarmTime, TAlarmDates.AlarmDate, TAlarms.isDeleted, TAlarms.isExpired From TAlarms, TAlarmDates Where TAlarms.AlarmID = TAlarmDates.AlarmID and TAlarms.AlarmID = COALESCE({intID}, TAlarms.AlarmID); ";
+            command.CommandText = $"Select TAlarms.AlarmID, TAlarms.AlarmTitle, TAlarms.AlarmTime, TAlarmDates.AlarmDate, TAlarms.isDeleted, TAlarms.isExpired From TAlarms, TAlarmDates Where TAlarms.AlarmID = TAlarmDates.AlarmID and TAlarms.AlarmID = COALESCE({ID}, TAlarms.AlarmID); ";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
-                while (reader.Read())
-                {
-                    int intAlarmID = int.Parse(reader["AlarmID"].ToString());
-                    alarm.AlarmID = intAlarmID;
-                    alarm.Title = reader["AlarmTitle"].ToString();
-                    var date = DateTime.Parse($"{reader["AlarmDate"]} {reader["AlarmTime"]}");
-                    alarm.ActivateDateAndTime = date;
-                    alarm.IsDeleted = Convert.ToBoolean((long)reader["isDeleted"]);
-                }
+                reader.Read();
+                alarm = Alarm.FromDataRow(reader);
             }
             conn.Close();
             return alarm;
@@ -444,37 +504,26 @@ namespace Capstone.Common
             conn.Close();
             return setting;
         }
-        public static WeatherProvider QueryWeatherProvider(int ID = -1)
-        {
-            WeatherProvider weatherProvider = new WeatherProvider();
-            string intID;
-            if (ID == -1)
-            {
-                intID = "null";
-            }
-            else
-            {
-                intID = ID.ToString();
-            }
 
+        public static WeatherProvider QueryWeatherProvider(string ProviderName = "")
+        {
+            WeatherProvider provider = null;
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TWeatherProviders.weatherProviderID, TWeatherProviders.weatherProviderName,TWeatherProviderURLS.weatherProviderURL,TWeatherProviderURLParts.weatherProviderURLPartURLString,TWeatherProviderAccessTypes.weatherProviderAccessType From TWeatherProviders, TWeatherProviderURLS, TWeatherProviderURLParts, TWeatherProviderAccessTypes Where TWeatherProviders.weatherProviderID = COALESCE({intID}, TWeatherProviders.weatherProviderID) and TWeatherProviders.weatherProviderID = TWeatherProviderURLS.weatherProviderID and TWeatherProviders.weatherProviderID = TWeatherProviderURLParts.weatherProviderID and TWeatherProviders.weatherProviderID = TWeatherProviderAccessTypes.weatherProviderID; ";
+            command.CommandText = @"SELECT TWeatherProviders.weatherProviderID, TWeatherProviders.weatherProviderName, TWeatherProviderURLS.weatherProviderURL AS 'baseURL', group_concat(TWeatherProviderURLParts.weatherProviderURLPartURLString,'###') AS 'urlParts', TWeatherProviderAccessTypes.weatherProviderAccessType AS 'type'
+                                    FROM TWeatherProviders, TWeatherProviderURLS, TWeatherProviderURLParts, TWeatherProviderAccessTypes
+                                    WHERE TWeatherProviders.weatherProviderID = TWeatherProviderURLS.weatherProviderID AND TWeatherProviders.weatherProviderID = TWeatherProviderURLParts.weatherProviderID
+                                    AND TWeatherProviders.weatherProviderName = '{providerName}';".Replace("{providerName}", ProviderName);
             using (SqliteDataReader reader = command.ExecuteReader())
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    int intWeatherProviderID = int.Parse(reader["weatherProviderID"].ToString());
-                    weatherProvider.WeatherProviderID = intWeatherProviderID;
-                    weatherProvider.Name = reader["weatherProviderName"].ToString();
-                    weatherProvider.BaseURL = reader["weatherProviderURL"].ToString();
-                    //weatherProvider.AccessType = reader["weatherProviderAccessType"];
-                    //weatherProvider.APIKey = reader[""];
+                    provider = WeatherProvider.FromDataRow(reader);
                 }
             }
             conn.Close();
-            return weatherProvider;
+            return provider;
         }
         public static MapProvider QueryMapProvider(int ID = -1)
         {

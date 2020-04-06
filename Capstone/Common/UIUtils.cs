@@ -30,5 +30,23 @@ namespace Capstone.Common
             Brush backgroundBrush = new SolidColorBrush(backgroundColor.GetValueOrDefault(Colors.Yellow));
             control.Background = backgroundBrush;
         }
+
+        /// <summary>
+        /// Attempts to go back to the previous page, defaulting to the passed <paramref name="DefaultPageIfCannotGoBack"/> if the frame cannot go back
+        /// </summary>
+        /// <param name="CurrentPage"></param>
+        /// <param name="DefaultPageIfCannotGoBack"></param>
+        public static void GoBack(Page CurrentPage, Type DefaultPageIfCannotGoBack)
+        {
+            if (CurrentPage.Frame.CanGoBack)
+            {
+                CurrentPage.Frame.GoBack();
+            }
+            else
+            {
+                CurrentPage.Frame.Navigate(DefaultPageIfCannotGoBack);
+            }
+        }
+
     }
 }
