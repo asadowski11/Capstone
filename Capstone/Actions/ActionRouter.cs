@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Capstone.Actions
 {
@@ -8,6 +9,8 @@ namespace Capstone.Actions
     {
         // a case-insensitive dictionary. Due to runtime binding the second argument needs to be set to "dynamic". In practice, this value is  Dictionary<string, dynamic>. The dynamic keeps going until a value of type Func<string, Action> is reached
         private static Dictionary<string, dynamic> actionTree;
+
+        public static bool IsSetup { get; private set; } = false;
 
         public static void SetUp()
         {
@@ -17,9 +20,10 @@ namespace Capstone.Actions
             SetUpAlarmBranches();
             SetUpReminderBranches();
             SetUpTimeBranches();
-            SetUpInternetSearchBranches();
             SetUpWeatherBranches();
             SetUpVoiceNoteBranches();
+            SetUpInternetSearchBranches();
+            IsSetup = true;
         }
 
         private static void SetUpWeatherBranches()
@@ -130,8 +134,9 @@ namespace Capstone.Actions
         public static string FindKeyword(string inputString, Dictionary<string, dynamic> DictToCheck)
         {
             string foundKeyword = null;
-            // split the inputString into tokens
-            string[] tokens = inputString.ToLower().Split(" ");
+            // split the inputString into tokens and get rid of anything that's not a letter
+            Regex specialCharRegex = new Regex(@"[^\w ]|[_]");
+            string[] tokens = specialCharRegex.Replace(inputString.ToLower(), "").Split(" ");
             List<string> keys = DictToCheck.Keys.ToList();
             // iterate through the keys to find the keyword
             foreach (string key in keys)

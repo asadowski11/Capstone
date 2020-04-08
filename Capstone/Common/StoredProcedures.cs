@@ -2,11 +2,8 @@ using Capstone.Models;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Capstone.Common
@@ -35,31 +32,40 @@ namespace Capstone.Common
             return conn;
         }
 
-        public static void CreateReminder(string Title, DateTime Time, DateTime Date)
+        public static void CreateReminder(string Title, DateTime ReminderDateAndTime, string Description)
         {
-
-            String strTime = Time.ToString("HH:mm");
-            String strDate = Date.ToString("yyyy-MM-dd HH:mm");
+            // escape the single ticks
+            Title = EscapeSingleTicks(Title);
+            Description = EscapeSingleTicks(Description);
+            // gives the hour:minute [AP]m format
+            string strTime = ReminderDateAndTime.ToString("HH:mm");
+            // gives the month/day/year format
+            string strDate = ReminderDateAndTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"INSERT INTO TReminders(reminderTitle, reminderTime, isDeleted) Values('{Title}','{strTime}', 0);";
+            command.CommandText = $"INSERT INTO TReminders(reminderTitle, reminderTime, isDeleted, reminderDescription, isExpired) Values('{Title}','{strTime}', 0, '{Description}', 0);";
             command.ExecuteNonQuery();
             command.CommandText = $"INSERT INTO TReminderDates(reminderID, reminderDate) Select MAX(reminderID), '{strDate}' FROM TReminders;";
             command.ExecuteNonQuery();
             conn.Close();
         }
-        public static void UpdateReminder(int ID, string Title, DateTime Time, DateTime Date)
+        public static void UpdateReminder(int ID, string Title, DateTime ReminderDateAndTime, string Description, bool isExpired)
         {
+            // escape the single ticks
+            Title = EscapeSingleTicks(Title);
+            Description = EscapeSingleTicks(Description);
             int intID = ID;
-            String strTime = Time.ToString("HH:mm");
-            String strDate = Date.ToString("yyyy-MM-dd HH:mm");
+            // gives the hour:minute [AP]m format
+            string strTime = ReminderDateAndTime.ToString("HH:mm");
+            // gives the month/day/year format
+            string strDate = ReminderDateAndTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Update TReminders Set reminderTime = '{Time}', reminderTitle = '{Title}' Where reminderID = {intID};";
+            command.CommandText = $"Update TReminders Set reminderTime = '{strTime}', reminderTitle = '{Title}', reminderDescription = '{Description}', isExpired = {(isExpired ? 1 : 0)} Where reminderID = {intID};";
             command.ExecuteNonQuery();
-            command.CommandText = $"Update TReminderDates Set reminderDate = '{Date}' Where reminderID = {intID};";
+            command.CommandText = $"Update TReminderDates Set reminderDate = '{strDate}' Where reminderID = {intID};";
             command.ExecuteNonQuery();
             conn.Close();
         }
@@ -85,54 +91,170 @@ namespace Capstone.Common
             {
                 intID = ID.ToString();
             }
-            
+
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminderDates.reminderDate, TReminders.isDeleted From TReminders, TReminderDates Where TReminders.reminderID = TReminderDates.reminderID and TReminders.reminderID = COALESCE({intID}, TReminders.reminderID); ";
+            command.CommandText = $"Select TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderDescription, TReminders.reminderTime, TReminderDates.reminderDate, TReminders.isExpired, TReminders.isDeleted From TReminders, TReminderDates Where TReminders.reminderID = TReminderDates.reminderID and TReminders.reminderID = COALESCE({intID}, TReminders.reminderID); ";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    int intReminderID = int.Parse(reader["reminderID"].ToString());
-                    reminder.ReminderID = intReminderID;
-                    reminder.Title = reader["reminderTitle"].ToString();
-                    var date = DateTime.Parse($"{reader["reminderDate"]} {reader["reminderTime"]}");
-                    reminder.ActivateDateAndTime = date;
-                    reminder.IsDeleted = Convert.ToBoolean((long)reader["isDeleted"]);
+                    reminder = Reminder.FromDataRow(reader);
                 }
             }
             conn.Close();
             return reminder;
         }
-        public static void CreateAlarm(string Title, DateTime Time, DateTime Date)
-        {
 
-            String strTime = Time.ToString("HH:mm");
-            String strDate = Date.ToString("yyyy-MM-dd HH:mm");
+        /// <summary>
+        /// queries a list of all non-deleted reminders from the database and returns them.
+        /// </summary>
+        /// <returns>the list of queried reminders</returns>
+        /// <exception cref="SqliteException">If there' an error executing the sql statement</exception>
+        public static List<Reminder> QueryAllReminders()
+        {
+            List<Reminder> reminders = new List<Reminder>();
+            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.isExpired, TReminderDates.reminderDate 
+                            FROM TReminders, TReminderDates
+                            WHERE TReminderDates.reminderID = TReminders.reminderID AND TReminders.isDeleted <> 1
+                            ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
+            using (SqliteConnection connection = OpenDatabase())
+            {
+                connection.Open();
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        reminders.Add(Reminder.FromDataRow(reader));
+                    }
+                }
+            }
+            return reminders;
+        }
+
+        public static List<Reminder> QueryAllUnexpiredReminders()
+        {
+            List<Reminder> reminders = new List<Reminder>();
+            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.IsExpired, TReminderDates.reminderDate 
+                            FROM TReminders, TReminderDates
+                            WHERE TReminderDates.reminderID = TReminders.reminderID AND TReminders.isDeleted <> 1 AND TReminders.isExpired <> 1
+                            ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
+            using (SqliteConnection connection = OpenDatabase())
+            {
+                connection.Open();
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        reminders.Add(Reminder.FromDataRow(reader));
+                    }
+                }
+            }
+            return reminders;
+        }
+
+        public static void ExpireReminder(int ID)
+        {
+            using (SqliteConnection connection = OpenDatabase())
+            {
+                connection.Open();
+                using (SqliteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = $"update TReminders set isExpired = 1 where reminderID = {ID}";
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static Reminder QueryLatestReminder()
+        {
+            Reminder queriedReminder = null;
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand latestIDCommand = conn.CreateCommand())
+                {
+                    latestIDCommand.CommandText = "SELECT MAX(reminderID) as reminderID from TReminders";
+                    SqliteDataReader reader = latestIDCommand.ExecuteReader();
+                    reader.Read();
+                    int id = int.Parse(reader["reminderID"].ToString());
+                    queriedReminder = QueryReminder(id);
+                    reader.Close();
+                }
+            }
+            return queriedReminder;
+        }
+
+        public static void DeleteLatestReminder()
+        {
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand maxIDCommand = conn.CreateCommand())
+                using (SqliteCommand deleteLatestCommand = conn.CreateCommand())
+                {
+                    maxIDCommand.CommandText = "SELECT MAX(reminderID) as reminderID FROM TReminders";
+                    SqliteDataReader reader = maxIDCommand.ExecuteReader();
+                    reader.Read();
+                    int reminderID = int.Parse(reader["reminderID"].ToString());
+                    deleteLatestCommand.CommandText = $"UPDATE TReminders SET isDeleted = 1 WHERE reminderID = {reminderID}";
+                    deleteLatestCommand.ExecuteNonQuery();
+                    reader.Close();
+                }
+            }
+        }
+
+        public static void CreateAlarm(string Title, DateTime AlarmDateTime)
+        {
+            // escape the single ticks
+            Title = EscapeSingleTicks(Title);
+            string strTime = AlarmDateTime.ToString("HH:mm");
+            string strDate = AlarmDateTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"INSERT INTO TAlarms(AlarmTitle, AlarmTime, isDeleted) Values('{Title}','{strTime}', 0);";
+            command.CommandText = $"INSERT INTO TAlarms(AlarmTitle, AlarmTime, isDeleted, isExpired) Values('{Title}','{strTime}', 0, 0);";
             command.ExecuteNonQuery();
             command.CommandText = $"INSERT INTO TAlarmDates(AlarmID, AlarmDate) Select MAX(AlarmID), '{strDate}' FROM TAlarms;";
             command.ExecuteNonQuery();
             conn.Close();
         }
-        public static void UpdateAlarm(int ID, string Title, DateTime Time, DateTime Date)
+
+        public static void UpdateAlarm(int ID, string Title, DateTime AlarmDateTime, bool isExpired)
         {
+            // escape the single ticks
+            Title = EscapeSingleTicks(Title);
             int intID = ID;
-            String strTime = Time.ToString("HH:mm");
-            String strDate = Date.ToString("yyyy-MM-dd HH:mm");
+            string strTime = AlarmDateTime.ToString("HH:mm");
+            string strDate = AlarmDateTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Update TAlarms Set AlarmTime = '{Time}', AlarmTitle = '{Title}' Where AlarmID = {intID};";
+            command.CommandText = $"Update TAlarms Set AlarmTime = '{strTime}', AlarmTitle = '{Title}', isExpired = {(isExpired ? 1 : 0)} Where AlarmID = {intID};";
             command.ExecuteNonQuery();
-            command.CommandText = $"Update TAlarmDates Set AlarmDate = '{Date}' Where AlarmID = {intID};";
+            command.CommandText = $"Update TAlarmDates Set AlarmDate = '{strDate}' Where AlarmID = {intID};";
             command.ExecuteNonQuery();
             conn.Close();
         }
+
+        public static void ExpireAlarm(int ID)
+        {
+            using (SqliteConnection connection = OpenDatabase())
+            {
+                connection.Open();
+                using (SqliteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = $"update TAlarms set isExpired = 1 where alarmID = {ID}";
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void DeleteAlarm(int ID)
         {
             int intID = ID;
@@ -143,44 +265,117 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
+        public static Alarm QueryLatestAlarm()
+        {
+            Alarm queriedAlarm = null;
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand latestIDCommand = conn.CreateCommand())
+                {
+                    latestIDCommand.CommandText = "SELECT MAX(alarmID) as alarmID from TAlarms";
+                    SqliteDataReader reader = latestIDCommand.ExecuteReader();
+                    reader.Read();
+                    int id = int.Parse(reader["alarmID"].ToString());
+                    queriedAlarm = QueryAlarm(id);
+                    reader.Close();
+                }
+            }
+            return queriedAlarm;
+        }
+
+        public static void DeleteLatestAlarm()
+        {
+            using (SqliteConnection conn = OpenDatabase())
+            {
+                conn.Open();
+                using (SqliteCommand maxIDCommand = conn.CreateCommand())
+                using (SqliteCommand deleteLatestCommand = conn.CreateCommand())
+                {
+                    maxIDCommand.CommandText = "SELECT MAX(alarmID) as alarmID FROM TAlarms";
+                    SqliteDataReader reader = maxIDCommand.ExecuteReader();
+                    reader.Read();
+                    int alarmID = int.Parse(reader["alarmID"].ToString());
+                    deleteLatestCommand.CommandText = $"UPDATE TAlarms SET isDeleted = 1 WHERE alarmID = {alarmID}";
+                    deleteLatestCommand.ExecuteNonQuery();
+                    reader.Close();
+                }
+            }
+        }
+
         public static Alarm QueryAlarm(int ID = -1)
         {
             Alarm alarm = new Alarm();
-            string intID;
-            if (ID == -1)
-            {
-                intID = "null";
-            }
-            else
-            {
-                intID = ID.ToString();
-            }
-
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TAlarms.AlarmID, TAlarms.AlarmTitle, TAlarms.AlarmTime, TAlarmDates.AlarmDate, TAlarms.isDeleted From TAlarms, TAlarmDates Where TAlarms.AlarmID = TAlarmDates.AlarmID and TAlarms.AlarmID = COALESCE({intID}, TAlarms.AlarmID); ";
+            command.CommandText = $"Select TAlarms.AlarmID, TAlarms.AlarmTitle, TAlarms.AlarmTime, TAlarmDates.AlarmDate, TAlarms.isDeleted, TAlarms.isExpired From TAlarms, TAlarmDates Where TAlarms.AlarmID = TAlarmDates.AlarmID and TAlarms.AlarmID = COALESCE({ID}, TAlarms.AlarmID); ";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
-                while (reader.Read())
-                {
-                    int intAlarmID = int.Parse(reader["AlarmID"].ToString());
-                    alarm.AlarmID = intAlarmID;
-                    alarm.Title = reader["AlarmTitle"].ToString();
-                    var date = DateTime.Parse($"{reader["AlarmDate"]} {reader["AlarmTime"]}");
-                    alarm.ActivateDateAndTime = date;
-                    alarm.IsDeleted = Convert.ToBoolean((long)reader["isDeleted"]);
-                }
+                reader.Read();
+                alarm = Alarm.FromDataRow(reader);
             }
             conn.Close();
             return alarm;
         }
-            
+
+        /// <summary>
+        /// queries a list of all non-deleted alarms from the database and returns them.
+        /// </summary>
+        /// <returns>the list of queried alarms</returns>
+        /// <exception cref="SqliteException">If there' an error executing the sql statement</exception>
+        public static List<Alarm> QueryAllAlarms()
+        {
+            List<Alarm> alarms = new List<Alarm>();
+            string query = @"SELECT TAlarms.alarmID, TAlarms.alarmTitle, TAlarms.isDeleted, TAlarms.alarmTime, TAlarms.isExpired, TAlarmDates.alarmDate
+                            FROM TAlarms, TAlarmDates 
+                            WHERE TAlarmDates.alarmID = TAlarms.alarmID AND TAlarms.isDeleted <> 1
+                            ORDER BY TAlarmDates.alarmDate,TAlarms.alarmTime";
+            using (SqliteConnection connection = OpenDatabase())
+            {
+                connection.Open();
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        alarms.Add(Alarm.FromDataRow(reader));
+                    }
+                }
+            }
+            return alarms;
+        }
+
+        public static List<Alarm> QueryAllUnexpiredAlarms()
+        {
+            List<Alarm> alarms = new List<Alarm>();
+            string query = @"SELECT TAlarms.alarmID, TAlarms.alarmTitle, TAlarms.isDeleted, TAlarms.alarmTime, TAlarms.isExpired, TAlarmDates.alarmDate 
+                            FROM TAlarms, TAlarmDates 
+                            WHERE TAlarmDates.alarmID = TAlarms.alarmID AND TAlarms.isDeleted <> 1 AND TAlarms.isExpired <> 1
+                            ORDER BY TAlarmDates.alarmDate,TAlarms.alarmTime";
+            using (SqliteConnection connection = OpenDatabase())
+            {
+                connection.Open();
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        alarms.Add(Alarm.FromDataRow(reader));
+                    }
+                }
+            }
+            return alarms;
+        }
+
         public static void CreateVoiceNote(string FileName, string DsiplayName, int RecordingDuration, string FilePath, DateTime RecordDate, DateTime RecordTime)
         {
 
-            String strRecordTime = RecordTime.ToString("HH:mm");
-            String strRecordDate = RecordDate.ToString("yyyy-MM-dd HH:mm");
+            string strRecordTime = RecordTime.ToString("HH:mm");
+            string strRecordDate = RecordDate.ToString("yyyy-MM-dd HH:mm");
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
@@ -286,7 +481,7 @@ namespace Capstone.Common
                 }
             }
             command.CommandText = $"Select TSettings.settingID, TSettings.settingDisplayName, TSettingOptions.optionDisplayName,TSettingOptions.isSelected From TSettings, TSettingOptions Where TSettings.settingID = COALESCE({intID}, TSettings.settingID) and TSettings.settingID = TSettingOptions.settingID;";
-            using(SqliteDataReader reader = command.ExecuteReader())
+            using (SqliteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -299,37 +494,26 @@ namespace Capstone.Common
             conn.Close();
             return setting;
         }
-        public static WeatherProvider QueryWeatherProvider(int ID = -1)
-        {
-            WeatherProvider weatherProvider = new WeatherProvider();
-            string intID;
-            if (ID == -1)
-            {
-                intID = "null";
-            }
-            else
-            {
-                intID = ID.ToString();
-            }
 
+        public static WeatherProvider QueryWeatherProvider(string ProviderName = "")
+        {
+            WeatherProvider provider = null;
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TWeatherProviders.weatherProviderID, TWeatherProviders.weatherProviderName,TWeatherProviderURLS.weatherProviderURL,TWeatherProviderURLParts.weatherProviderURLPartURLString,TWeatherProviderAccessTypes.weatherProviderAccessType From TWeatherProviders, TWeatherProviderURLS, TWeatherProviderURLParts, TWeatherProviderAccessTypes Where TWeatherProviders.weatherProviderID = COALESCE({intID}, TWeatherProviders.weatherProviderID) and TWeatherProviders.weatherProviderID = TWeatherProviderURLS.weatherProviderID and TWeatherProviders.weatherProviderID = TWeatherProviderURLParts.weatherProviderID and TWeatherProviders.weatherProviderID = TWeatherProviderAccessTypes.weatherProviderID; ";
+            command.CommandText = @"SELECT TWeatherProviders.weatherProviderID, TWeatherProviders.weatherProviderName, TWeatherProviderURLS.weatherProviderURL AS 'baseURL', group_concat(TWeatherProviderURLParts.weatherProviderURLPartURLString,'###') AS 'urlParts', TWeatherProviderAccessTypes.weatherProviderAccessType AS 'type'
+                                    FROM TWeatherProviders, TWeatherProviderURLS, TWeatherProviderURLParts, TWeatherProviderAccessTypes
+                                    WHERE TWeatherProviders.weatherProviderID = TWeatherProviderURLS.weatherProviderID AND TWeatherProviders.weatherProviderID = TWeatherProviderURLParts.weatherProviderID
+                                    AND TWeatherProviders.weatherProviderName = '{providerName}';".Replace("{providerName}", ProviderName);
             using (SqliteDataReader reader = command.ExecuteReader())
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    int intWeatherProviderID = int.Parse(reader["weatherProviderID"].ToString());
-                    weatherProvider.WeatherProviderID = intWeatherProviderID;
-                    weatherProvider.Name = reader["weatherProviderName"].ToString();
-                    weatherProvider.BaseURL = reader["weatherProviderURL"].ToString();
-                    //weatherProvider.AccessType = reader["weatherProviderAccessType"];
-                    //weatherProvider.APIKey = reader[""];
+                    provider = WeatherProvider.FromDataRow(reader);
                 }
             }
             conn.Close();
-            return weatherProvider;
+            return provider;
         }
         public static MapProvider QueryMapProvider(int ID = -1)
         {
@@ -383,13 +567,13 @@ namespace Capstone.Common
             command.CommandText = $"Select TSearchableWebsites.searchableWebsitesID, TSearchableWebsites.searchableWebsiteName, TSearchableWebsites.searchableWebsiteBaseURL, TSearchableWebsites.searchableWebsiteQueryString From TSearchableWebsites Where TSearchableWebsites.searchableWebsitesID = COALESCE({intID}, TSearchableWebsites.searchableWebsitesID);";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
-            while (reader.Read())
-            {
-                int intSearchableWebsitesID = int.Parse(reader["searchableWebsitesID"].ToString());
-                searchableWebsite.SearchableWebsiteID = intSearchableWebsitesID;
-                searchableWebsite.Name = reader["searchableWebsiteName"].ToString();
-                searchableWebsite.BaseURL = reader["searchableWebsiteBaseURL"].ToString();
-                searchableWebsite.QueryString = reader["searchableWebsiteQueryString"].ToString();
+                while (reader.Read())
+                {
+                    int intSearchableWebsitesID = int.Parse(reader["searchableWebsitesID"].ToString());
+                    searchableWebsite.SearchableWebsiteID = intSearchableWebsitesID;
+                    searchableWebsite.Name = reader["searchableWebsiteName"].ToString();
+                    searchableWebsite.BaseURL = reader["searchableWebsiteBaseURL"].ToString();
+                    searchableWebsite.QueryString = reader["searchableWebsiteQueryString"].ToString();
                 }
             }
             conn.Close();
@@ -425,6 +609,12 @@ namespace Capstone.Common
             }
             conn.Close();
             return searchEngine;
+        }
+
+        private static string EscapeSingleTicks(string text)
+        {
+            var tickRegex = new Regex("'");
+            return tickRegex.Replace(text, "''");
         }
 
     }

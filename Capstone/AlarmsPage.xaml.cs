@@ -4,6 +4,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Capstone.Models;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Text;
+using Windows.UI;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,8 +21,7 @@ namespace Capstone
         public AlarmsPage()
         {
             this.InitializeComponent();
-            this.Alarms = this.GetAlarmsFromDatabase();
-            this.PopulateScreenWithAlarms();
+            this.Alarms = new List<Alarm>();
         }
 
         private void BackButton_OnClick(object sender, RoutedEventArgs e)
@@ -33,15 +35,33 @@ namespace Capstone
             this.Frame.Navigate(typeof(AlarmsFormPage), NewAlarm);
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            this.Alarms.Clear();
+            this.Alarms.AddRange(this.GetAlarmsFromDatabase());
+            this.PopulateScreenWithAlarms();
+        }
+
         private List<Alarm> GetAlarmsFromDatabase()
         {
-            List<Alarm> alarms = new List<Alarm>();
-            // TODO database stuff
+            List<Alarm> alarms = StoredProcedures.QueryAllAlarms();
             return alarms;
         }
 
         private void PopulateScreenWithAlarms()
         {
+            // clear all alarms and re-populate them
+            var children = this.VariableGrid.Children;
+            if (children.Count > 1)
+            {
+                // more than 1 means that there's alarms, as the button is a child.
+                while (children.Count > 1)
+                {
+                    children.RemoveAt(children.Count - 1);
+                }
+
+            }
             this.Alarms.ForEach(this.AddAlarmToScreen);
         }
 
@@ -85,6 +105,13 @@ namespace Capstone
             alarmTitleBlock.FontSize = 32;
             alarmTitleBlock.TextWrapping = TextWrapping.Wrap;
             alarmTitleBlock.MaxLines = 2;
+            // if the alarm is expired, gray out the text and strike through it
+            if (AlarmToAdd.IsExpired)
+            {
+                alarmTitleBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                alarmTitleBlock.Foreground = grayBrush;
+            }
             return alarmTitleBlock;
         }
 
@@ -94,6 +121,13 @@ namespace Capstone
             alarmDateBlock.Text = AlarmToAdd.ActivateDateAndTime.ToString("g");
             alarmDateBlock.FontSize = 24;
             alarmDateBlock.Margin = new Thickness(10);
+            // if the reminder is expired, gray out the text and strike through it
+            if (AlarmToAdd.IsExpired)
+            {
+                alarmDateBlock.TextDecorations = TextDecorations.Strikethrough;
+                Brush grayBrush = new SolidColorBrush(Colors.Gray);
+                alarmDateBlock.Foreground = grayBrush;
+            }
             return alarmDateBlock;
         }
 
@@ -110,7 +144,7 @@ namespace Capstone
         private Button CreateEditButton(Alarm AlarmToAdd)
         {
             Button editButton = new Button();
-            editButton.Click += (sender, eventArgs) => this.editAlarm(AlarmToAdd);
+            editButton.Click += (sender, eventArgs) => this.EditAlarm(AlarmToAdd);
             editButton.Content = "Edit";
             editButton.Width = 150;
             editButton.Margin = new Thickness(0, 10, 10, 0);
@@ -119,10 +153,14 @@ namespace Capstone
 
         private void DeleteAlarm(Alarm AlarmToDelete)
         {
-            // TODO
+            StoredProcedures.DeleteAlarm(AlarmToDelete.AlarmID);
+            // clear the list of reminders and re-populate them
+            this.Alarms.Clear();
+            this.Alarms.AddRange(GetAlarmsFromDatabase());
+            this.PopulateScreenWithAlarms();
         }
 
-        private void editAlarm(Alarm AlarmToEdit)
+        private void EditAlarm(Alarm AlarmToEdit)
         {
             this.Frame.Navigate(typeof(AlarmsFormPage), AlarmToEdit);
         }

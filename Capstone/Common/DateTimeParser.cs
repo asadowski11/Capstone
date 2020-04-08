@@ -63,7 +63,7 @@ namespace Capstone.Common
         public static readonly string AFTERNOON = "4:00 pm";
         public static readonly string EVENING = "6:00 pm";
         public static readonly string NIGHT = "8:00 pm";
-        public static readonly string MIDNIGHT = "12:00 am";
+        public static readonly string MIDNIGHT = "tomorrow 12:00 am";
 
         /// <summary>
         /// Formats a time-like piece of string to be in a parseable format by <see cref="DateTime.Parse(string)"/>
@@ -201,10 +201,10 @@ namespace Capstone.Common
         {
             // get the number of days in between the date's day of the week and the passed nextDay
             DayOfWeek today = date.DayOfWeek;
-            // if today is after the passed nextDay, then throw an error
+            // if today is after the passed nextDay, then get the date for the next occurence of that day
             if (today > nextDay)
             {
-                throw new DateParseException($"[{nextDay.ToString()}] has already passed");
+                return GetDateForNextWeekDay(nextDay, date);
             }
             // formula to get the number of days until the specified next day = Math.Abs(today - nextDay)
             int numberOfDaysUntilNextDay = Math.Abs(today - nextDay);
@@ -256,13 +256,17 @@ namespace Capstone.Common
             var now = onlyUsedForTests;
             // format time values
             text = ReplaceDaytimeNamesWithTimeValue(text);
-            DateTime time = ParseTimeFromString(text);
-            // make sure that the parsedTime hasn't happened yet. If it has, add 12 hours to the next instance of that time
-            if (now.TimeOfDay >= time.TimeOfDay)
-            {
-                time = time.AddHours(12);
-            }
+            DateTime time;
             DateTime date;
+            try
+            {
+                time = ParseTimeFromString(text);
+            }
+            catch (Exception)
+            {
+                // if time isn't in the string, then assume that they mean now (use case would be a string that only contains "today")
+                time = now;
+            }
             try
             {
                 date = ParseDateFromText(text, onlyUsedForTests);
@@ -273,7 +277,13 @@ namespace Capstone.Common
                 date = new DateTime(now.Year, now.Month, now.Day);
             }
 
-            return date + time.TimeOfDay;
+            // if date is today, and the time has already passed, shift the time 12 hours forward to hit the next time that time would happen
+            if (now.Year == date.Year && now.Month == date.Month && now.Day == date.Day && now.TimeOfDay >= time.TimeOfDay)
+            {
+                time = time.AddHours(12);
+            }
+
+            return new System.DateTime(date.Year, date.Month, date.Day) + time.TimeOfDay;
         }
 
         public static DateTime ParseDateTimeFromText(string text)
@@ -296,8 +306,8 @@ namespace Capstone.Common
             string monthsList = Utils.JoinEnum(typeof(Months), " ?| ?");
             var dayOfMonthRegex = new Regex($"(?i)[0-9]{{1,2}}(?=(th|rd|st|nd))|( ?({monthsList}) ?[0-9]{{1,2}})(?-i)");
             string daysList = Utils.JoinEnum(typeof(DaysOfWeek), "|");
-            var thisWeekDayRegex = new Regex($"(?i)this {daysList}(?-i)");
-            var nextWeekDayRegex = new Regex($"(?i)next {daysList}(?-i)");
+            var thisWeekDayRegex = new Regex($"(?i)((this )?({daysList}))(?-i)");
+            var nextWeekDayRegex = new Regex($"(?i)next ({daysList})(?-i)");
             // relative dates
             var relativeList = Utils.JoinEnum(typeof(Units), "|");
             var relativeDateRegex = new Regex($"(?i)from (now|today|this day)|{relativeList}(?-i)");
@@ -311,13 +321,13 @@ namespace Capstone.Common
             {
                 parsedDateTime = ParseExactDate(text, onlyUsedForTests);
             }
-            else if (thisWeekDayRegex.IsMatch(text))
-            {
-                parsedDateTime = GetDateForThisWeekDay(ParseWeekDayFromString(text), onlyUsedForTests);
-            }
             else if (nextWeekDayRegex.IsMatch(text))
             {
                 parsedDateTime = GetDateForNextWeekDay(ParseWeekDayFromString(text), onlyUsedForTests);
+            }
+            else if (thisWeekDayRegex.IsMatch(text))
+            {
+                parsedDateTime = GetDateForThisWeekDay(ParseWeekDayFromString(text), onlyUsedForTests);
             }
             else if (relativeDateRegex.IsMatch(text))
             {
@@ -436,9 +446,27 @@ namespace Capstone.Common
             var now = onlyUsedForTests;
             // get the formatted time from the text
             string timePart = GetTimePartOfString(text);
-            string formattedTimePart = FormatTime(timePart);
-            var parsedTime = DateTime.Parse(formattedTimePart);
-            var parsedDate = onlyUsedForTests.Date + parsedTime.TimeOfDay;
+            DateTime parsedDate;
+            DateTime parsedTime;
+            try
+            {
+                string formattedTimePart = FormatTime(timePart);
+                parsedTime = DateTime.Parse(formattedTimePart);
+            }
+            catch (Exception)
+            {
+                // check if there are any time units in the string, if there are use that to get the time
+                var unitRegex = new Regex("(?i)(hour|minute|second)(?-i)");
+                if (unitRegex.IsMatch(text))
+                {
+                    parsedTime = GetDateForRelativeOffset(text, now);
+                }
+                else
+                {
+                    parsedTime = DateTime.Now;
+                }
+            }
+            parsedDate = now.Date + parsedTime.TimeOfDay;
             return parsedDate;
         }
 
@@ -488,9 +516,9 @@ namespace Capstone.Common
 
         public static string ReplaceDaytimeNamesWithTimeValue(string text)
         {
-            text = text.ToLower().Replace("after noon", "afternoon");
+            text = text.ToLower().Replace("this after noon", "afternoon").Replace("this afternoon", "afternoon").Replace("tonight", "night").Replace("after noon", "afternoon");
             // create a regex to match where the daytime words should be
-            var regex = new Regex(@"(?i)(?<=(in the |at |during the |monday |tuesday |wednesday |thursday |friday |saturday |sunday |tomorrow ))[a-zA-Z]{3,}(?-i)");
+            var regex = new Regex(@"(?i)(?<=(in the |at |during the |monday |tuesday |wednesday |thursday |friday |saturday |sunday |tomorrow |this ))[a-zA-Z]{3,}(?-i)|afternoon|midnight|night");
             // make sure that "after noon" gets scrunched down to "afternoon" for the regex to work
             while (regex.IsMatch(text))
             {

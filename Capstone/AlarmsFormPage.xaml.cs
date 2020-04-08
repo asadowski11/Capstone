@@ -1,6 +1,8 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Capstone.Models;
+using Capstone.Common;
+using Windows.UI;
 
 namespace Capstone
 {
@@ -49,22 +51,28 @@ namespace Capstone
             if (this.ValidateForm())
             {
                 this.PopulateAlarmFromForm();
-                // TODO save alarm to database once that's all set up
-                this.Frame.Navigate(typeof(AlarmsPage));
+                if (this.AlarmToEdit.AlarmID == -1)
+                {
+                    StoredProcedures.CreateAlarm(this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime);
+                }
+                else
+                {
+                    StoredProcedures.UpdateAlarm(this.AlarmToEdit.AlarmID, this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime, false);
+                }
+                UIUtils.GoBack(this, typeof(AlarmsPage));
             }
         }
 
         public bool ValidateForm()
         {
+            // remove highlighting from the time field
+            UIUtils.HighlightUIElement(this.AlarmTimePicker, Colors.Transparent);
             // make sure that the title is not empty or blank
             bool isValid = true;
-            if (Common.StringUtils.IsBlank(this.AlarmTitleInput.Text))
-            {
-                isValid = false;
-            }
             if (!this.ValidateTime())
             {
                 isValid = false;
+                UIUtils.HighlightUIElement(this.AlarmTimePicker);
             }
             // don't need to validate date since the earliest it can go is today
             return isValid;
@@ -82,8 +90,7 @@ namespace Capstone
 
         private void CancelAlarmButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            // TODO maybe we should add a confirmation box? or maybe we shouldn't because of how simple it is to create an alarm
-            this.Frame.Navigate(typeof(AlarmsPage));
+            UIUtils.GoBack(this, typeof(AlarmsPage));
         }
     }
 }

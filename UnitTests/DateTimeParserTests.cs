@@ -232,7 +232,7 @@ namespace UnitTests
             var thisWeekDayActualDate = DateTimeParser.ParseDateFromText(thisWeekDayNotaion, now);
             // "next" weekday dates
             var nextWeekDayNotaion = "set an alarm for next saturday at 11:30 pm";
-            var nextWeekDayExpectedDate = new DateTime(2020, 1, 4);
+            var nextWeekDayExpectedDate = new DateTime(2020, 1, 11);
             var nextWeekDayActualDate = DateTimeParser.ParseDateFromText(nextWeekDayNotaion, now);
             // relative dates (not times)
             var relativeDateNotation = "set an alarm for tomorrow from now at 12";
@@ -241,10 +241,21 @@ namespace UnitTests
 
             // test the expected dates vs the actual dates
             Assert.AreEqual(slashDashExpectedDate, slashDashActualDate);
-            Assert.AreEqual(specificDateExpectedDate, specificDateExpectedDate);
+            Assert.AreEqual(specificDateExpectedDate, specificDateActualDate);
             Assert.AreEqual(thisWeekDayExpectedDate, thisWeekDayActualDate);
             Assert.AreEqual(nextWeekDayExpectedDate, nextWeekDayActualDate);
             Assert.AreEqual(relativeDateExpectedDate, relativeDateActualDate);
+        }
+
+        [TestMethod]
+        public void TestParseDateTimeFromTextDoesNotShiftDatesWithLateTimes()
+        {
+            // the specific string that found this bug was "get the weather for sunday night", so use that to write the test
+            DateTime now = new DateTime(2020, 4, 4).AddHours(16).AddMinutes(39);
+            string inputString = "get the weather for sunday night";
+            DateTime expectedDate = new DateTime(2020, 4, 5).AddHours(20);
+            DateTime actualDate = DateTimeParser.ParseDateTimeFromText(inputString, now);
+            Assert.AreEqual(expectedDate, actualDate);
         }
 
         [TestMethod]

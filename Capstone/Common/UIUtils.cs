@@ -1,5 +1,7 @@
 ﻿using System;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Capstone.Common
 {
@@ -17,5 +19,34 @@ namespace Capstone.Common
             }
             CurrentPage.Frame.Navigate(typeof(MainPage));
         }
+
+        /// <summary>
+        /// Colors the background of a <see cref="Control"/> the passed <paramref name="backgroundColor"/>. If no background color is passed, the control's background is colored yellow
+        /// </summary>
+        /// <param name="control">The control to color</param>
+        /// <param name="backgroundColor">the color to set the control's background to, defaults to <see cref="Colors.Yellow"/> if nothing is passed</param>
+        public static void HighlightUIElement(Control control, Color? backgroundColor = null)
+        {
+            Brush backgroundBrush = new SolidColorBrush(backgroundColor.GetValueOrDefault(Colors.Yellow));
+            control.Background = backgroundBrush;
+        }
+
+        /// <summary>
+        /// Attempts to go back to the previous page, defaulting to the passed <paramref name="DefaultPageIfCannotGoBack"/> if the frame cannot go back
+        /// </summary>
+        /// <param name="CurrentPage"></param>
+        /// <param name="DefaultPageIfCannotGoBack"></param>
+        public static void GoBack(Page CurrentPage, Type DefaultPageIfCannotGoBack)
+        {
+            if (CurrentPage.Frame.CanGoBack)
+            {
+                CurrentPage.Frame.GoBack();
+            }
+            else
+            {
+                CurrentPage.Frame.Navigate(DefaultPageIfCannotGoBack);
+            }
+        }
+
     }
 }
