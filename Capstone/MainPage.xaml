@@ -41,9 +41,9 @@
             <SymbolIcon Symbol="GlobalNavigationButton" Height="20" VerticalAlignment="Bottom"/>
         </Button>
         <!--the width for now is just temporary. It will be overridden in code-->
-        <RelativePanel x:Name="DynamicArea" Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="25,0,25,0">
+        <RelativePanel x:Name="DynamicArea" Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="25,0,25,0" Visibility="Visible">
         </RelativePanel>
-        <TextBox Grid.Row="2" Grid.Column="1" x:Name="CommandBox" Margin="25" Text="" TextWrapping="Wrap" PlaceholderText="Type a command for Bob to do, or question for him to answer" Height="32" VerticalAlignment="Top" KeyDown="CommandBox_KeyDown"/>
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="CommandBox" Margin="25" Text="" TextWrapping="Wrap" PlaceholderText="Type a command for Bob to do, or question for him to answer" VerticalAlignment="Top" KeyDown="CommandBox_KeyDown"/>
         <MediaElement x:Name="media" Visibility="Collapsed"/>
     </Grid>
 </Page>
