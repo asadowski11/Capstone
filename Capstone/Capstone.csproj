@@ -141,6 +141,9 @@
     <Compile Include="Common\TextToSpeechEngine.cs" />
     <Compile Include="Common\UIUtils.cs" />
     <Compile Include="Common\Utils.cs" />
+    <Compile Include="LibrariesWeUse.xaml.cs">
+      <DependentUpon>LibrariesWeUse.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataPrivacyTips.xaml.cs">
       <DependentUpon>DataPrivacyTips.xaml</DependentUpon>
     </Compile>
@@ -204,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="LibrariesWeUse.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DataPrivacyTips.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -244,7 +251,7 @@
     </PackageReference>
     <PackageReference Include="newtonsoft.Json.Schema">
       <Version>3.0.13</Version>
-	</PackageReference>
+    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>6.0.0</Version>
     </PackageReference>
