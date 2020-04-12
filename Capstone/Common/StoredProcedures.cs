@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Capstone.Common
 {
@@ -12,17 +13,27 @@ namespace Capstone.Common
     {
         public static async Task CreateDatabase()
         {
-            string targetDbPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "Database\\BobDB.db");
+            StorageFolder localStateFolder = ApplicationData.Current.LocalFolder;
+            StorageFolder createdFolder;
+            if (!Directory.Exists(Path.Combine(localStateFolder.Path, "Database")))
+            {
+                createdFolder = await localStateFolder.CreateFolderAsync("Database");
+            }
+            else
+            {
+                createdFolder = await localStateFolder.GetFolderAsync("Database");
+            }
+            string targetDbPath = Path.Combine(createdFolder.Path, "BobDB.db");
             if (!File.Exists(targetDbPath))
             {
-                var installedLocation = Windows.ApplicationModel.Package.Current.InstalledLocation;
-                using (var input = await installedLocation.OpenStreamForReadAsync("Assets\\BobDB.db"))
-                {
-                    using (var output = await Windows.Storage.ApplicationData.Current.LocalFolder.OpenStreamForWriteAsync("Database\\BobDB.db", Windows.Storage.CreationCollisionOption.FailIfExists))
-                    {
-                        await input.CopyToAsync(output);
-                    }
-                }
+                SqliteConnection connection = new SqliteConnection($"Data Source={targetDbPath};");
+                connection.Open();
+                string initialScript = File.ReadAllText($"{Windows.ApplicationModel.Package.Current.InstalledLocation.Path}\\Database\\InitialScript.sql");
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = initialScript;
+                command.ExecuteNonQuery();
+                command.Dispose();
+                connection.Close();
             }
         }
         public static SqliteConnection OpenDatabase()
@@ -438,18 +449,6 @@ namespace Capstone.Common
             return voiceMemo;
         }
 
-        public static void UpdateSettings(int ID, bool IsSelected)
-        {
-            int intID = ID;
-            bool boolIsSelected = IsSelected;
-            int intIsSelected = boolIsSelected ? 1 : 0;
-            SqliteConnection conn = OpenDatabase();
-            conn.Open();
-            SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Update TSettingOptions Set isSelected = {intIsSelected} Where settingOptionID = {intID};";
-            command.ExecuteNonQuery();
-            conn.Close();
-        }
         public static Setting QuerySetting(int ID = -1)
         {
             Setting setting = new Setting();
@@ -493,6 +492,79 @@ namespace Capstone.Common
             }
             conn.Close();
             return setting;
+        }
+
+        public static Setting QuerySettingByName(string settingName)
+        {
+            Setting setting = null;
+            using (var connection = OpenDatabase())
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT TSettings.settingID, TSettings.settingDisplayName AS 'Setting Name', group_concat((TSettingOptions.settingOptionID || ':' || TSettingOptions.optionDisplayName || ':' || TSettingOptions.isSelected)) AS 'options'
+                                            FROM TSettings,TSettingOptions 
+                                            WHERE TSettings.settingID = TSettingOptions.settingID
+	                                              AND TSettings.settingDisplayName = '{DisplayName}'
+                                            GROUP BY TSettings.settingID".Replace("{DisplayName}", settingName);
+                    var reader = command.ExecuteReader();
+                    reader.Read();
+                    setting = Setting.FromDataRow(reader);
+                    reader.Close();
+                }
+            }
+            return setting;
+        }
+
+        /// <summary>
+        /// Gets all the settings from the database that are to be used for the settings screen. A setting is marked as for the settings screen if its setting name does not start with an underscore
+        /// </summary>
+        /// <returns></returns>
+        public static List<Setting> QuerySettingsForSettingScreen()
+        {
+            List<Setting> settings = new List<Setting>();
+            using (var connection = OpenDatabase())
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT TSettings.settingID, TSettings.settingDisplayName AS 'Setting Name', group_concat((TSettingOptions.settingOptionID || ':' || TSettingOptions.optionDisplayName || ':' || TSettingOptions.isSelected)) AS 'options'
+                                            FROM TSettings,TSettingOptions 
+                                            WHERE TSettings.settingID = TSettingOptions.settingID
+	                                              AND TSettings.settingDisplayName NOT LIKE '\_%' ESCAPE '\'
+                                            GROUP BY TSettings.settingID";
+                    SqliteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        settings.Add(Setting.FromDataRow(reader));
+                    }
+                    reader.Close();
+                }
+            }
+
+            return settings;
+        }
+
+        public static void SelectOption(int settingID, int selectedOptionID)
+        {
+            using (var connection = OpenDatabase())
+            {
+                connection.Open();
+                using (var resetAllOptionsCommand = connection.CreateCommand())
+                using (var selectOptionCommand = connection.CreateCommand())
+                {
+                    // first mark all options as deselected
+                    resetAllOptionsCommand.CommandText = @"UPDATE TSettingOptions
+                                                           SET isSelected = 0
+                                                           WHERE settingID = {settingID}".Replace("{settingID}", settingID.ToString());
+                    resetAllOptionsCommand.ExecuteNonQuery();
+                    // next step is to select the option with the passed id
+                    selectOptionCommand.CommandText = @"UPDATE TSettingOptions
+                                                        SET isSelected = 1
+                                                        WHERE settingOptionID = {optionID}".Replace("{optionID}", selectedOptionID.ToString());
+                    selectOptionCommand.ExecuteNonQuery();
+                }
+            }
         }
 
         public static WeatherProvider QueryWeatherProvider(string ProviderName = "")

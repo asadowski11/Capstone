@@ -1,15 +1,15 @@
 ﻿using Capstone.Actions;
 using System;
-using System.Collections.Generic;
 using Windows.System;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using System;
 using Windows.UI.Core;
-using Windows.UI.Popups;
-using Capstone.Actions;
 using Capstone.Common;
+using Capstone.SpeechRecognition;
+using Windows.UI.Xaml.Navigation;
+using Capstone.Models;
+using Captsone.SpeechRecognition;
 
 namespace Capstone
 {
@@ -25,20 +25,10 @@ namespace Capstone
             // hide the main menu
             this.MenuColumn.Width = new GridLength(0);
             ActionRouter.SetUp();
-
-            // DEBUG -- uncomment this code if you want to test out the weather service.
-            //string command = "what's the weather?";
-            //Func<string, Actions.Action> foundAction = ActionRouter.GetFunctionFromCommandString(command);
-            //foundAction(command).PerformAction(this.media);
-			// END DEBUG
-			
             // prevent the application from closing when the user hits the x button. This will alarms and notifications to still trigger
             SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += CloseHandle;
             Window.Current.SizeChanged += SizeChangedHandler;
-            if (!ActionRouter.IsSetup)
-            {
-                ActionRouter.SetUp();
-            }
+
         }
 
         private void MenuButton_OnClick(object sender, RoutedEventArgs e)
@@ -57,7 +47,7 @@ namespace Capstone
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO navigate to settings screen (this.Frame.Navigate(typeof(screenName)))
+            this.Frame.Navigate(typeof(SettingsPage));
         }
 
         private void RemindersButton_Click(object sender, RoutedEventArgs e)
@@ -84,13 +74,12 @@ namespace Capstone
         {
             this.Frame.Navigate(typeof(LibrariesWeUse));
         }
-        private async void CloseHandle(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
+
+        private void CloseHandle(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
         {
             // stop the event from continuing
             e.Handled = true;
-            IList<AppDiagnosticInfo> infos = await AppDiagnosticInfo.RequestInfoForAppAsync();
-            IList<AppResourceGroupInfo> resourceInfos = infos[0].GetResourceGroups();
-            await resourceInfos[0].StartSuspendAsync();
+            UIUtils.MinimizeWindow();
         }
 
         private void SizeChangedHandler(object sender, WindowSizeChangedEventArgs e)
@@ -120,6 +109,7 @@ namespace Capstone
         {
             // get the action for the text in the text box
             Func<string, Actions.Action> actionPrimer = ActionRouter.GetFunctionFromCommandString(text);
+
             if (actionPrimer != null)
             {
                 Actions.Action action = actionPrimer.Invoke(text);
@@ -132,6 +122,59 @@ namespace Capstone
                 string ssml = new SSMLBuilder().Prosody(message, contour: "(5%, +10%) (30%, -10%) (80%, +0.5%)").Build();
                 TextToSpeechEngine.SpeakInflectedText(this.media, ssml);
             }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            SpeechRecognitionUtils.Stop();
+            SpeechRecognitionUtils.commandBox = null;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (!ActionRouter.IsSetup)
+            {
+                ActionRouter.SetUp();
+            }
+            // if bob has not been introduced, then introduce him now
+            var hasIntroducedBob = StoredProcedures.QuerySettingByName("_ToldUserHowToUseBob");
+            if (hasIntroducedBob.GetSelectedOption() != null && hasIntroducedBob.GetSelectedOption().DisplayName == "false")
+            {
+                this.IntroduceBob();
+                hasIntroducedBob.SelectOption("true");
+                StoredProcedures.SelectOption(hasIntroducedBob.SettingID, hasIntroducedBob.GetSelectedOption().OptionID);
+            }
+            AudioPlayer.Start();
+            // if the user has elected to have speech recognition turned on, then request for microphone permissions
+            this.RequestMicrophoneAcessIfUserWantsVoiceDetection();
+        }
+
+        private async void RequestMicrophoneAcessIfUserWantsVoiceDetection()
+        {
+            Setting voiceRecognitionSetting = StoredProcedures.QuerySettingByName("Voice Activation");
+            SettingOption chosenSetting = voiceRecognitionSetting.GetSelectedOption();
+            if (chosenSetting != null && chosenSetting.DisplayName == "Enabled")
+            {
+                if (await AudioCapturePermissions.RequestMicrophonePermission())
+                {
+                    SpeechRecognitionUtils.Start(performActionFromCommandBoxText, this.CommandBox);
+                }
+                else
+                {
+                    TextToSpeechEngine.SpeakText(this.media, "Sorry, but something went wrong with setting up your microphone. You cannot use me through speech, but you can still use the command bar at the bottom of the screen.");
+                }
+            }
+        }
+
+        private void IntroduceBob()
+        {
+            string greetingText = "Hi, I'm Bob, your new digital assistant! It's nice to meet you! To get started, try saying \"Hey bob, what can you do?\" or type \"What can you do?\" in the command box down below.";
+            // write the greeting text to the dynamic area
+            UIUtils.ShowMessageOnRelativePanel(this.DynamicArea, greetingText);
+            string ssmlText = new SSMLBuilder().Prosody(greetingText, contour: "(5%, +20%) (40%, -15%)").Build();
+            TextToSpeechEngine.SpeakInflectedText(this.media, ssmlText);
         }
     }
 }

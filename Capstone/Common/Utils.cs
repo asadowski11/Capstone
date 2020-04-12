@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace Capstone.Common
 {
@@ -21,6 +18,11 @@ namespace Capstone.Common
                 joined += enumValues.GetValue(i).ToString();
             }
             return joined;
+        }
+
+        public static async void RunOnMainThread(Action actionToRun)
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => actionToRun.Invoke());
         }
     }
 }

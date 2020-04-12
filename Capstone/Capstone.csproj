@@ -125,6 +125,7 @@
     <Compile Include="Actions\VoiceMemoAction.cs" />
     <Compile Include="Actions\WeatherAction.cs" />
     <Compile Include="Actions\WebsiteSearchAction.cs" />
+    <Compile Include="Actions\WhatCanYouDoAction.cs" />
     <Compile Include="AlarmsFormPage.xaml.cs">
       <DependentUpon>AlarmsFormPage.xaml</DependentUpon>
     </Compile>
@@ -135,6 +136,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\AlarmAndReminderTracker.cs" />
+    <Compile Include="Common\AudioPlayer.cs" />
+    <Compile Include="SpeechRecognition\SpeechRecognitionUtils.cs" />
     <Compile Include="Common\StoredProcedures.cs" />
     <Compile Include="Common\DateTimeParser.cs" />
     <Compile Include="Common\StringUtils.cs" />
@@ -150,6 +153,7 @@
     <Compile Include="FirstTimeSetup.xaml.cs">
       <DependentUpon>FirstTimeSetup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ExtendedExecutionHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -173,6 +177,10 @@
     <Compile Include="RemindersPage.xaml.cs">
       <DependentUpon>RemindersPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpeechRecognition\AudioCapturePermissions.cs" />
     <Compile Include="VoiceMemosPage.xaml.cs">
       <DependentUpon>VoiceMemosPage.xaml</DependentUpon>
     </Compile>
@@ -183,7 +191,8 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database\BobStoredProc.sql" />
+    <Content Include="Assets\Sounds\bob_activate.wav" />
+    <Content Include="Assets\Sounds\bob_deactivate.wav" />
     <Content Include="Database\InitialScript.sql" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -231,6 +240,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VoiceMemosPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -261,9 +274,6 @@
     <PackageReference Include="System.Data.SQLite">
       <Version>1.0.112</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\BobDB.db" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

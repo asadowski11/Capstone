@@ -23,6 +23,7 @@ namespace Capstone.Actions
             SetUpWeatherBranches();
             SetUpVoiceNoteBranches();
             SetUpInternetSearchBranches();
+            SetUpDirectBobQuestionBranches();
             IsSetup = true;
         }
 
@@ -123,6 +124,21 @@ namespace Capstone.Actions
             alarmDict.Add("cancel", deleteAlarm);
             // add the alarm dict to the main one
             actionTree.Add("alarm", alarmDict);
+        }
+
+        private static void SetUpDirectBobQuestionBranches()
+        {
+            Func<string, Action> whatCanYouDoFunction = (commandText) => new WhatCanYouDoAction(commandText);
+            // it's messy, but easier to do than to create multiple dictionaries
+            var whatCanYouDoDict = new Dictionary<string, dynamic>()
+            {
+                {"can", whatCanYouDoFunction }
+            };
+            Dictionary<string, dynamic> directQuestions = new Dictionary<string, dynamic>()
+            {
+                {"do", whatCanYouDoDict }
+            };
+            actionTree.Add("you", directQuestions);
         }
 
         /// <summary>

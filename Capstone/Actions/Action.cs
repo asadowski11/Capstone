@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using Capstone.Common;
+using System.Threading;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -89,18 +90,7 @@ namespace Capstone.Actions
         {
             if (this.DynamicArea != null)
             {
-                this.DynamicArea.Children.Clear();
-                TextBlock textBlock = new TextBlock
-                {
-                    FontSize = 48,
-                    Text = messageToShow,
-                    TextWrapping = TextWrapping.Wrap
-                };
-                ScrollViewer scrollPanel = new ScrollViewer();
-                this.DynamicArea.Children.Add(scrollPanel);
-                RelativePanel.SetAlignVerticalCenterWithPanel(scrollPanel, true);
-                RelativePanel.SetAlignHorizontalCenterWithPanel(scrollPanel, true);
-                scrollPanel.Content = textBlock;
+                UIUtils.ShowMessageOnRelativePanel(this.DynamicArea, messageToShow);
             }
         }
     }

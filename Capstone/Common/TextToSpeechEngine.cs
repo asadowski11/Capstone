@@ -18,6 +18,7 @@ namespace Capstone.Common
             SpeechSynthesisStream stream = await synth.SynthesizeTextToStreamAsync(text);
             // prepare the media object to speak and play the audio
             media.SetSource(stream, stream.ContentType);
+            media.AudioCategory = Windows.UI.Xaml.Media.AudioCategory.Speech;
             media.Play();
         }
 
@@ -34,6 +35,7 @@ namespace Capstone.Common
             SpeechSynthesisStream stream = await synth.SynthesizeSsmlToStreamAsync(ssmlText);
             // prepare the media object to speak and play the audio
             media.SetSource(stream, stream.ContentType);
+            media.AudioCategory = Windows.UI.Xaml.Media.AudioCategory.Speech;
             media.Play();
         }
     }

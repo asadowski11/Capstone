@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using Windows.System;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -46,6 +49,29 @@ namespace Capstone.Common
             {
                 CurrentPage.Frame.Navigate(DefaultPageIfCannotGoBack);
             }
+        }
+
+        public static async void MinimizeWindow()
+        {
+            IList<AppDiagnosticInfo> infos = await AppDiagnosticInfo.RequestInfoForAppAsync();
+            IList<AppResourceGroupInfo> resourceInfos = infos[0].GetResourceGroups();
+            await resourceInfos[0].StartSuspendAsync();
+        }
+
+        public static void ShowMessageOnRelativePanel(RelativePanel panel, string messageToShow)
+        {
+            panel.Children.Clear();
+            TextBlock textBlock = new TextBlock
+            {
+                FontSize = 48,
+                Text = messageToShow,
+                TextWrapping = TextWrapping.Wrap
+            };
+            ScrollViewer scrollPanel = new ScrollViewer();
+            panel.Children.Add(scrollPanel);
+            RelativePanel.SetAlignVerticalCenterWithPanel(scrollPanel, true);
+            RelativePanel.SetAlignHorizontalCenterWithPanel(scrollPanel, true);
+            scrollPanel.Content = textBlock;
         }
 
     }

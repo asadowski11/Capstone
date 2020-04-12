@@ -1,4 +1,6 @@
 using Capstone.Common;
+using Captsone.SpeechRecognition;
+using Capstone.Helpers;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -21,7 +23,8 @@ namespace Capstone
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            StoredProcedures.CreateDatabase();
+            this.EnteredBackground += (sender, args) => ExtendedExecutionHelper.RequestExtendedSessionAsync();
+            StoredProcedures.CreateDatabase().Wait();
             // start the alarm tracker
             if (!AlarmAndReminderTracker.hasStarted)
             {
@@ -34,8 +37,9 @@ namespace Capstone
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
+            StoredProcedures.CreateDatabase().Wait();
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -63,7 +67,15 @@ namespace Capstone
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(FirstTimeSetup), e.Arguments);
+                    var passedFirstTimeSetupSetting = StoredProcedures.QuerySettingByName("_FirstTimeSetupPassed");
+                    if (passedFirstTimeSetupSetting.GetSelectedOption().DisplayName == "true")
+                    {
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    }
+                    else
+                    {
+                        rootFrame.Navigate(typeof(FirstTimeSetup), e.Arguments);
+                    }
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
@@ -93,5 +105,6 @@ namespace Capstone
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
+
     }
 }

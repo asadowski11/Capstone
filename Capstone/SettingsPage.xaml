@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="Capstone.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Capstone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="112"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="112"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick"/>
+        <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Settings</TextBlock>
+        <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <StackPanel x:Name="SettingsStackPanel" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></StackPanel>
+        </ScrollViewer>
+        <Button x:Name="Cancel" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Width="175" Height="75" Margin="0,0,25,0" Click="Cancel_Click">Cancel</Button>
+        <Button x:Name="Save" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" Width="175" Height="75" Margin="25,0,0,0" Click="Save_Click">Save</Button>
+    </Grid>
+</Page>
