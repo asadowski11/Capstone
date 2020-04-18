@@ -15,7 +15,7 @@ Bob's list of features are ever growing, but currently here is the list of what 
 - Gets driving directions to a specific place
 - Tells jokes (quality of the jokes may vary)
 
-# About
+# About Bob
 
 ## Google and Amazon's digital assistants are useful, right?
 They help you set alarms and reminders, get the weather, look up information, and even tell jokes among a whole plethora of other helpful things. I personally use the Google assistant myself, and have found it to be a great convenience. Then I started paying attention to the news, about how [Alexa stores your voice recordings on Amazon's servers](https://www.cnbc.com/2018/11/19/how-to-delete-amazon-alexa-conversations.html), and how [One of Google's assistant devices can pick out your face as you're walking by it](https://www.washingtonpost.com/technology/2019/09/09/google-is-always-listening-now-its-watching-too-with-nest-hub-max/). 
