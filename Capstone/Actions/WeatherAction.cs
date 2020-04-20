@@ -30,7 +30,10 @@ namespace Capstone.Actions
             }
             else if (firstApplicableWeatherInfo == null)
             {
-                TextToSpeechEngine.SpeakText(this.MediaElement, "I could not find any weather info for the date specified. Try making sure that you have location enabled, and that this app can access your location through system settings, privacy, location");
+                this.ClearArea();
+                string message = "I could not find any weather info for the date specified. Try making sure that you have location enabled, and that this app can access your location through system settings, privacy, location";
+                TextToSpeechEngine.SpeakText(this.MediaElement, message);
+                this.ShowMessage(message.Replace("settings, privacy, location", "settings > privacy > location"));
             }
         }
 

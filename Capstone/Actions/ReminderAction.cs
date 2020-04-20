@@ -209,7 +209,7 @@ namespace Capstone.Actions
         {
             // it's pretty hard to figure out which reminder to edit and which fields need to be edited, so direct the users to the reminders page
             this.ClearArea();
-            string text = "For now, editing reminders through voice is not supported. You can edit an reminder by going to the reminders page, finding the reminder you want to edit, and clicking the \"edit\" button.";
+            string text = "For now, editing reminders through voice is not supported. You can edit a reminder by going to the reminders page, finding the reminder you want to edit, and clicking the \"edit\" button.";
             string ssmlText = new SSMLBuilder().Prosody(text, pitch: "+2%", contour: "(10%,-2%) (40%, -3%) (80%, +3%)").Build();
             TextToSpeechEngine.SpeakInflectedText(this.MediaElement, ssmlText);
             this.ShowMessage(text);

@@ -14,32 +14,30 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="112"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick"/>
-
-            <StackPanel Grid.Row="0" HorizontalAlignment="Center">
-                <TextBlock FontWeight="Bold" FontSize="50" Text="Data Privacy Tips"></TextBlock>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Margin="100">
+            <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Data Privacy Tips</TextBlock>
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="100">
                 <TextBlock FontWeight="Bold" FontSize="30"> <Underline>Internet Browswers</Underline></TextBlock>
                 <TextBlock Height="auto" TextWrapping="Wrap" Margin="100,0,0,0" FontSize="20">
                 We highly recommended installing Brave and using it as your default Web Browser. They do no store any record of your browsing history. 
                 Brave blocks ads and trackers, which make it a faster browser. The key is not to opt-in to their rewards. You can read their 
-                privacy policy.<Hyperlink NavigateUri="https://brave.com/privacy/"> Brave Browser Privacy Policy</Hyperlink> Other web browser alternatives
+                privacy policy. <Hyperlink NavigateUri="https://brave.com/privacy/">Brave Browser Privacy Policy</Hyperlink> Other web browser alternatives
                 include <Hyperlink NavigateUri="https://www.torproject.org/"> Tor</Hyperlink> and 
                 <Hyperlink NavigateUri="https://www.mozilla.org/en-US/firefox/new/"> Firefox.</Hyperlink>
                 </TextBlock>
                 <TextBlock Margin="0, 25, 0,0" FontWeight="Bold" FontSize="30"> <Underline>Search Engines</Underline></TextBlock>
                 <TextBlock Height="auto" TextWrapping="Wrap" Margin="100,0,0,0" FontSize="20">
-                We highly recommend using DuckDuckGo as the primary search engine. They do not 
-            collect or share your personal data and by default do not store cookies. However, they are a business and need to make money, so they will show you an ad related to your search. For example, if
+                We highly recommend using DuckDuckGo as the primary search engine. They do not collect or share your personal data and by default do not store cookies. However, they are a business and need to make money, so they will show you an ad related to your search. For example, if
                 you search for cars, they will show you an advertisement about cars. They promise that they are not collecting and sharing your data. You can read their privacy
-               policy for yourself.<Hyperlink NavigateUri="https://duckduckgo.com/privacy">DuckDuckGo Privacy Policy</Hyperlink></TextBlock>
-                <TextBlock Margin="0, 25, 0,0" FontWeight="Bold" FontSize="30"> <Underline>DNS Settings</Underline></TextBlock>
-                <TextBlock Height="auto" TextWrapping="Wrap" Margin="100,0, 0,0" FontSize="20">TO DO. Not quite sure what this is.</TextBlock>
+               policy for yourself. <Hyperlink NavigateUri="https://duckduckgo.com/privacy">DuckDuckGo Privacy Policy</Hyperlink></TextBlock>
                 <TextBlock Margin="0, 25, 0,0" FontWeight="Bold" FontSize="30"> <Underline>Google</Underline></TextBlock>
                 <TextBlock Height="auto" TextWrapping="Wrap" Margin="100,0,0,0" FontSize="20">
                 Google collects any data about you that they can collect. They most likley know your alternative email addresses, birthday,
-                and other person information without your knowledge. Therefore, it is recommended if you value your priavcy, to immediately 
+                and other personal information without your knowledge. Therefore, it is recommended if you value your privacy, to immediately 
                 stop using as much of their services as you can, and delete as much information as possible. To find out how to delete your information
                 from Google, please click the following link:
                 <Hyperlink NavigateUri="https://support.google.com/websearch/answer/465?co=GENIE.Platform%3DDesktop">Delete Google Activity</Hyperlink>
@@ -50,17 +48,13 @@
                     To stop sending your activity history to Microsoft, select Start , then select Settings  > Privacy > Activity history. On this page, clear the Send my activity history to Microsoft check box.
                 </TextBlock>
 
-                <TextBlock Margin="0, 25, 0,0" FontWeight="Bold" FontSize="30"> <Underline>Libraries Used</Underline></TextBlock>
+                <TextBlock Margin="0, 25, 0,0" FontWeight="Bold" FontSize="30"> <Underline>Libraries We Use</Underline></TextBlock>
                 <TextBlock Height="auto" TextWrapping="Wrap" Margin="100,0,0,0" FontSize="20">
                 In order to be as transparent as possible, we have provided links to the libraries that were used to create this application.
                 </TextBlock>
-
                 <HyperlinkButton Content="Click to go libraries page"
                  Click="HyperlinkButton_Click"
                  HorizontalAlignment="Center"/>
-
-
-
             </StackPanel>
         </Grid>
 

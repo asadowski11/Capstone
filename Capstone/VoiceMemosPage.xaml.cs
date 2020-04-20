@@ -1,15 +1,17 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Capstone.Common;
+﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
+using Capstone.Common;
+using Capstone.Helpers;
 using Capstone.Models;
-using Windows.UI.Xaml.Shapes;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using System;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
 namespace Capstone
 {
@@ -19,16 +21,27 @@ namespace Capstone
     public sealed partial class VoiceMemosPage : Page
     {
 
-        public List<VoiceMemo> VoiceMemos { get; set; }
-        // UI settings to detect when we should change accent colors for certain parts
-        private UISettings uiSettings;
+        AudioRecorder _audioRecorder;
 
+        public List<VoiceMemo> VoiceMemos { get; set; }
+
+        private VoiceMemo CreateVoiceMemo = new VoiceMemo();
         public VoiceMemosPage()
         {
             this.InitializeComponent();
-            this.VoiceMemos = ReadVoiceMemosFromDatabase();
+            this.HideInitialControls();
+            //used to record, stop, and play voice note
+            this._audioRecorder = new AudioRecorder();
             this.PopulateListOfVoiceMemos();
-            this.uiSettings = new UISettings();
+
+        }
+
+        private void HideInitialControls()
+        {
+            this.saveRecording.Visibility = Visibility.Collapsed;
+            this.stopRecording.Visibility = Visibility.Collapsed;
+            this.deleteRecording.Visibility = Visibility.Collapsed;
+            this.displayName.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -36,121 +49,166 @@ namespace Capstone
             base.OnNavigatedTo(e);
         }
 
-        private void BackButton_OnClick(object sender, RoutedEventArgs e)
+        private async void BackButton_OnClick(object sender, RoutedEventArgs e)
         {
-            UIUtils.GoToMainPage(this);
+            //make sure user wants to leave page in case of work in progress
+            bool goToMainPage = await DisplayGoBackToMainPageDialog();
+
+            if (goToMainPage)
+            {
+                _audioRecorder.StopPlaybackMedia();
+                _audioRecorder.DisposeStream();
+                _audioRecorder.DisposeMedia();
+                _audioRecorder.DisposeMemoryBuffer();
+                UIUtils.GoToMainPage(this);
+            }
+
         }
 
         private List<VoiceMemo> ReadVoiceMemosFromDatabase()
         {
-            List<VoiceMemo> voiceMemos = new List<VoiceMemo>();
-            // TODO database stuff
+            List<VoiceMemo> voiceMemos = StoredProcedures.QueryAllVoiceMemos();
             return voiceMemos;
         }
 
         private void PopulateListOfVoiceMemos()
         {
+            this.VoiceNoteList.Children.Clear();
+            this.VoiceMemos = ReadVoiceMemosFromDatabase();
             this.VoiceMemos.ForEach(BuildMemoPanel);
         }
 
         private void BuildMemoPanel(VoiceMemo VoiceMemoToAdd)
         {
-            var panel = new RelativePanel();
-            panel.Margin = new Thickness(0, 10, 0, 10);
-            var ellipse = BuildMemoEllipse();
-            var titleBlock = BuildTitleBlock(VoiceMemoToAdd);
-            var durationBlock = BuildDurationBlock(VoiceMemoToAdd);
-            var dateRecordedBlock = BuildDateRecordedBlock(VoiceMemoToAdd);
-            var deleteButton = BuildDeleteButton(VoiceMemoToAdd);
-            var playbackButton = BuildPlayBackButton(VoiceMemoToAdd);
-            panel.Children.Add(ellipse);
-            panel.Children.Add(titleBlock);
-            panel.Children.Add(durationBlock);
-            panel.Children.Add(dateRecordedBlock);
-            panel.Children.Add(deleteButton);
-            panel.Children.Add(playbackButton);
-            // position the elements within the panel
-            RelativePanel.SetRightOf(titleBlock, ellipse);
-            RelativePanel.SetAlignVerticalCenterWith(titleBlock, ellipse);
-            RelativePanel.SetBelow(durationBlock, titleBlock);
-            RelativePanel.SetAlignLeftWith(durationBlock, titleBlock);
-            RelativePanel.SetBelow(dateRecordedBlock, durationBlock);
-            RelativePanel.SetAlignLeftWith(dateRecordedBlock, durationBlock);
-            RelativePanel.SetBelow(deleteButton, dateRecordedBlock);
-            RelativePanel.SetAlignBottomWithPanel(deleteButton, true);
-            RelativePanel.SetAlignLeftWithPanel(deleteButton, true);
-            RelativePanel.SetBelow(playbackButton, dateRecordedBlock);
-            RelativePanel.SetAlignBottomWithPanel(playbackButton, true);
-            RelativePanel.SetAlignRightWithPanel(playbackButton, true);
-            this.VoiceNoteList.Children.Add(panel);
+            this.VoiceNoteList.Children.Add(VoiceMemoUIHelper.BuildVoiceMemoPanel(VoiceMemoToAdd, this._audioRecorder, PopulateListOfVoiceMemos));
         }
 
-        private Ellipse BuildMemoEllipse()
+
+        private async void Button_ClickDelete(object sender, RoutedEventArgs e)
         {
-            var ellipse = new Ellipse();
-            ellipse.Margin = new Thickness(10);
-            ellipse.Width = 25;
-            ellipse.Height = 25;
-            var brush = new SolidColorBrush();
-            ellipse.Fill = this.CreateUIColorBrush();
-            // change the color of this ellipse when the system colors change
-            return ellipse;
+
+            //we need to make sure user understands nothing will be saved
+            bool discardFile = false;
+            discardFile = await DisplayDeleteFileDialog();
+
+            if (discardFile)
+            {
+                //stop the recording and go back to main voice notes screen
+                _audioRecorder.DisposeMedia();
+                _audioRecorder.DisposeMemoryBuffer();
+                _audioRecorder.DisposeStream();
+                this.ResetUIComponents();
+            }
         }
 
-        private Brush CreateUIColorBrush()
+        private void Button_ClickStart(object sender, RoutedEventArgs e)
         {
-            var brush = new SolidColorBrush();
-            brush.Color = (Color)Application.Current.Resources["SystemAccentColor"];
-            return brush;
+            //toggle pause/play buttons
+            OnStartRecordingToggle();
+            this._audioRecorder.Record();
+        }
+        private void Button_ClickStop(object sender, RoutedEventArgs e)
+        {
+            //toggle buttons
+            OnStopRecordingToggle();
+            this._audioRecorder.StopRecording();
         }
 
-        private TextBlock BuildTitleBlock(VoiceMemo VoiceMemoToAdd)
+        private async void Button_ClickSave(object sender, RoutedEventArgs e)
         {
-            var titleBlock = new TextBlock();
-            titleBlock.FontWeight = FontWeights.Bold;
-            titleBlock.Text = VoiceMemoToAdd.DisplayName;
-            return titleBlock;
+            //make sure user enters a file name. does not need to be unique, as saveaudiotofile will create a unique file if the file name already exists
+            bool validateName = ValidateFileName();
+            if (validateName)
+            {
+                //set values
+                CreateVoiceMemo.DisplayName = displayName.Text;
+                //unfortunately, we don't know the file name for sure until this is ran
+                CreateVoiceMemo.FileName = await this._audioRecorder.SaveAudioToFile();
+                CreateVoiceMemo.FullFilePath = $"{Windows.ApplicationModel.Package.Current.InstalledLocation.Path}\\VoiceNotes";
+                CreateVoiceMemo.RecordingDuration = await _audioRecorder.GetAudioDuration(CreateVoiceMemo.FileName);
+                CreateVoiceMemo.DateRecorded = _audioRecorder.GetDateRecorded();
+                DateTime timeRecorded = _audioRecorder.GetTimeRecorded();
+                // insert the voice memo's details into the database
+                StoredProcedures.CreateVoiceNote(CreateVoiceMemo.FileName, CreateVoiceMemo.DisplayName, CreateVoiceMemo.RecordingDuration, CreateVoiceMemo.FullFilePath, CreateVoiceMemo.DateRecorded, timeRecorded);
+
+                // refresh the voice memo list and hide our controls while showing the record button
+                this.PopulateListOfVoiceMemos();
+                this.displayName.Text = "";
+                this.HideInitialControls();
+                this.startRecording.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DisplayEnterNameDialog();
+            }
         }
 
-        private TextBlock BuildDurationBlock(VoiceMemo VoiceMemoToAdd)
+        private void OnStartRecordingToggle()
         {
-            var durationBlock = new TextBlock();
-            durationBlock.Text = $"Duration: {TimeSpan.FromSeconds(VoiceMemoToAdd.RecordingDuration).ToString(@"mm\:ss")}";
-            return durationBlock;
+            this.startRecording.Visibility = Visibility.Collapsed;
+            this.stopRecording.Visibility = Visibility.Visible;
         }
 
-        private TextBlock BuildDateRecordedBlock(VoiceMemo VoiceMemoToAdd)
+        private void OnStopRecordingToggle()
         {
-            var dateRecordedBlock = new TextBlock();
-            dateRecordedBlock.Margin = new Thickness(0, 0, 0, 20);
-            dateRecordedBlock.Text = VoiceMemoToAdd.DateRecorded.ToShortDateString();
-            return dateRecordedBlock;
+            this.stopRecording.Visibility = Visibility.Collapsed;
+            this.saveRecording.Visibility = Visibility.Visible;
+            this.deleteRecording.Visibility = Visibility.Visible;
+            this.displayName.Visibility = Visibility.Visible;
         }
 
-        private Button BuildDeleteButton(VoiceMemo VoiceMemoToAdd)
+        private async Task<bool> DisplayDeleteFileDialog()
         {
-            var deleteButton = new Button();
-            deleteButton.Content = "Delete";
-            deleteButton.Click += (sender, arguments) => DeleteVoiceMemo(VoiceMemoToAdd);
-            return deleteButton;
+            ContentDialog deleteFileDialog = new ContentDialog
+            {
+                Title = "Delete file permanently?",
+                Content = "If you delete this file, you won't be able to recover it. Do you want to delete it?",
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel"
+            };
+
+            ContentDialogResult result = await deleteFileDialog.ShowAsync();
+            return result == ContentDialogResult.Primary;
         }
 
-        private Button BuildPlayBackButton(VoiceMemo VoiceMemoToAdd)
+        private async Task<bool> DisplayGoBackToMainPageDialog()
         {
-            var playbackButton = new Button();
-            playbackButton.Content = "Playback";
-            playbackButton.Click += (sender, arguments) => PlayVoiceMemo(VoiceMemoToAdd);
-            return playbackButton;
+            ContentDialog goToMainPageDialog = new ContentDialog
+            {
+                Title = "Exit Voice Notes",
+                Content = "Are you sure you want to go back to Main Page. All works in progress will be lost.",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "Cancel"
+            };
+
+            ContentDialogResult result = await goToMainPageDialog.ShowAsync();
+            return result == ContentDialogResult.Primary;
         }
 
-        private void PlayVoiceMemo(VoiceMemo VoiceMemoToPlay)
+        private async void DisplayEnterNameDialog()
         {
-            // TODO
+            ContentDialog noNameDialog = new ContentDialog
+            {
+                Title = "No Name Entered",
+                Content = "Please Enter a Display Name to save the File.",
+                CloseButtonText = "Ok"
+            };
+
+            ContentDialogResult result = await noNameDialog.ShowAsync();
         }
 
-        private void DeleteVoiceMemo(VoiceMemo VoiceMemoToDelete)
+        private bool ValidateFileName()
         {
-            // TODO delete from file system and database, and reload the list of voice memos
+            return StringUtils.IsNotBlank(displayName.Text);
         }
+
+        private void ResetUIComponents()
+        {
+            // hide all the ui components, reset our text box, and show the record button
+            this.HideInitialControls();
+            this.displayName.Text = "";
+            this.startRecording.Visibility = Visibility.Visible;
+        }
+
     }
 }

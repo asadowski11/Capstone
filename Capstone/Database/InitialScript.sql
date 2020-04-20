@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS "TSettingOptions";
+﻿DROP TABLE IF EXISTS "TSettingOptions";
 DROP TABLE IF EXISTS "TSettings";
 DROP TABLE IF EXISTS "TSearchEngines";
 DROP TABLE IF EXISTS "TSearchableWebsites";
@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS "TWeatherProviderURLS";
 DROP TABLE IF EXISTS "TWeatherProviderURLParts";
 DROP TABLE IF EXISTS "TWeatherProviderAccessTypes";
 DROP TABLE IF EXISTS "TWeatherProviders";
+DROP TABLE IF EXISTS "TJokes";
 
 CREATE TABLE "TSettings"
 (
@@ -32,7 +33,7 @@ CREATE TABLE "TSettingOptions"
 	,"optionDisplayName"    VARCHAR(255)	NOT NULL
 	,"isSelected"           BIT				NOT NULL
 	,"settingID"            INTEGER			NOT NULL
-    ,FOREIGN KEY ( settingID ) REFERENCES TSettings ( settingID )
+	,FOREIGN KEY ( settingID ) REFERENCES TSettings ( settingID )
 );
 
 CREATE TABLE "TSearchEngines"
@@ -65,7 +66,7 @@ CREATE TABLE "TAlarmDates"
 	 "alarmDateID"  INTEGER			PRIMARY KEY NOT NULL
 	,"alarmID"	    INTEGER			NOT NULL
 	,"alarmDate"	DATE			NOT NULL
-    ,FOREIGN KEY ( alarmID ) REFERENCES TAlarms ( alarmID )
+	,FOREIGN KEY ( alarmID ) REFERENCES TAlarms ( alarmID )
 );
 
 CREATE TABLE "TReminders"
@@ -83,7 +84,7 @@ CREATE TABLE "TReminderDates"
 	 "reminderDateID"   INTEGER			PRIMARY KEY NOT NULL
 	,"reminderID"	    INTEGER			NOT NULL
 	,"reminderDate"     DATE			NOT NULL
-    ,FOREIGN KEY ( reminderID ) REFERENCES TReminders ( reminderID )
+	,FOREIGN KEY ( reminderID ) REFERENCES TReminders ( reminderID )
 );
 
 
@@ -99,7 +100,7 @@ CREATE TABLE "TMapProvidersURLS"
 	 "mapProviderURLID" INTEGER			PRIMARY KEY NOT NULL
 	,"mapProviderID"    INTEGER			NOT NULL
 	,"mapProviderURL"   NVARCHAR(255)	NOT NULL
-    ,FOREIGN KEY ( mapProviderID ) REFERENCES TMapProviders ( mapProviderID )
+	,FOREIGN KEY ( mapProviderID ) REFERENCES TMapProviders ( mapProviderID )
 );
 
 CREATE TABLE "TMapProviderAccessTypes"
@@ -107,7 +108,7 @@ CREATE TABLE "TMapProviderAccessTypes"
 	 "mapProviderAccessTypeID"  INTEGER			PRIMARY KEY NOT NULL
 	,"mapProviderID"            INTEGER			NOT NULL
 	,"mapProviderAccessType"    NVARCHAR(255)	NOT NULL
-    ,FOREIGN KEY ( mapProviderID ) REFERENCES TMapProviders ( mapProviderID )			
+	,FOREIGN KEY ( mapProviderID ) REFERENCES TMapProviders ( mapProviderID )			
 );
 
 CREATE TABLE "TMapProvidersURLParts"
@@ -116,7 +117,7 @@ CREATE TABLE "TMapProvidersURLParts"
 	,"mapProviderID"            INTEGER			NOT NULL
 	,"mapProviderURLPartType"   VARCHAR(255)	NOT NULL
 	,"mapProviderURLPartURL"    NVARCHAR(255)	NOT NULL
-    ,FOREIGN KEY ( mapProviderID ) REFERENCES TMapProviders ( mapProviderID )
+	,FOREIGN KEY ( mapProviderID ) REFERENCES TMapProviders ( mapProviderID )
 );
 
 CREATE TABLE "TVoiceMemos"
@@ -126,8 +127,8 @@ CREATE TABLE "TVoiceMemos"
 	,"displayName"          NVARCHAR(255)	NOT NULL
 	,"recordingDuration"    INTEGER			NOT NULL
 	,"filePath"         	NVARCHAR(255)	NOT NULL
-    ,"recordDate"           DATE			NOT NULL
-    ,"recordTime"           TIME			NOT NULL
+	,"recordDate"           DATE			NOT NULL
+	,"recordTime"           TIME			NOT NULL
 );
 
 CREATE TABLE "TUserInfos"
@@ -155,7 +156,7 @@ CREATE TABLE "TBobResponseInputs"
 (
 	 "bobResponseInputID"   INTEGER			PRIMARY KEY NOT NULL
 	,"bobResponseID"	    INTEGER			NOT NULL
-    ,FOREIGN KEY ( bobResponseID ) REFERENCES TBobResponses( bobResponseID )
+	,FOREIGN KEY ( bobResponseID ) REFERENCES TBobResponses( bobResponseID )
 );
 
 CREATE TABLE "TWeatherProviders"
@@ -169,7 +170,7 @@ CREATE TABLE "TWeatherProviderURLS"
 	 "weatherProviderURLID" INTEGER			PRIMARY KEY NOT NULL
 	,"weatherProviderID"	INTEGER			NOT NULL
 	,"weatherProviderURL"	NVARCHAR(255)	NOT NULL
-    ,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
+	,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
 );
 
 
@@ -178,7 +179,7 @@ CREATE TABLE "TWeatherProviderURLParts"
 	 "weatherProviderURLPartID"			INTEGER			PRIMARY KEY NOT NULL
 	,"weatherProviderID"				INTEGER			NOT NULL
 	,"weatherProviderURLPartURLString"  NVARCHAR(255)	NOT NULL
-    ,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
+	,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
 );
 
 
@@ -187,7 +188,12 @@ CREATE TABLE "TWeatherProviderAccessTypes"
 	 "weatherProviderAccessTypeID"  INTEGER			PRIMARY KEY NOT NULL
 	,"weatherProviderID"            INTEGER			NOT NULL
 	,"weatherProviderAccessType"    NVARCHAR(255)	NOT NULL
-    ,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
+	,FOREIGN KEY ( weatherProviderID ) REFERENCES TWeatherProviders ( weatherProviderID )
+);
+
+CREATE TABLE "TJokes" (
+	 "jokeID"	INTEGER PRIMARY KEY NOT NULL
+	,"jokeText"	TEXT	NOT NULL	UNIQUE
 );
 
 /*INSERT STATEMENTS*/
@@ -214,6 +220,30 @@ VALUES					   (1, "Google", 0)
 						   -- passed first time setup
 ,						   (3, "true", 0)
 ,						   (3, "false", 1)
-					       -- has told the user how to use bob
+						   -- has told the user how to use bob
 ,						   (4, "true", 0)
 ,						   (4, "false", 1);
+
+-- jokes
+INSERT INTO TJokes(jokeText)
+VALUES			  ('What do you get when you put a vest on an alligator? An investigator.')
+,				  ('If Kermit the frog did something illegal, would he be Kermitting a crime?')
+,				  ('A man walked into a bar. The second man ducked.')
+,				  ('Please, let me out of here. This isn''t a joke!')
+,				  ('I heard the brooms won the basketball game. It was a clean sweep.')
+,				  ('What do you get when you drop a piano down a mineshaft? A-flat-miner.')
+,				  ('What is a Greek mathematician''s favorite programming language? π-thon.')
+,				  ('How do you make Bud Light? Put him on a diet!')
+,				  ('How do you make Bud weiser? Send him to college!')
+,				  ('You look good today.')
+,				  ('What do you call a guy who''s hung up on a wall? Art!')
+,				  ('What''s brown and sticky? A stick.')
+,				  ('How do you make a tissue dance? Put a little boogie in it!')
+,				  ('How do you make holy water? Boil the hell out of it.')
+,				  ('What do you call a student that got C''s all the way through medical school? Hopefully not your doctor!')
+,				  ('Did you hear about the restaurant on the moon? Great food, no atmosphere.')
+,				  ('Did you hear about the baguette at the zoo? It was bread in captivity.')
+,				  ('Don''t trust stairs. They''ll always let you down and they''re always up to something.')
+,				  ('Why did the picture go to prison? Because it was framed.')
+,				  ('Why didn''t the bike cross the road? Because it was two tired.')
+,				  ('What do you call a pig that does karate? A pork chop.');

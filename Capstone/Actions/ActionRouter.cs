@@ -23,6 +23,7 @@ namespace Capstone.Actions
             SetUpWeatherBranches();
             SetUpVoiceNoteBranches();
             SetUpInternetSearchBranches();
+            SetUpJokeBranches();
             SetUpDirectBobQuestionBranches();
             SetUpDirectionBranches();
             IsSetup = true;
@@ -39,9 +40,12 @@ namespace Capstone.Actions
         {
             var voiceNoteDict = new Dictionary<string, dynamic>();
             Func<string, Action> recordVoiceNote = (commandText) => new VoiceMemoAction(commandText);
-            voiceNoteDict.Add("Record", recordVoiceNote);
-            voiceNoteDict.Add("Take", recordVoiceNote);
-            actionTree.Add("Voice", voiceNoteDict);
+            voiceNoteDict.Add("note", recordVoiceNote);
+            voiceNoteDict.Add("record", recordVoiceNote);
+            voiceNoteDict.Add("recording", recordVoiceNote);
+            actionTree.Add("voice", voiceNoteDict);
+            actionTree.Add("record", voiceNoteDict);
+            actionTree.Add("recording", voiceNoteDict);
         }
 
         private static void SetUpInternetSearchBranches()
@@ -126,12 +130,26 @@ namespace Capstone.Actions
             // add the alarm dict to the main one
             actionTree.Add("alarm", alarmDict);
         }
+      
         private static void SetUpDirectionBranches()
         {
             // add the keys to the main dict because it's easier for the user to speak less
             Func<string, Action> getDirectionsFunction = (commandText) => new DirectionsAction(commandText);
             actionTree.Add("directions", getDirectionsFunction);
         }
+
+        public static void SetUpJokeBranches()
+        {
+            Func<string, Action> jokeAction = (commandText) => new JokeAction();
+            var jokeDict = new Dictionary<string, dynamic>();
+            // listen for the phrases "joke" and "another"
+            jokeDict.Add("joke", jokeAction);
+            jokeDict.Add("another", jokeAction);
+            // root is "tell", but sometimes user's could say other phrases so stick with "joke"
+            actionTree.Add("tell", jokeDict);
+            actionTree.Add("joke", jokeDict);
+        }
+
         private static void SetUpDirectBobQuestionBranches()
         {
             Func<string, Action> whatCanYouDoFunction = (commandText) => new WhatCanYouDoAction(commandText);
