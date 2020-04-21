@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Capstone.Common;
+using Capstone.Models;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Xaml.Controls;
 
@@ -24,7 +26,7 @@ namespace Capstone.SpeechRecognition
         public static async Task<bool> RequestListen(Type callerType, Action<string> callbackFunction)
         {
             // if the current listener is the main screen, then it's fine to interrupt. Otherwise we need to check if the current listener is done
-            if (typeof(MainPage) != CurrentListener && !IsCurrentListenerDone)
+            if (typeof(MainPage) != CurrentListener && !IsCurrentListenerDone || !Utils.IsListeningSettingEnabled())
             {
                 // we can't listen, so return false
                 return false;
@@ -75,13 +77,20 @@ namespace Capstone.SpeechRecognition
         /// </summary>
         private static void StartListeningForMainPage()
         {
-            if (MainPageFunction != null && MainPageTextBox != null)
+            if (Utils.IsListeningSettingEnabled())
             {
-                // the main page takes priority over everything when it comes to listening, so force stop
-                SpeechRecognitionUtils.Stop();
-                CurrentListener = typeof(MainPage);
-                IsCurrentListenerDone = false;
-                SpeechRecognitionUtils.StartLooping(MainPageFunction, MainPageTextBox);
+                if (MainPageFunction != null && MainPageTextBox != null)
+                {
+                    // the main page takes priority over everything when it comes to listening, so force stop
+                    SpeechRecognitionUtils.Stop();
+                    CurrentListener = typeof(MainPage);
+                    IsCurrentListenerDone = false;
+                    SpeechRecognitionUtils.StartLooping(MainPageFunction, MainPageTextBox);
+                }
+            }
+            else
+            {
+                TextToSpeechEngine.SpeakText(new MediaElement(), "Sorry, but something went wrong with setting up your microphone. You cannot use me through speech, but you can still use the command bar at the bottom of the screen.");
             }
         }
     }

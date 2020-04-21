@@ -24,6 +24,13 @@ namespace Capstone.Actions
                 this.ShowMessage($"You said {text}");
             };
             var executedSuccessfully = await SpeechRecognitionManager.RequestListen(this.GetType(), repeatAction);
+            if (!executedSuccessfully)
+            {
+                this.ClearArea();
+                string message = "Something went wrong with listening to you, so I cannot repeat after you. Do you have voice activation set to off in the app settings or system settings?";
+                TextToSpeechEngine.SpeakText(this.MediaElement, message);
+                this.ShowMessage(message);
+            }
         }
     }
 }
