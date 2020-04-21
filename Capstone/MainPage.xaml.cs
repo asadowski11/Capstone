@@ -159,7 +159,7 @@ namespace Capstone
             {
                 if (await AudioCapturePermissions.RequestMicrophonePermission())
                 {
-                    SpeechRecognitionUtils.Start(performActionFromCommandBoxText, this.CommandBox);
+                    SpeechRecognitionManager.StartListeningForMainPage(performActionFromCommandBoxText, this.CommandBox);
                 }
                 else
                 {

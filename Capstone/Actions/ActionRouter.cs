@@ -25,6 +25,7 @@ namespace Capstone.Actions
             SetUpInternetSearchBranches();
             SetUpJokeBranches();
             SetUpDirectBobQuestionBranches();
+            SetUpMiscBranches();
             IsSetup = true;
         }
 
@@ -155,6 +156,16 @@ namespace Capstone.Actions
                 {"do", whatCanYouDoDict }
             };
             actionTree.Add("you", directQuestions);
+        }
+
+        private static void SetUpMiscBranches()
+        {
+            Func<string, Action> repeatAfterMeAction = (commandText) => new RepeatAfterMeAction(commandText);
+            var repeatAfterMeDict = new Dictionary<string, dynamic>()
+            {
+                {"me", repeatAfterMeAction}
+            };
+            actionTree.Add("repeat", repeatAfterMeDict);
         }
 
         /// <summary>
