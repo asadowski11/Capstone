@@ -17,7 +17,7 @@ Bob is pretty flexible with how you can say things, but he won't understand ever
 	<tr><td>Get the weather</td><td>hey bob, what's the weather for tomorrow morning?</td></tr>
 	<tr><td>Tell a joke</td><td>hey bob, tell a joke</td></tr>
 	<tr><td>Search the web</td><td>hey bob, search the internet for cats</td></tr>
-	<tr><td>Search a specific website\*</td><td>hey bob, search websiteName for Lord of the Flies</td></tr>
+	<tr><td>Search a specific website*</td><td>hey bob, search websiteName for Lord of the Flies</td></tr>
 	<tr><td>Get driving directions</td><td>hey bob, how do I get to placeName</td></tr>
 	<tr><td>Get the time</td><td>hey bob, what time is it?</td></tr>
 	<tr><td>Get the date</td><td>hey bob, what's the date?</td></tr>
