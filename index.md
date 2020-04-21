@@ -3,7 +3,7 @@ Currently Bob is not ready to be downloaded yet, but will be available for gener
 
 ---
 
-# Features
+# Features <a href="/Capstone/how-to-use" style="font-size: smaller">How To Use</a>
 Bob's list of features are ever growing, but currently here is the list of what bob can do:
 - Get the weather at your current location using the National Weather Service
   - This currently means that only members of the united states can use the weather service, but this feature will be expanded upon in a later release
