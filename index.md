@@ -11,9 +11,10 @@ Bob's list of features are ever growing, but currently here is the list of what 
 - Use your browser to search the web for you, with the search engine you specify
 - Use your browser to search specific websites (like Amazon and Youtube)
 - Take and playback voice memos
-- Fully-responsive pages for snapped windows
 - Gets driving directions to a specific place
 - Tells jokes (quality of the jokes may vary)
+- Fully-responsive pages for snapped windows
+- A UI that allows you to do anything that you can do with voice, for the people who want to use bob without him listening
 
 # About Bob
 
