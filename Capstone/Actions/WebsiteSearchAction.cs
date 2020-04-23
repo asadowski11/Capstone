@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
+using Windows.UI.Xaml.Controls;
 
 namespace Capstone.Actions
 {
     public class WebsiteSearchAction : Action
     {
-        private SearchableWebsite desiredSearchableWebsite { get; set;}
+        private SearchableWebsite desiredSearchableWebsite { get; set; }
         private SearchEngine desiredSearchEngine { get; set; }
         public WebsiteSearchAction(string CommandString)
         {
@@ -17,10 +18,10 @@ namespace Capstone.Actions
         }
 
 
-    public override void PerformAction()
+        public override void PerformAction()
         {
-             //get list of searchable websites from database
-            List<SearchableWebsite> allSearchableWebsites =  StoredProcedures.QueryAllSearchableWebsites();
+            //get list of searchable websites from database
+            List<SearchableWebsite> allSearchableWebsites = StoredProcedures.QueryAllSearchableWebsites();
             //need to check if user provided a website to search
             bool isUserProvidedWebsiteSearch = false;
             //go through list of searchable websites. return true if user included the searchable website in search
@@ -36,7 +37,8 @@ namespace Capstone.Actions
                 searchQuery = BuildSearchQuery(desiredSearchableWebsite, searchParameters);
                 //launch browser. this will be done with the default browser
                 LaunchSearch(searchQuery);
-            }else
+            }
+            else
             {
                 //sets desiredSearchEngine, which is the default selected in settings
                 GetDefaultSearchEngine();
@@ -45,6 +47,17 @@ namespace Capstone.Actions
                 //launch browser. this will be done with the default browser
                 LaunchSearch(searchQuery);
             }
+            // show a link to the search 
+            this.ClearArea();
+            var linkElement = new HyperlinkButton();
+            linkElement.Content = $"{searchParameters} on {(desiredSearchableWebsite != null ? desiredSearchableWebsite.Name : desiredSearchEngine?.Name)}";
+            linkElement.NavigateUri = new Uri(searchQuery);
+            linkElement.FontSize = 24;
+            RelativePanel.SetAlignHorizontalCenterWithPanel(linkElement, true);
+            RelativePanel.SetAlignVerticalCenterWithPanel(linkElement, true);
+            this.DynamicArea.Children.Add(linkElement);
+            // announce to the user that we're searching for something
+            TextToSpeechEngine.SpeakText(this.MediaElement, $"Sure, searching for {linkElement.Content}");
         }
 
         private void GetDefaultSearchEngine()
@@ -67,7 +80,7 @@ namespace Capstone.Actions
             }
             return false;
         }
-        
+
         //put together base url, query search, and the search parameters
         private string BuildSearchQuery(SearchableWebsite websiteSearch, string toSearch)
         {
@@ -94,7 +107,7 @@ namespace Capstone.Actions
         }
 
         //find what is wanted to be searched
-        private string GetSearchParameters( bool isSearchableWebsite)
+        private string GetSearchParameters(bool isSearchableWebsite)
         {
             string searchParameters = "";
 
@@ -114,12 +127,12 @@ namespace Capstone.Actions
                     searchParameters = removeSearchWords.Replace(searchParameters, string.Empty);
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
 
             }
 
-            return searchParameters;
+            return searchParameters.Trim();
         }
 
     }
