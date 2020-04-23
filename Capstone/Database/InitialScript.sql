@@ -217,3 +217,7 @@ VALUES					   (1, "Google", 0)
 					       -- has told the user how to use bob
 ,						   (4, "true", 0)
 ,						   (4, "false", 1);
+INSERT INTO "TMapProviders" ("mapProviderID", "mapProviderName") VALUES ('1', 'Google');
+INSERT INTO "TMapProviderAccessTypes" ("mapProviderAccessTypeID", "mapProviderID", "mapProviderAccessType") VALUES ('1', '1', 'EXTERNAL_URL');
+INSERT INTO "TMapProvidersURLParts" ("mapProviderURLPartID", "mapProviderID", "mapProviderURLPartType", "mapProviderURLPartURL") VALUES ('1', '1', '/gridpoints/:office/:gridX,:gridY/forecast','');
+INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('1', '1', 'https://api.weather.gov');
