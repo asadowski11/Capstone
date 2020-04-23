@@ -258,6 +258,8 @@ namespace Capstone.Common
             text = ReplaceDaytimeNamesWithTimeValue(text);
             DateTime time;
             DateTime date;
+            // will be factored into the final date. This will add to the number of days based on if the user specifies am or pm in the time and a couple other factors
+            var dayOffset = 0;
             try
             {
                 time = ParseTimeFromString(text);
@@ -278,12 +280,27 @@ namespace Capstone.Common
             }
 
             // if date is today, and the time has already passed, shift the time 12 hours forward to hit the next time that time would happen
+            string timePart = GetTimePartOfString(text).ToLower();
             if (now.Year == date.Year && now.Month == date.Month && now.Day == date.Day && now.TimeOfDay >= time.TimeOfDay)
             {
-                time = time.AddHours(12);
+                // if the user specified am or pm, then move the day forward. Else assume they mean the next occurence of the time and move the time forward 12 hours
+                if (!StringUtils.Contains(timePart, "am") && !StringUtils.Contains(timePart, "pm"))
+                {
+                    time = time.AddHours(12);
+                    // if time is still less than now, then add another 12 hours
+                    if(now.TimeOfDay >= time.TimeOfDay)
+                    {
+                        time = time.AddHours(12);
+                        dayOffset = 1;
+                    }
+                }
+                else
+                {
+                    dayOffset = 1;
+                }
             }
 
-            return new System.DateTime(date.Year, date.Month, date.Day) + time.TimeOfDay;
+            return (new System.DateTime(date.Year, date.Month, date.Day).AddDays(dayOffset)) + time.TimeOfDay;
         }
 
         public static DateTime ParseDateTimeFromText(string text)

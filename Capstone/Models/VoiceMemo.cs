@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Data.Sqlite;
 
 namespace Capstone.Models
 {
@@ -31,6 +32,15 @@ namespace Capstone.Models
             this.RecordingDuration = RecordingDuration;
             this.FullFilePath = FullFilePath;
             this.DateRecorded = DateRecorded;
+        }
+
+        public static VoiceMemo FromDataRow(SqliteDataReader reader)
+        {
+            VoiceMemo createdVoiceMemo = new VoiceMemo(int.Parse(reader["voiceMemoID"].ToString()), reader["fileName"].ToString(), reader["displayName"].ToString(),
+              int.Parse(reader["recordingDuration"].ToString()), reader["filePath"].ToString(), DateTime.Parse(reader["recordDate"].ToString()));
+            return createdVoiceMemo;
+
+          
         }
     }
 }
