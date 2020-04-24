@@ -53,35 +53,47 @@ namespace Capstone.Actions
 
         public async override void PerformAction()
         {
-            string strDestination = await InputTextDialogAsync("Destination");
-            Dictionary<string, double> coordinates = await LocationProvider.GetLatitudeAndLongitude();
-            double latitude = coordinates["latitude"];
-            double longitude = coordinates["longitude"];
-            Setting setting = StoredProcedures.QuerySettingByName("Map Provider");
-            if (setting.GetSelectedOption().DisplayName == "Bing")
+            CommandString = CommandString.ToUpper();
+            string strDestination = "";
+            if (CommandString.Contains("TO"))
             {
-                MapProvider mapProvider = StoredProcedures.QueryMapProvider("Bing");
-                if (mapProvider.Name.Equals("Bing"))
-                {
-                    string strQuery = mapProvider.BaseURL.ToString();
-                    strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
-                    strQuery += HttpUtility.UrlEncode(strDestination);
-                    var uriMap = new Uri(strQuery);
-                    var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
-                }
-            }else
-            {
-                MapProvider mapProvider = StoredProcedures.QueryMapProvider("Google");
-                if (mapProvider.Name.Equals("Google"))
-                {
-                    string strQuery = mapProvider.BaseURL.ToString();
-                    strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
-                    strQuery += HttpUtility.UrlEncode(strDestination);
-                    var uriMap = new Uri(strQuery);
-                    var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
-                }
+                strDestination = CommandString.Substring(CommandString.IndexOf("TO ") + 3);
             }
-            
+            else
+            {
+                strDestination = await InputTextDialogAsync("Destination");
+            }
+            if (strDestination != "")
+            {
+                Dictionary<string, double> coordinates = await LocationProvider.GetLatitudeAndLongitude();
+                double latitude = coordinates["latitude"];
+                double longitude = coordinates["longitude"];
+                Setting setting = StoredProcedures.QuerySettingByName("Map Provider");
+                if (setting.GetSelectedOption().DisplayName == "Bing")
+                {
+                    MapProvider mapProvider = StoredProcedures.QueryMapProvider("Bing");
+                    if (mapProvider.Name.Equals("Bing"))
+                    {
+                        string strQuery = mapProvider.BaseURL.ToString();
+                        strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
+                        strQuery += HttpUtility.UrlEncode(strDestination);
+                        var uriMap = new Uri(strQuery);
+                        var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
+                    }
+                }
+                else
+                {
+                    MapProvider mapProvider = StoredProcedures.QueryMapProvider("Google");
+                    if (mapProvider.Name.Equals("Google"))
+                    {
+                        string strQuery = mapProvider.BaseURL.ToString();
+                        strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
+                        strQuery += HttpUtility.UrlEncode(strDestination);
+                        var uriMap = new Uri(strQuery);
+                        var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
+                    }
+                }
+            }  
         }
     }
 }
