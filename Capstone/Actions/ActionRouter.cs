@@ -26,6 +26,7 @@ namespace Capstone.Actions
             SetUpJokeBranches();
             SetUpDirectBobQuestionBranches();
             SetUpDirectionBranches();
+            SetUpMiscBranches();
             IsSetup = true;
         }
 
@@ -50,19 +51,11 @@ namespace Capstone.Actions
 
         private static void SetUpInternetSearchBranches()
         {
-            var internetSearchDict = new Dictionary<string, dynamic>();
-            Func<string, Action> searchInternet = (commandText) => new WebsiteSearchAction(commandText);
-            internetSearchDict.Add("who", searchInternet);
-            internetSearchDict.Add("what", searchInternet);
-            internetSearchDict.Add("when", searchInternet);
-            internetSearchDict.Add("where", searchInternet);
-            internetSearchDict.Add("why", searchInternet);
-            internetSearchDict.Add("how", searchInternet);
-            internetSearchDict.Add("did", searchInternet);
-            internetSearchDict.Add("was", searchInternet);
-            internetSearchDict.Add("are", searchInternet);
-            internetSearchDict.Add("is", searchInternet);
+           
+            Func<string, Action> internetSearchDict = (commandText) => new WebsiteSearchAction(commandText);
+
             actionTree.Add("internet", internetSearchDict);
+            actionTree.Add("search", internetSearchDict);
         }
 
         private static void SetUpTimeBranches()
@@ -163,6 +156,16 @@ namespace Capstone.Actions
                 {"do", whatCanYouDoDict }
             };
             actionTree.Add("you", directQuestions);
+        }
+
+        private static void SetUpMiscBranches()
+        {
+            Func<string, Action> repeatAfterMeAction = (commandText) => new RepeatAfterMeAction(commandText);
+            var repeatAfterMeDict = new Dictionary<string, dynamic>()
+            {
+                {"me", repeatAfterMeAction}
+            };
+            actionTree.Add("repeat", repeatAfterMeDict);
         }
 
         /// <summary>

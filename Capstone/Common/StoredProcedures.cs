@@ -45,7 +45,6 @@ namespace Capstone.Common
 
         public static void CreateReminder(string Title, DateTime ReminderDateAndTime, string Description)
         {
-            // escape the single ticks
             Title = EscapeSingleTicks(Title);
             Description = EscapeSingleTicks(Description);
             // gives the hour:minute [AP]m format
@@ -689,33 +688,73 @@ namespace Capstone.Common
             return searchEngine;
         }
 
-        /// <summary>
-        /// Pulls a random joke from the database and returns it
-        /// </summary>
-        /// <returns></returns>
-        public static Joke QueryRandomJoke()
+
+        public static SearchEngine QuerySearchEngineByName(string SearchEngineName)
         {
-            Joke joke = null;
+            // escape the single ticks
+            SearchEngineName = EscapeSingleTicks(SearchEngineName);
+            SearchEngine searchEngine = new SearchEngine();
+            SqliteConnection conn = OpenDatabase();
+            conn.Open();
+            SqliteCommand command = conn.CreateCommand();
+            command.CommandText = $"Select TSearchEngines.searchEngineID, TSearchEngines.searchEngineName, TSearchEngines.searchEngineBaseURL, TSearchEngines.searchEngineQueryString From TSearchEngines Where TSearchEngines.searchEngineName = '{SearchEngineName}';";
+            using (SqliteDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    searchEngine = SearchEngine.FromDataRow(reader);
+                }
+            }
+            conn.Close();
+            return searchEngine;
+        }
+
+        public static List<SearchableWebsite> QueryAllSearchableWebsites()
+        {
+            List<SearchableWebsite> searchableWebsites = new List<SearchableWebsite>();
+            string query = @"Select searchableWebsitesID, searchableWebsiteName, searchableWebsiteBaseURL, searchableWebsiteQueryString From TSearchableWebsites;";
             using (SqliteConnection connection = OpenDatabase())
             {
                 connection.Open();
-                using (SqliteCommand command = connection.CreateCommand())
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                using (SqliteDataReader reader = command.ExecuteReader())
                 {
-                    command.CommandText = "SELECT * FROM TJokes WHERE jokeID IN (SELECT jokeID FROM TJokes ORDER BY RANDOM() LIMIT 1)";
-                    SqliteDataReader reader = command.ExecuteReader();
-                    reader.Read();
-                    joke = Joke.FromDataRow(reader);
-                    reader.Close();
+                    while (reader.Read())
+                    {
+                        searchableWebsites.Add(SearchableWebsite.FromDataRow(reader));
+                    }
                 }
             }
-            return joke;
+            return searchableWebsites;
         }
 
-        private static string EscapeSingleTicks(string text)
-        {
-            var tickRegex = new Regex("'");
-            return tickRegex.Replace(text, "''");
-        }
+            /// <summary>
+            /// Pulls a random joke from the database and returns it
+            /// </summary>
+            /// <returns></returns>
+            public static Joke QueryRandomJoke()
+            {
+                Joke joke = null;
+                using (SqliteConnection connection = OpenDatabase())
+                {
+                    connection.Open();
+                    using (SqliteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM TJokes WHERE jokeID IN (SELECT jokeID FROM TJokes ORDER BY RANDOM() LIMIT 1)";
+                        SqliteDataReader reader = command.ExecuteReader();
+                        reader.Read();
+                        joke = Joke.FromDataRow(reader);
+                        reader.Close();
+                    }
+                }
+                return joke;
+            }
 
+            private static string EscapeSingleTicks(string text)
+            {
+                var tickRegex = new Regex("'");
+                return tickRegex.Replace(text, "''");
+            }
+        }
     }
-}

@@ -1,4 +1,6 @@
-﻿namespace Capstone.Models
+﻿using Microsoft.Data.Sqlite;
+
+namespace Capstone.Models
 {
     public class SearchableWebsite
     {
@@ -18,6 +20,13 @@
             this.Name = Name;
             this.BaseURL = BaseURL;
             this.QueryString = QueryString;
+        }
+
+        public static SearchableWebsite FromDataRow(SqliteDataReader reader)
+        {
+            SearchableWebsite createdSearchableWebsite = new SearchableWebsite(int.Parse(reader["searchableWebsitesID"].ToString()), reader["searchableWebsiteName"].ToString(),
+               reader["searchableWebsiteBaseURL"].ToString(), reader["searchableWebsiteQueryString"].ToString());
+            return createdSearchableWebsite;
         }
     }
 }

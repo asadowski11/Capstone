@@ -153,13 +153,11 @@ namespace Capstone
 
         private async void RequestMicrophoneAcessIfUserWantsVoiceDetection()
         {
-            Setting voiceRecognitionSetting = StoredProcedures.QuerySettingByName("Voice Activation");
-            SettingOption chosenSetting = voiceRecognitionSetting.GetSelectedOption();
-            if (chosenSetting != null && chosenSetting.DisplayName == "Enabled")
+            if (Utils.IsListeningSettingEnabled())
             {
                 if (await AudioCapturePermissions.RequestMicrophonePermission())
                 {
-                    SpeechRecognitionUtils.Start(performActionFromCommandBoxText, this.CommandBox);
+                    SpeechRecognitionManager.StartListeningForMainPage(performActionFromCommandBoxText, this.CommandBox);
                 }
                 else
                 {
