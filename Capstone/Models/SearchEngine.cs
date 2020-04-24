@@ -1,4 +1,6 @@
-﻿namespace Capstone.Models
+﻿using Microsoft.Data.Sqlite;
+
+namespace Capstone.Models
 {
     public class SearchEngine
     {
@@ -18,6 +20,13 @@
             this.Name = Name;
             this.BaseURL = BaseURL;
             this.QueryString = QueryString;
+        }
+
+        public static SearchEngine FromDataRow(SqliteDataReader reader)
+        {
+            SearchEngine createdSearchEngine = new SearchEngine(int.Parse(reader["searchEngineID"].ToString()), reader["searchEngineName"].ToString(),
+               reader["searchEngineBaseURL"].ToString(), reader["searchEngineQueryString"].ToString());
+            return createdSearchEngine;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Capstone.Common;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
@@ -26,7 +28,7 @@ namespace Capstone.SpeechRecognition
         /// </summary>
         /// <param name="speechInputFunction"></param>
         /// <param name="box"></param>
-        public static async void Start(Action<string> speechInputFunction, TextBox box)
+        public static async void StartLooping(Action<string> speechInputFunction, TextBox box)
         {
             if (!IsStarted)
             {
@@ -36,7 +38,7 @@ namespace Capstone.SpeechRecognition
                 // compile the grammar and speech contstraings. TODO we may want to create our own grammar file. I don't know how much effort that will take up though
                 await recognizer.CompileConstraintsAsync();
                 recognizer.HypothesisGenerated += Recognizer_HypothesisGenerated;
-                // add a half second delay for the user to have pauses in their speech
+                // add a second delay for the user to have pauses in their speech
                 recognizer.ContinuousRecognitionSession.AutoStopSilenceTimeout += new TimeSpan(1_000_000); // 1,000,000 ticks = 1 second
                 SpeechRecognitionResult result = null;
 
@@ -51,7 +53,7 @@ namespace Capstone.SpeechRecognition
                             {
                                 SpokenText = result.Text;
                                 // if the result is only "hey bob", then listen again
-                                if(StringUtils.AreEqual(SpokenText, activatorString))
+                                if (StringUtils.AreEqual(SpokenText, activatorString))
                                 {
                                     result = await recognizer.RecognizeAsync();
                                     SpokenText += " " + result.Text;
@@ -89,6 +91,35 @@ namespace Capstone.SpeechRecognition
                 }));
                 thread.IsBackground = true;
                 thread.Start();
+            }
+        }
+
+        public static async Task<SpeechRecognitionResult> ListenOnceAsync()
+        {
+            if (!IsStarted)
+            {
+                try
+                {
+                    IsStarted = true;
+                    recognizer = new SpeechRecognizer();
+                    // compile the speech constraints and start listening
+                    await recognizer.CompileConstraintsAsync();
+                    // keep listening until the result isn't an empty string since sometimes it rings up false positives
+                    SpeechRecognitionResult result = null;
+                    while (result == null || StringUtils.IsBlank(result.Text))
+                    {
+                        result = await recognizer.RecognizeAsync();
+                    }
+                    return result;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                throw new Exception("Can't Listen when already started!");
             }
         }
 

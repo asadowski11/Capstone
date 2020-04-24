@@ -110,7 +110,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -122,6 +122,7 @@
     <Compile Include="Actions\DirectionsAction.cs" />
     <Compile Include="Actions\JokeAction.cs" />
     <Compile Include="Actions\ReminderAction.cs" />
+    <Compile Include="Actions\RepeatAfterMeAction.cs" />
     <Compile Include="Actions\TimeAction.cs" />
     <Compile Include="Actions\VoiceMemoAction.cs" />
     <Compile Include="Actions\WeatherAction.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Models\Joke.cs" />
     <Compile Include="Common\AudioRecorder.cs" />
     <Compile Include="Helpers\VoiceMemoUIHelper.cs" />
+    <Compile Include="SpeechRecognition\SpeechRecognitionManager.cs" />
     <Compile Include="SpeechRecognition\SpeechRecognitionUtils.cs" />
     <Compile Include="Common\StoredProcedures.cs" />
     <Compile Include="Common\DateTimeParser.cs" />

@@ -239,6 +239,24 @@ INSERT INTO "TMapProviderAccessTypes" ("mapProviderAccessTypeID", "mapProviderID
 Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(2,2,'','');
 INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('2', '2', 'bingmaps:?rtp=pos.Latitude_Longitude~adr.');
 
+
+
+--searchable websites
+INSERT INTO "TSearchableWebsites" ("searchableWebsitesID", "searchableWebsiteName", "searchableWebsiteBaseURL", "searchableWebsiteQueryString") 
+VALUES	('1', 'Amazon', 'https://amazon.com', '/s?k='),
+		('2', 'Youtube', 'https://www.youtube.com', '/results?search_query='),
+		('3', 'Walmart', 'https://www.walmart.com', '/search/?query=');
+
+--search engines
+INSERT INTO "TSearchEngines" ("searchEngineID", "searchEngineName", "searchEngineBaseURL", "searchEngineQueryString") 
+VALUES ('1', 'Google', 'https://google.com', '/search?q='),
+		('2', 'Bing', 'https://bing.com', '/search?q='),
+		('3', 'Duck Duck Go', 'https://duckduckgo.com', '/?q=');
+
+
+
+
+
 -- jokes
 INSERT INTO TJokes(jokeText)
 VALUES			  ('What do you get when you put a vest on an alligator? An investigator.')
