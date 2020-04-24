@@ -26,6 +26,13 @@
                 <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.weather.gov/"><Run Text="Weather.gov"/></Hyperlink></TextBlock>
                 <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"><Underline><Run Text="Maps"/></Underline></TextBlock>
                 <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.openstreetmap.org"><Run Text="Open Street Map"/></Hyperlink></TextBlock>
+                <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0"><Underline><Run Text="NuGet Packages"/></Underline></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.NETCore.UniversalWindowsPlatform/"><Run Text="Microsoft.NETCore.universalWindowsPlatform"/></Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Notifications/"><Run Text="Microsoft.Toolkit.Uwp.Notifications"/></Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.newtonsoft.com/json"><Run Text="Newtonsoft.Json"/></Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.newtonsoft.com/jsonschema"><Run Text="Newtonsoft.Json.Schema"/></Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://www.sqlite.org/index.html"><Run Text="SQLite"/></Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0"><Hyperlink NavigateUri="https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki"><Run Text="System.Data.SQLite"/></Hyperlink></TextBlock>
             </StackPanel>
         </Grid>
 

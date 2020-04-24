@@ -57,15 +57,29 @@ namespace Capstone.Actions
             Dictionary<string, double> coordinates = await LocationProvider.GetLatitudeAndLongitude();
             double latitude = coordinates["latitude"];
             double longitude = coordinates["longitude"];
-            Setting setting = StoredProcedures.QuerySettingByName("Search Engine");
+            Setting setting = StoredProcedures.QuerySettingByName("Map Provider");
             if (setting.GetSelectedOption().DisplayName == "Bing")
             {
-                var uriMap = new Uri(@"bingmaps:?rtp=pos." + latitude + "_" + longitude + "~adr." + HttpUtility.UrlEncode(strDestination));
-                var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
+                MapProvider mapProvider = StoredProcedures.QueryMapProvider("Bing");
+                if (mapProvider.Name.Equals("Bing"))
+                {
+                    string strQuery = mapProvider.BaseURL.ToString();
+                    strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
+                    strQuery += HttpUtility.UrlEncode(strDestination);
+                    var uriMap = new Uri(strQuery);
+                    var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
+                }
             }else
             {
-                var uriMap = new Uri(@"https://www.google.com/maps/dir/?api=1&origin=" + latitude + "," + longitude + "&destination=" + HttpUtility.UrlEncode(strDestination));
-                var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
+                MapProvider mapProvider = StoredProcedures.QueryMapProvider("Google");
+                if (mapProvider.Name.Equals("Google"))
+                {
+                    string strQuery = mapProvider.BaseURL.ToString();
+                    strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
+                    strQuery += HttpUtility.UrlEncode(strDestination);
+                    var uriMap = new Uri(strQuery);
+                    var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
+                }
             }
             
         }
