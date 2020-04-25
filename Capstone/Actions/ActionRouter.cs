@@ -51,7 +51,7 @@ namespace Capstone.Actions
 
         private static void SetUpInternetSearchBranches()
         {
-           
+
             Func<string, Action> internetSearchDict = (commandText) => new WebsiteSearchAction(commandText);
 
             actionTree.Add("internet", internetSearchDict);
@@ -123,12 +123,20 @@ namespace Capstone.Actions
             // add the alarm dict to the main one
             actionTree.Add("alarm", alarmDict);
         }
-      
+
         private static void SetUpDirectionBranches()
         {
             // add the keys to the main dict because it's easier for the user to speak less
             Func<string, Action> getDirectionsFunction = (commandText) => new DirectionsAction(commandText);
+            Dictionary<string, dynamic> otherPhrases = new Dictionary<string, dynamic>()
+            {
+                // for phrases like "how do I get to", and "get me to"
+                {"get", getDirectionsFunction },
+                // for phrases like "take me to"
+                {"take", getDirectionsFunction }
+            };
             actionTree.Add("directions", getDirectionsFunction);
+            actionTree.Add("to", otherPhrases);
         }
 
         public static void SetUpJokeBranches()
