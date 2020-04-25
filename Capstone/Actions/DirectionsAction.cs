@@ -55,44 +55,25 @@ namespace Capstone.Actions
         {
             CommandString = CommandString.ToUpper();
             string strDestination = "";
-            if (CommandString.Contains("TO"))
+            if (CommandString.Contains(" TO "))
             {
-                strDestination = CommandString.Substring(CommandString.IndexOf("TO ") + 3);
+                strDestination = CommandString.Substring(CommandString.IndexOf(" TO ") + 4);
             }
             else
             {
                 strDestination = await InputTextDialogAsync("Destination");
             }
-            if (strDestination != "")
+            if (StringUtils.IsNotBlank(strDestination))
             {
                 Dictionary<string, double> coordinates = await LocationProvider.GetLatitudeAndLongitude();
                 double latitude = coordinates["latitude"];
                 double longitude = coordinates["longitude"];
                 Setting setting = StoredProcedures.QuerySettingByName("Map Provider");
-                if (setting.GetSelectedOption().DisplayName == "Bing")
-                {
-                    MapProvider mapProvider = StoredProcedures.QueryMapProvider("Bing");
-                    if (mapProvider.Name.Equals("Bing"))
-                    {
-                        string strQuery = mapProvider.BaseURL.ToString();
-                        strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
-                        strQuery += HttpUtility.UrlEncode(strDestination);
-                        var uriMap = new Uri(strQuery);
-                        var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
-                    }
-                }
-                else
-                {
-                    MapProvider mapProvider = StoredProcedures.QueryMapProvider("Google");
-                    if (mapProvider.Name.Equals("Google"))
-                    {
-                        string strQuery = mapProvider.BaseURL.ToString();
-                        strQuery = strQuery.Replace("Latitude", latitude.ToString()).Replace("Longitude", longitude.ToString());
-                        strQuery += HttpUtility.UrlEncode(strDestination);
-                        var uriMap = new Uri(strQuery);
-                        var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
-                    }
-                }
+                MapProvider mapProvider = StoredProcedures.QueryMapProvider(setting.GetSelectedOption().DisplayName);
+                string strQuery = mapProvider.BaseURL.ToString();
+                strQuery = strQuery.Replace("{Latitude}", latitude.ToString()).Replace("{Longitude}", longitude.ToString()).Replace("{Destination}", HttpUtility.UrlEncode(strDestination));
+                var uriMap = new Uri(strQuery);
+                var success = await Windows.System.Launcher.LaunchUriAsync(uriMap);
             }  
         }
     }

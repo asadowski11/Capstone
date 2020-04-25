@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Capstone.Models
 {
@@ -34,6 +35,7 @@ namespace Capstone.Models
                 WeatherProviderAccessTypes type = (WeatherProviderAccessTypes)Enum.Parse(typeof(WeatherProviderAccessTypes), reader["type"].ToString());
                 int weatherProviderID = int.Parse(reader["weatherProviderID"].ToString());
                 // for each url part, combine it with the base url
+                urlParts.Reverse();
                 foreach (string part in urlParts)
                 {
                     providerURLs.Add(baseURL + part);

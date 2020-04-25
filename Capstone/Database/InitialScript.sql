@@ -231,13 +231,15 @@ VALUES					   (1, "Google", 0)
 
 INSERT INTO "TMapProviders" ("mapProviderID", "mapProviderName") VALUES ('1', 'Google');
 INSERT INTO "TMapProviderAccessTypes" ("mapProviderAccessTypeID", "mapProviderID", "mapProviderAccessType") VALUES ('1', '1', 'EXTERNAL_URL');
-Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(1,1,'','');
-INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('1', '1', 'https://www.google.com/maps/dir/?api=1&origin=Latitude,Longitude&destination=');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(1,1,'Location','?api=1&origin={Latitude},{Longitude}');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(2,1,'Destination','&destination={Destination}');
+INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('1', '1', 'https://www.google.com/maps/dir/');
 
 INSERT INTO "TMapProviders" ("mapProviderID", "mapProviderName") VALUES ('2', 'Bing');
 INSERT INTO "TMapProviderAccessTypes" ("mapProviderAccessTypeID", "mapProviderID", "mapProviderAccessType") VALUES ('2', '2', 'APP');
-Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(2,2,'','');
-INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('2', '2', 'bingmaps:?rtp=pos.Latitude_Longitude~adr.');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(3,2,'Location','?rtp=pos.{Latitude}_{Longitude}');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(4,2,'Destination','~adr.{Destination}');
+INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('2', '2', 'bingmaps:');
 
 
 

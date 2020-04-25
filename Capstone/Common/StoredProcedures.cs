@@ -594,23 +594,19 @@ namespace Capstone.Common
         }
         public static MapProvider QueryMapProvider(string ProviderName)
         {
-            MapProvider mapProvider = new MapProvider();
+            MapProvider mapProvider = null;
 
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TmapProviders.mapProviderID, TmapProviders.mapProviderName,TMapProvidersURLS.mapProviderURL,TMapProvidersURLParts.mapProviderURLPartType,TMapProvidersURLParts.mapProviderURLPartURL,TmapProviderAccessTypes.mapProviderAccessType From TmapProviders, TMapProvidersURLS, TmapProvidersURLParts, TmapProviderAccessTypes Where TmapProviders.mapProviderName = '{ProviderName}' and TmapProviders.mapProviderID = TmapProvidersURLS.mapProviderID and TmapProviders.mapProviderID = TMapProvidersURLParts.mapProviderID and TmapProviders.mapProviderID = TmapProviderAccessTypes.mapProviderID;";
+            command.CommandText = $"Select TmapProviders.mapProviderID, TmapProviders.mapProviderName,TMapProvidersURLS.mapProviderURL AS 'baseURL',TMapProvidersURLParts.mapProviderURLPartType, group_concat(TMapProvidersURLParts.mapProviderURLPartURL,'###') AS 'urlParts',TmapProviderAccessTypes.mapProviderAccessType AS 'type' " +
+                $"From TmapProviders, TMapProvidersURLS, TmapProvidersURLParts, TmapProviderAccessTypes " +
+                $"Where TmapProviders.mapProviderName = '{ProviderName}' and TmapProviders.mapProviderID = TmapProvidersURLS.mapProviderID and TmapProviders.mapProviderID = TMapProvidersURLParts.mapProviderID and TmapProviders.mapProviderID = TmapProviderAccessTypes.mapProviderID;";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    string AccessType = reader["mapProviderAccessType"].ToString();
-                    int intMapProviderID = int.Parse(reader["mapProviderID"].ToString());
-                    mapProvider.MapProviderID = intMapProviderID;
-                    mapProvider.Name = reader["mapProviderName"].ToString();
-                    mapProvider.BaseURL = reader["mapProviderURL"].ToString();
-                    //mapProvider.AccessType = AccessType;
-                    //mapProvider.APIKey = reader[""];
+                    mapProvider = MapProvider.FromDataRow(reader);
                 }
             }
             conn.Close();
