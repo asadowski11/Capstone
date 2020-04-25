@@ -122,6 +122,7 @@
     <Compile Include="Actions\DirectionsAction.cs" />
     <Compile Include="Actions\JokeAction.cs" />
     <Compile Include="Actions\ReminderAction.cs" />
+    <Compile Include="Actions\RepeatAfterMeAction.cs" />
     <Compile Include="Actions\TimeAction.cs" />
     <Compile Include="Actions\VoiceMemoAction.cs" />
     <Compile Include="Actions\WeatherAction.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Models\Joke.cs" />
     <Compile Include="Common\AudioRecorder.cs" />
     <Compile Include="Helpers\VoiceMemoUIHelper.cs" />
+    <Compile Include="SpeechRecognition\SpeechRecognitionManager.cs" />
     <Compile Include="SpeechRecognition\SpeechRecognitionUtils.cs" />
     <Compile Include="Common\StoredProcedures.cs" />
     <Compile Include="Common\DateTimeParser.cs" />
@@ -148,6 +150,9 @@
     <Compile Include="Common\TextToSpeechEngine.cs" />
     <Compile Include="Common\UIUtils.cs" />
     <Compile Include="Common\Utils.cs" />
+    <Compile Include="LibrariesWeUse.xaml.cs">
+      <DependentUpon>LibrariesWeUse.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataPrivacyTips.xaml.cs">
       <DependentUpon>DataPrivacyTips.xaml</DependentUpon>
     </Compile>
@@ -221,6 +226,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AlarmsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LibrariesWeUse.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

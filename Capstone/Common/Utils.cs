@@ -1,4 +1,5 @@
 ﻿using System;
+using Capstone.Models;
 using Windows.UI.Core;
 
 namespace Capstone.Common
@@ -23,6 +24,13 @@ namespace Capstone.Common
         public static async void RunOnMainThread(Action actionToRun)
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => actionToRun.Invoke());
+        }
+
+        public static bool IsListeningSettingEnabled()
+        {
+            Setting voiceRecognitionSetting = StoredProcedures.QuerySettingByName("Voice Activation");
+            SettingOption chosenSetting = voiceRecognitionSetting.GetSelectedOption();
+            return chosenSetting != null && chosenSetting.DisplayName == "Enabled";
         }
     }
 }

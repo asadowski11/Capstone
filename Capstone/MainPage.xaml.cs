@@ -72,7 +72,7 @@ namespace Capstone
 
         private void LibrariesButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO navigate to settings screen (this.Frame.Navigate(typeof(screenName)))
+            this.Frame.Navigate(typeof(LibrariesWeUse));
         }
 
         private void CloseHandle(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
@@ -153,13 +153,11 @@ namespace Capstone
 
         private async void RequestMicrophoneAcessIfUserWantsVoiceDetection()
         {
-            Setting voiceRecognitionSetting = StoredProcedures.QuerySettingByName("Voice Activation");
-            SettingOption chosenSetting = voiceRecognitionSetting.GetSelectedOption();
-            if (chosenSetting != null && chosenSetting.DisplayName == "Enabled")
+            if (Utils.IsListeningSettingEnabled())
             {
                 if (await AudioCapturePermissions.RequestMicrophonePermission())
                 {
-                    SpeechRecognitionUtils.Start(performActionFromCommandBoxText, this.CommandBox);
+                    SpeechRecognitionManager.StartListeningForMainPage(performActionFromCommandBoxText, this.CommandBox);
                 }
                 else
                 {

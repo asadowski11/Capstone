@@ -207,7 +207,8 @@ INSERT INTO TSettings(settingDisplayName)
 VALUES				 ("Search Engine")
 ,					 ("Voice Activation")
 ,					 ("_FirstTimeSetupPassed") -- it starts with an underscore, which means it should not display on a UI
-,					 ("_ToldUserHowToUseBob");
+,					 ("_ToldUserHowToUseBob")
+,					 ("Map Provider");
 
 INSERT INTO TSettingOptions(settingID, optionDisplayName, isSelected)
 							-- search engine
@@ -217,12 +218,28 @@ VALUES					   (1, "Google", 0)
 						   -- voice activation
 ,						   (2, "Enabled", 0)
 ,						   (2, "Disabled", 0)
+
 						   -- passed first time setup
 ,						   (3, "true", 0)
 ,						   (3, "false", 1)
 						   -- has told the user how to use bob
 ,						   (4, "true", 0)
-,						   (4, "false", 1);
+,						   (4, "false", 1)
+						   -- Map Provider
+,						   (5, "Google", 1)
+,						   (5, "Bing", 0);
+
+INSERT INTO "TMapProviders" ("mapProviderID", "mapProviderName") VALUES ('1', 'Google');
+INSERT INTO "TMapProviderAccessTypes" ("mapProviderAccessTypeID", "mapProviderID", "mapProviderAccessType") VALUES ('1', '1', 'EXTERNAL_URL');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(1,1,'Location','?api=1&origin={Latitude},{Longitude}');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(2,1,'Destination','&destination={Destination}');
+INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('1', '1', 'https://www.google.com/maps/dir/');
+
+INSERT INTO "TMapProviders" ("mapProviderID", "mapProviderName") VALUES ('2', 'Bing');
+INSERT INTO "TMapProviderAccessTypes" ("mapProviderAccessTypeID", "mapProviderID", "mapProviderAccessType") VALUES ('2', '2', 'APP');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(3,2,'Location','?rtp=pos.{Latitude}_{Longitude}');
+Insert INTO "TMapProvidersURLParts"("mapProviderURLPartID","mapProviderID","mapProviderURLPartType","mapProviderURLPartURL") VALUES(4,2,'Destination','~adr.{Destination}');
+INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProviderURL") VALUES ('2', '2', 'bingmaps:');
 
 
 

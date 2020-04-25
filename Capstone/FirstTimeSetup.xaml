@@ -13,6 +13,7 @@
             <RowDefinition Height="200"/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <!--<Grid.ColumnDefinitions>
@@ -22,6 +23,7 @@
         <TextBlock HorizontalAlignment="Stretch" Text="First Time Setup" TextWrapping="Wrap" FontSize="36" FontFamily="Segoe UI" Height="61" Width="264" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
         <ComboBox x:Name="SearchEngineOptionBox" Header="Default Search Engine" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="SearchEngineOptionBox_SelectionChanged"/>
         <ComboBox x:Name="VoiceDetectionOptionBox" Header="Voice Detection" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="VoiceDetectionOptionBox_SelectionChanged" />
-        <Button x:Name="btnContinue" Content="Continue" Click="btnContinue_Click" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="75"/>
+        <ComboBox x:Name="MapProviderOptionBox" Header="Map Provider" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="MapProviderOptionBox_SelectionChanged" />
+        <Button x:Name="btnContinue" Content="Continue" Click="btnContinue_Click" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Height="75"/>
     </Grid>
 </Page>

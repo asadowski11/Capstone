@@ -61,11 +61,14 @@ namespace Capstone
             // get the settings and store them in the list
             var searchEngineSetting = StoredProcedures.QuerySettingByName("Search Engine");
             var voiceActivationSetting = StoredProcedures.QuerySettingByName("Voice Activation");
+            var mapProviderSetting = StoredProcedures.QuerySettingByName("Map Provider");
             PageSettings.Add(searchEngineSetting);
             PageSettings.Add(voiceActivationSetting);
+            PageSettings.Add(mapProviderSetting);
             // populate the search engine settings dropdown
             searchEngineSetting.Options.ForEach(option => this.SearchEngineOptionBox.Items.Add(option.DisplayName));
             voiceActivationSetting.Options.ForEach(option => this.VoiceDetectionOptionBox.Items.Add(option.DisplayName));
+            mapProviderSetting.Options.ForEach(option => this.MapProviderOptionBox.Items.Add(option.DisplayName));
         }
 
         private void SearchEngineOptionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -82,6 +85,12 @@ namespace Capstone
             UIUtils.HighlightUIElement(this.VoiceDetectionOptionBox, Colors.Transparent);
         }
 
+        private void MapProviderOptionBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PageSettings.Find(setting => setting.DisplayName == "Map Provider").SelectOption(e.AddedItems[0].ToString());
+            UIUtils.HighlightUIElement(this.MapProviderOptionBox, Colors.Transparent);
+        }
+
         private bool Validate()
         {
             bool isValid = true;
@@ -96,7 +105,14 @@ namespace Capstone
                 UIUtils.HighlightUIElement(this.VoiceDetectionOptionBox);
                 isValid = false;
             }
+            if (this.VoiceDetectionOptionBox.SelectedIndex == -1)
+            {
+                UIUtils.HighlightUIElement(this.MapProviderOptionBox);
+                isValid = false;
+            }
             return isValid;
         }
+
+
     }
 }
