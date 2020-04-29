@@ -12,21 +12,23 @@ namespace Capstone.Actions
 
         public static bool IsSetup { get; private set; } = false;
 
+        /// <summary>
+        /// Sets up the different routes for a voice command. The route order matters, and the routes that are added before others will have more precedence over the other routes
+        /// </summary>
         public static void SetUp()
         {
             // initialize the action tree
             actionTree = new Dictionary<string, dynamic>();
+            SetUpInternetSearchBranches();
             // add all the main keys to the dictionary
             SetUpAlarmBranches();
             SetUpReminderBranches();
             SetUpWeatherBranches();
             SetUpVoiceNoteBranches();
-            SetUpInternetSearchBranches();
             SetUpJokeBranches();
             SetUpDirectionBranches();
             SetUpMiscBranches();
             SetUpAgeBranches();
-            //i moved this below because if you search for something with the word time in it, it will give your the current time
             SetUpTimeBranches();
             SetUpThankYouBranches();
             SetUpDirectBobQuestionBranches();
