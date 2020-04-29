@@ -8,7 +8,7 @@ Bob is pretty flexible with how you can say things, but he won't understand ever
 <thead>
 	<tr>
 		<th>Action</th>
-		<th>What to say</th>
+		<th>Example of what to say</th>
 	</tr>
 </thead>
 <tbody>
