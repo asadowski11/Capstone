@@ -20,7 +20,7 @@ namespace Capstone.SpeechRecognition
         public static TextBox commandBox;
         private static Thread thread;
         // holds what the recognizer thinks the user is saying
-        private static string SpokenText;
+        private static string SpokenText = "";
 
         /// <summary>
         /// Starts up the speech recognizer in a background thread to listen for input speech. if speech is heard and contains "hey bob", then when the user stops speaking the resulting text is used to find and perform a corresponding action.
@@ -49,15 +49,16 @@ namespace Capstone.SpeechRecognition
                         try
                         {
                             result = await recognizer.RecognizeAsync();
-                            if (result != null && StringUtils.Contains(result.Text, activatorString))
+                            if (result != null && StringUtils.Contains(result.Text.Trim(), activatorString))
                             {
-                                SpokenText = result.Text;
+                                SpokenText = result.Text.Trim();
                                 // if the result is only "hey bob", then listen again
-                                if (StringUtils.AreEqual(SpokenText, activatorString))
+                                if (StringUtils.StartsWith(SpokenText, activatorString))
                                 {
                                     result = await recognizer.RecognizeAsync();
                                     SpokenText += " " + result.Text;
                                 }
+                                EnsureSpokenTextDoesNotContainStuffBeforeActivatorString(ref SpokenText);
                                 // clear the command box and run the command
                                 Utils.RunOnMainThread(() =>
                                 {
@@ -134,7 +135,8 @@ namespace Capstone.SpeechRecognition
                 {
                     recognizer.HypothesisGenerated -= Recognizer_HypothesisGenerated;
                     recognizer.Dispose();
-                } catch(ObjectDisposedException)
+                }
+                catch (ObjectDisposedException)
                 {
                     // nothing to do here, it was already disposed. The real issue here is was the user doing weird stuff, or did the recognizer not startup properly? TODO
                 }
@@ -155,12 +157,35 @@ namespace Capstone.SpeechRecognition
                 {
                     if (commandBox != null)
                     {
-                        commandBox.Text = SpokenText + " " + args.Hypothesis.Text;
+                        string tempText = SpokenText + " " + args.Hypothesis.Text;
+                        EnsureSpokenTextDoesNotContainStuffBeforeActivatorString(ref tempText);
+                        commandBox.Text = tempText;
                     }
                 });
 
             }
         }
 
+        /// <summary>
+        /// So we have a dilemma; bob MUST always listen for the activator string. That means that SpokenText may contain what the user said before they said "hey bob".
+        /// Everyone who can understand the code will know that bob doesn't do this maliciously, and it's out of necessity.Anything that is said before "hey bob" may show up in the command box, or Bob might use that text and interpret it as something else.
+        /// This this method removes everything before the "hey bob" so that the user doesn't incorrectly believe we're spying on them.
+        /// </summary>
+        /// <param name="text"></param>
+        private static void EnsureSpokenTextDoesNotContainStuffBeforeActivatorString(ref string text)
+        {
+            var splitSpokenText = text.ToLower().Split(activatorString + " ");
+            if (splitSpokenText.Length > 1)
+            {
+                // only keep the stuff after the "hey bob" and get rid of the rest
+                text = activatorString + " " + splitSpokenText[1];
+
+            }
+            else
+            {
+                // we shouldn't do anything with what the user says before "hey bob", so get rid of what the user said
+                text = "";
+            }
+        }
     }
 }
