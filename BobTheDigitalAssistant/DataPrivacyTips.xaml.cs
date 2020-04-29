@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Capstone.Common;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -29,12 +30,12 @@ namespace Capstone
 
         private void BackButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Common.UIUtils.GoToMainPage(this);
+            UIUtils.GoToMainPage(this);
         }
 
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        private void LibrariesButton_Click(object sender, RoutedEventArgs e)
         {
-            //TO DO Navigate to Libraries page when setup
+            this.Frame.Navigate(typeof(LibrariesWeUse));
         }
     }
 }

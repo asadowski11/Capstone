@@ -53,7 +53,7 @@
                 In order to be as transparent as possible, we have provided links to the libraries that were used to create this application.
                 </TextBlock>
                 <HyperlinkButton Content="Click to go libraries page"
-                 Click="HyperlinkButton_Click"
+                 Click="LibrariesButton_Click"
                  HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
