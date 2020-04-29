@@ -118,11 +118,14 @@
   <ItemGroup>
     <Compile Include="Actions\Action.cs" />
     <Compile Include="Actions\ActionRouter.cs" />
+    <Compile Include="Actions\AgeAction.cs" />
     <Compile Include="Actions\AlarmAction.cs" />
     <Compile Include="Actions\DirectionsAction.cs" />
+    <Compile Include="Actions\GreetingAction.cs" />
     <Compile Include="Actions\JokeAction.cs" />
     <Compile Include="Actions\ReminderAction.cs" />
     <Compile Include="Actions\RepeatAfterMeAction.cs" />
+    <Compile Include="Actions\ThankYouAction.cs" />
     <Compile Include="Actions\TimeAction.cs" />
     <Compile Include="Actions\VoiceMemoAction.cs" />
     <Compile Include="Actions\WeatherAction.cs" />

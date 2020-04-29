@@ -17,7 +17,6 @@ namespace Capstone.Actions
             this.CommandString = CommandString;
         }
 
-
         public override void PerformAction()
         {
             //get list of searchable websites from database
@@ -134,6 +133,5 @@ namespace Capstone.Actions
 
             return searchParameters.Trim();
         }
-
     }
 }

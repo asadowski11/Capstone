@@ -19,14 +19,19 @@ namespace Capstone.Actions
             // add all the main keys to the dictionary
             SetUpAlarmBranches();
             SetUpReminderBranches();
-            SetUpTimeBranches();
             SetUpWeatherBranches();
             SetUpVoiceNoteBranches();
             SetUpInternetSearchBranches();
             SetUpJokeBranches();
-            SetUpDirectBobQuestionBranches();
             SetUpDirectionBranches();
             SetUpMiscBranches();
+            SetUpAgeBranches();
+            //i moved this below because if you search for something with the word time in it, it will give your the current time
+            SetUpTimeBranches();
+            SetUpThankYouBranches();
+            SetUpDirectBobQuestionBranches();
+            SetUpGreetingsBranch();
+
             IsSetup = true;
         }
 
@@ -48,14 +53,35 @@ namespace Capstone.Actions
             actionTree.Add("record", voiceNoteDict);
             actionTree.Add("recording", voiceNoteDict);
         }
-
+       
         private static void SetUpInternetSearchBranches()
         {
-
             Func<string, Action> internetSearchDict = (commandText) => new WebsiteSearchAction(commandText);
 
             actionTree.Add("internet", internetSearchDict);
             actionTree.Add("search", internetSearchDict);
+        }
+
+        private static void SetUpThankYouBranches()
+        {
+            Func<string, Action> thankYouDict = (commandText) => new ThankYouAction(commandText);
+
+            actionTree.Add("thank", thankYouDict);
+            actionTree.Add("thanks", thankYouDict);
+        }
+
+        private static void SetUpGreetingsBranch()
+        {
+            Func<string, Action> greetingDict = (commandText) => new GreetingAction(commandText);
+
+            actionTree.Add("hello", greetingDict);
+            actionTree.Add("hi", greetingDict);
+            actionTree.Add("howdy", greetingDict);
+            actionTree.Add("morning", greetingDict);
+            actionTree.Add("afternoon", greetingDict);
+            actionTree.Add("evening", greetingDict);
+            actionTree.Add("night", greetingDict);
+
         }
 
         private static void SetUpTimeBranches()
@@ -150,7 +176,14 @@ namespace Capstone.Actions
             actionTree.Add("tell", jokeDict);
             actionTree.Add("joke", jokeDict);
         }
-
+        private static void SetUpAgeBranches()
+        {
+            Func<string, Action> getAge = (commandText) => new AgeAction(commandText);
+            
+            actionTree.Add("age", getAge);
+            actionTree.Add("born", getAge);
+            actionTree.Add("old", getAge);
+        }
         private static void SetUpDirectBobQuestionBranches()
         {
             Func<string, Action> whatCanYouDoFunction = (commandText) => new WhatCanYouDoAction(commandText);
