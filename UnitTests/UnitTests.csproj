@@ -154,9 +154,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Capstone\Capstone.csproj">
+    <ProjectReference Include="..\BobTheDigitalAssistant\BobTheDigitalAssistant.csproj">
       <Project>{3baf828a-727e-4299-94b6-a9a7ccda844e}</Project>
-      <Name>Capstone</Name>
+      <Name>BobTheDigitalAssistant</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
