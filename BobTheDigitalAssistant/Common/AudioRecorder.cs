@@ -25,32 +25,57 @@ namespace Capstone.Common
 
         public async void Record()
         {
-            if (IsRecording)
+            try
             {
-                throw new InvalidOperationException("Recording already in progress!");
+                if (IsRecording)
+                {
+                    throw new InvalidOperationException("Recording already in progress!");
+                }
+
+                _memoryBuffer = new InMemoryRandomAccessStream();
+
+                DisposeMedia();
+                MediaCaptureInitializationSettings settings =
+                new MediaCaptureInitializationSettings
+                {
+                    StreamingCaptureMode = StreamingCaptureMode.Audio
+                };
+
+                _mediaCapture = new MediaCapture();
+                await _mediaCapture.InitializeAsync(settings);
+                await _mediaCapture.StartRecordToStreamAsync(
+                MediaEncodingProfile.CreateMp3(AudioEncodingQuality.Auto), _memoryBuffer);
+                IsRecording = true;
             }
-
-            _memoryBuffer = new InMemoryRandomAccessStream();
-
-            DisposeMedia();
-            MediaCaptureInitializationSettings settings =
-            new MediaCaptureInitializationSettings
+            catch (Exception)
             {
-                StreamingCaptureMode = StreamingCaptureMode.Audio
-            };
-
-            _mediaCapture = new MediaCapture();
-            await _mediaCapture.InitializeAsync(settings);
-            await _mediaCapture.StartRecordToStreamAsync(
-            MediaEncodingProfile.CreateMp3(AudioEncodingQuality.Auto), _memoryBuffer);
-            IsRecording = true;
+                IsRecording = false;
+                // show a message to the user
+                if (playbackMediaElement != null)
+                {
+                    TextToSpeechEngine.SpeakText(playbackMediaElement, "Sorry, but there was an issue with recording your voice. Try to make sure your machine has a microphone, and that microphone access is enabled for this app.");
+                }
+                else
+                {
+                    // create a new media element
+                    TextToSpeechEngine.SpeakText(new MediaElement(), "Sorry, but there was an issue with recording your voice. Try to make sure your machine has a microphone, and that microphone access is enabled for this app.");
+                }
+            }
         }
 
         public async void StopRecording()
         {
-            await _mediaCapture.StopRecordAsync();
-            DisposeMedia();
-            IsRecording = false;
+            try
+            {
+                await _mediaCapture.StopRecordAsync();
+                DisposeMedia();
+                IsRecording = false;
+            }
+            catch (Exception)
+            {
+                // still make sure IsRecording is set to false
+                IsRecording = false;
+            }
         }
 
         /// <summary>
