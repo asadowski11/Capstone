@@ -1,0 +1,34 @@
+﻿<Page
+    x:Class="Capstone.RemindersFormPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Capstone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="RemindersForm" Margin="112,56,112,112">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <!--Reminder title-->
+        <TextBox x:Name="ReminderTitleInput" TabIndex="0" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" PlaceholderText="Reminder Title" Margin="20, 20, 20, 0" Grid.ColumnSpan="3" Header="Title"/>
+        <!--description box-->
+        <TextBox x:Name="ReminderDescriptionInput" TabIndex="1" TextWrapping="Wrap" MaxLength="250" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,0,20,0" PlaceholderText="Reminder Description" AcceptsReturn="True" Header="Description"/>
+        <!--Date and time-->
+        <CalendarDatePicker x:Name="ReminderDatePicker" TabIndex="2" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20, 20, 20, 0"/>
+        <TimePicker x:Name="ReminderTimePicker" TabIndex="3" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20, 20, 20, 0" Grid.ColumnSpan="2"/>
+        <!--buttons for submit and cancel-->
+        <Button x:Name="CancelReminderButton" Content="Cancel" AccessKey="C" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20" Height="62" Click="CancelReminderButton_Click"/>
+        <Button x:Name="SubmitReminderButton" Content="Save" Grid.Row="3" AccessKey="S" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20" Height="62" Click="SubmitReminderButton_Click"/>
+    </Grid>
+</Page>

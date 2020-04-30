@@ -1,0 +1,38 @@
+﻿<Page
+    x:Class="Capstone.LibrariesWeUse"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Capstone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="112"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick"/>
+            <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Libraries We Use</TextBlock>
+            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="-40,0,0,0">
+                <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center"><Underline><Run Text="Speech Recognition"/></Underline></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://docs.microsoft.com/en-us/windows/apps/speech">Microsoft Speech Recognition</Hyperlink></TextBlock>
+                <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center"><Underline><Run Text="Weather"/></Underline></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.weather.gov/documentation/services-web-api">United States National Weather Service</Hyperlink></TextBlock>
+                <TextBlock FontWeight="Bold" FontSize="30" HorizontalAlignment="Center"><Underline><Run Text="NuGet Packages"/></Underline></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.NETCore.UniversalWindowsPlatform/">Microsoft.NETCore.universalWindowsPlatform</Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.nuget.org/packages/Microsoft.Toolkit.Uwp.Notifications/">Microsoft.Toolkit.Uwp.Notifications</Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.newtonsoft.com/json">Newtonsoft.Json</Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.newtonsoft.com/jsonschema">Newtonsoft.Json.Schema</Hyperlink></TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="20" HorizontalAlignment="Center"><Hyperlink NavigateUri="https://www.sqlite.org/index.html">SQLite</Hyperlink></TextBlock>
+            </StackPanel>
+        </Grid>
+
+    </ScrollViewer>
+</Page>
