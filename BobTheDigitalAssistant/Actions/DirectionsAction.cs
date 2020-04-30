@@ -40,7 +40,7 @@ namespace Capstone.Actions
                     GetDirections(text);
                 }))
                 {
-                    string message = "Sorry, but something went wrong. To get directions, say \"Hey Bob, how do I get to thePlace\"";
+                    string message = "Sorry, but something went wrong. To get directions, say \"Hey Bob, how do I get to destination\"";
                     TextToSpeechEngine.SpeakText(this.MediaElement, message);
                     this.ShowMessage(message);
                 }
