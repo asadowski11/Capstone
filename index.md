@@ -1,5 +1,5 @@
 ---
-Title: Bob, the digital assistant
+Title: "Bob, the digital assistant"
 ---
 # Download <a href="/Bob/privacy-policy" style="font-size: small">Privacy Policy</a>
 Currently Bob is not ready to be downloaded yet, but will be available for general release around May 4th. Why is that? Because this is starting as a capstone project for college, and April 30th is when the capstone is due.
