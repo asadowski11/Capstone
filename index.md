@@ -1,9 +1,9 @@
-# Download <a href="/Capstone/privacy-policy" style="font-size: small">Privacy Policy</a>
+# Download <a href="/Bob/privacy-policy" style="font-size: small">Privacy Policy</a>
 Currently Bob is not ready to be downloaded yet, but will be available for general release around May 4th. Why is that? Because this is starting as a capstone project for college, and April 30th is when the capstone is due.
 
 ---
 
-# Features <a href="/Capstone/how-to-use" style="font-size: small">How To Use</a>
+# Features <a href="/Bob/how-to-use" style="font-size: small">How To Use</a>
 Bob's list of features are ever growing, but currently here is the list of what bob can do:
 - Get the weather at your current location using the National Weather Service
   - This currently means that only members of the united states can use the weather service, but this feature will be expanded upon in a later release
