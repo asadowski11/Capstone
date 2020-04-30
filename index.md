@@ -1,5 +1,5 @@
-# Download
-Currently Bob is not ready to be downloaded yet, but will be available for general release around April 30th. Why is that? Because this is starting as a capstone project for college, and April 30th is when the capstone is due.
+# Download <a href="/Capstone/privacy-policy" style="font-size: small">Privacy Policy</a>
+Currently Bob is not ready to be downloaded yet, but will be available for general release around May 4th. Why is that? Because this is starting as a capstone project for college, and April 30th is when the capstone is due.
 
 ---
 
