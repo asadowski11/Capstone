@@ -1,9 +1,12 @@
 ---
 Title: "Bob, the digital assistant"
 ---
-# Download <a href="/Bob/privacy-policy" style="font-size: small">Privacy Policy</a>
-Currently Bob is not ready to be downloaded yet, but will be available for general release around May 4th. Why is that? Because this is starting as a capstone project for college, and April 30th is when the capstone is due.
+# Download 
 
+<a href="/Bob/privacy-policy" style="font-size: small">Privacy Policy</a>
+Currently, there is a submission to the Microsoft App Store that is being reviewed by Microsoft. If you want to install Bob without going through the microsoft store, here's the link to all the files you need: <a href="https://github.com/ploiu/Bob/releases/download/v1.0.1/InstallFiles.zip" download="bobSetup.zip">Bob Setup Files</a>
+<br>
+If you need help installing the setup files, then <a href="/installation-instructions/">this link</a> is exactly what you need.
 ---
 
 # Features <a href="/Bob/how-to-use" style="font-size: small">How To Use</a>
