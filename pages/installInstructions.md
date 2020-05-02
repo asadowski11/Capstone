@@ -11,7 +11,7 @@ Select the third option, and click "yes" on the prompt that shows. That prompt i
 <br>
 <img src="../assets/img/developerOptions_selected.png">
 <hr>
-After you do that, you need to download the zip file linked on this site's home screen (or from <a href="" download="bobSetup.zip">here</a>, go to where the zip file was downloaded and unzip it in file explorer. After that, double click on the folder to enter into it. If you're in the right place, you should see something like this:
+After you do that, you need to download the zip file linked on this site's home screen (or from <a href="https://github.com/ploiu/Bob/releases/download/v1.0.1/InstallFiles.zip" download="bobSetup.zip">here</a>, go to where the zip file was downloaded and unzip it in file explorer. After that, double click on the folder to enter into it. If you're in the right place, you should see something like this:
 <br>
 <img src="../assets/img/internalFolder.png">
 We're about to run a powershell script in that folder, so this next part is very important: <strong>Powershell can be very dangerous, especially in a situation like this where you'll be running a powershell script that came from someone else. Do <em>NOT</em> blindly trust powershell scripts.</strong> If you want to look at what is in the script, you can right-click on it, and select "edit" from the popup menu that appears.
