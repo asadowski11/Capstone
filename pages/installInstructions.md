@@ -20,4 +20,4 @@ Once you're in the folder, right click on the <code style="display: inline">inst
 <br>
 <img src="../assets/img/runPowershell.png">
 <br>
-A dark-blue window should show up with some text asking if you really want to run the script (it may not ask if you've done this before). Type in `Y` and hit enter. After that, the setup should take under a minute and Bob will be installed on your device! Hooray!
+A dark-blue window should show up with some text asking if you really want to run the script (If you've already done this before, it may not ask). Type in `Y` and hit enter. After that, the setup should take under a minute and Bob will be installed on your device! Hooray!
