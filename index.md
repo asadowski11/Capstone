@@ -1,9 +1,8 @@
 ---
 Title: "Bob, the digital assistant"
 ---
-# Download 
+# Download <a href="/Bob/privacy-policy" style="font-size: small">Privacy Policy</a>
 
-<a href="/Bob/privacy-policy" style="font-size: small">Privacy Policy</a>
 Currently, there is a submission to the Microsoft App Store that is being reviewed by Microsoft. If you want to install Bob without going through the microsoft store, here's the link to all the files you need: <a href="https://github.com/ploiu/Bob/releases/download/v1.0.1/InstallFiles.zip" download="bobSetup.zip">Bob Setup Files</a>
 <br>
 If you need help installing the setup files, then <a href="/installation-instructions/">this link</a> is exactly what you need.
