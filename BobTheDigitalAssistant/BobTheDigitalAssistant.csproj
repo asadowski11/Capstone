@@ -92,7 +92,6 @@
     <Compile Include="Actions\JokeAction.cs" />
     <Compile Include="Actions\ReminderAction.cs" />
     <Compile Include="Actions\RepeatAfterMeAction.cs" />
-    <Compile Include="Actions\RngAction.cs" />
     <Compile Include="Actions\ThankYouAction.cs" />
     <Compile Include="Actions\TimeAction.cs" />
     <Compile Include="Actions\VoiceMemoAction.cs" />
