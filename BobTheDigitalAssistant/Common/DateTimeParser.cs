@@ -554,7 +554,7 @@ namespace BobTheDigitalAssistant.Common
         {
             text = text.ToLower().Replace("this after noon", "afternoon").Replace("this afternoon", "afternoon").Replace("tonight", "night").Replace("after noon", "afternoon");
             // create a regex to match where the daytime words should be
-            var regex = new Regex(@"(?i)(?<=(in the |at |during the |monday |tuesday |wednesday |thursday |friday |saturday |sunday |tomorrow |this ))[a-zA-Z]{3,}(?-i)|afternoon|midnight|night");
+            var regex = new Regex(@"(?i)(?<=(in the |at |during the |monday |tuesday |wednesday |thursday |friday |saturday |sunday |tomorrow |this ))[a-zA-Z]{3,}(?-i)|afternoon|midnight|night|noon");
             // make sure that "after noon" gets scrunched down to "afternoon" for the regex to work
             while (regex.IsMatch(text))
             {
