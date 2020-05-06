@@ -57,7 +57,7 @@ namespace BobTheDigitalAssistant.SpeechRecognition
                             {
                                 SpokenText = result.Text.Trim();
                                 // if the result is only "hey bob", then listen again
-                                if (StringUtils.StartsWith(SpokenText, activatorString))
+                                if (StringUtils.AreEqual(SpokenText, activatorString))
                                 {
                                     result = await recognizer.RecognizeAsync();
                                     SpokenText += " " + result.Text;

@@ -392,7 +392,7 @@ namespace BobTheDigitalAssistant.Common
             SqliteConnection conn = OpenDatabase();
             conn.Open();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"INSERT INTO TVoiceMemos(fileName,displayName,recordingDuration,filePath,recordDate,recordTime) Values('{FileName}', '{DsiplayName}', '{RecordingDuration}', '{FilePath}', '{strRecordDate}', '{strRecordTime}'); ";
+            command.CommandText = $"INSERT INTO TVoiceMemos(fileName,displayName,recordingDuration,filePath,recordDate,recordTime) Values('{FileName}', '{EscapeSingleTicks(DsiplayName)}', '{RecordingDuration}', '{FilePath}', '{strRecordDate}', '{strRecordTime}'); ";
             command.ExecuteNonQuery();
             conn.Close();
         }
