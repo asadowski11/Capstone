@@ -1,7 +1,6 @@
-﻿using Windows.Media.Playback;
+﻿using System;
 using Windows.Media.Core;
-using System;
-
+using Windows.Media.Playback;
 
 namespace Capstone.Common
 {

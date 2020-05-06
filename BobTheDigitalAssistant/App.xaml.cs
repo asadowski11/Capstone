@@ -1,13 +1,12 @@
-using Capstone.Common;
-using Captsone.SpeechRecognition;
-using Capstone.Helpers;
 using System;
+using System.Threading;
+using Capstone.Common;
+using Capstone.Helpers;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using System.Threading;
 
 namespace Capstone
 {
@@ -94,7 +93,7 @@ namespace Capstone
         /// </summary>
         /// <param name="sender">The Frame which failed navigation</param>
         /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
@@ -112,6 +111,5 @@ namespace Capstone
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
-
     }
 }

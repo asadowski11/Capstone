@@ -11,7 +11,6 @@ namespace Capstone.Models
 
         public SearchableWebsite() : this(-1, "", "", "")
         {
-
         }
 
         public SearchableWebsite(int SearchableWebsiteID, string Name, string BaseURL, string QueryString)

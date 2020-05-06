@@ -10,22 +10,22 @@
 
     <Grid x:Name="AlarmsForm" Margin="112">
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <!--Alarm title-->
-        <TextBox x:Name="AlarmTitleInput" TabIndex="0" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" PlaceholderText="Alarm Title" Margin="20,20,20,0" Grid.ColumnSpan="3" Header="Title"/>
+        <TextBox x:Name="AlarmTitleInput" TabIndex="0" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" PlaceholderText="Alarm Title" Margin="20,20,20,0" Grid.ColumnSpan="3" Header="Title" />
         <!--Date and time-->
-        <CalendarDatePicker x:Name="AlarmDatePicker" TabIndex="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20,20,20,0" Header="Date"/>
+        <CalendarDatePicker x:Name="AlarmDatePicker" TabIndex="1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20,20,20,0" Header="Date" />
         <TimePicker x:Name="AlarmTimePicker" TabIndex="2" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20,20,20,0" Header="Time" />
         <!--buttons for submit and cancel-->
-        <Button x:Name="CancelAlarmButton" AccessKey="C" Content="Cancel" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20" Height="62" Click="CancelAlarmButton_Click"/>
-        <Button x:Name="SubmitAlarmButton" AccessKey="S" Content="Save" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20" Height="62" Click="SubmitAlarmButton_Click"/>
+        <Button x:Name="CancelAlarmButton" AccessKey="C" Content="Cancel" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20" Height="62" Click="CancelAlarmButton_Click" />
+        <Button x:Name="SubmitAlarmButton" AccessKey="S" Content="Save" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="20" Height="62" Click="SubmitAlarmButton_Click" />
     </Grid>
 </Page>

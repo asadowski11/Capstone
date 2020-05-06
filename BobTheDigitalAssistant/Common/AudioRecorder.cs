@@ -8,13 +8,10 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
 
-
-
 namespace Capstone.Common
 {
     public class AudioRecorder
     {
-
         public MediaElement playbackMediaElement = new MediaElement();
         private MediaCapture _mediaCapture;
         private InMemoryRandomAccessStream _memoryBuffer;
@@ -128,7 +125,6 @@ namespace Capstone.Common
             });
         }
 
-
         public async void DeleteFile(string file)
         {
             StorageFolder storageFolder = await ApplicationData.Current.LocalFolder.GetFolderAsync("VoiceNotes");
@@ -146,6 +142,7 @@ namespace Capstone.Common
                 _memoryBuffer.Dispose();
             }
         }
+
         public void DisposeMedia()
         {
             if (_mediaCapture != null)
@@ -153,6 +150,7 @@ namespace Capstone.Common
                 _mediaCapture.Dispose();
             }
         }
+
         public void DisposeStream()
         {
             if (stream != null)

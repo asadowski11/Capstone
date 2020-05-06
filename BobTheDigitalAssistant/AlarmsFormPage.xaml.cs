@@ -1,18 +1,18 @@
-﻿using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+﻿using Capstone.Common;
 using Capstone.Models;
-using Capstone.Common;
 using Windows.UI;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace Capstone
 {
-
     /// <summary>
     /// The form for editing and creating an alarm. Technically this page is only used to edit an alarm, as "creating" an alarm involves passing in a blank alarm to this page
     /// </summary>
     public sealed partial class AlarmsFormPage : Page
     {
         public Alarm AlarmToEdit { get; set; }
+
         public AlarmsFormPage()
         {
             this.InitializeComponent();

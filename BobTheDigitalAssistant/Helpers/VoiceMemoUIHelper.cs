@@ -106,6 +106,7 @@ namespace Capstone.Helpers
             button.Click += (sender, args) => ClickAction();
             return button;
         }
+
         /// <summary>
         /// Builds a relative panel containing the details of a voice memo
         /// </summary>
@@ -227,6 +228,7 @@ namespace Capstone.Helpers
             titleBlock.Text = VoiceMemoToAdd.DisplayName;
             return titleBlock;
         }
+
         /// <summary>
         /// Stops playback of the passed <paramref name="audioRecorder"/>, deletes the passed <paramref name="VoiceMemoToDelete"/> from the database and the file system, and calls the passed <paramref name="Callback"/> if it's not null
         /// </summary>
@@ -285,7 +287,7 @@ namespace Capstone.Helpers
         /// <param name="audioRecorder"></param>
         private static async void PlayVoiceMemo(VoiceMemo VoiceMemoToPlay, AudioRecorder audioRecorder)
         {
-            //don't let playback if in recording session 
+            //don't let playback if in recording session
             if (!audioRecorder.IsRecording)
             {
                 await audioRecorder.PlayFromDisk(VoiceMemoToPlay.FileName);

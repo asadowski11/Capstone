@@ -1,9 +1,9 @@
-﻿using Capstone.Common;
-using Capstone.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
+using Capstone.Common;
+using Capstone.Models;
 using Windows.UI.Xaml.Controls;
 
 namespace Capstone.Actions
@@ -12,6 +12,7 @@ namespace Capstone.Actions
     {
         private SearchableWebsite desiredSearchableWebsite { get; set; }
         private SearchEngine desiredSearchEngine { get; set; }
+
         public WebsiteSearchAction(string CommandString)
         {
             this.CommandString = CommandString;
@@ -46,7 +47,7 @@ namespace Capstone.Actions
                 //launch browser. this will be done with the default browser
                 LaunchSearch(searchQuery);
             }
-            // show a link to the search 
+            // show a link to the search
             this.ClearArea();
             var linkElement = new HyperlinkButton();
             linkElement.Content = $"{searchParameters} on {(desiredSearchableWebsite != null ? desiredSearchableWebsite.Name : desiredSearchEngine?.Name)}";
@@ -66,6 +67,7 @@ namespace Capstone.Actions
             // after this, use the name to query info from the search engine table
             desiredSearchEngine = StoredProcedures.QuerySearchEngineByName(preferredSearchEngineName);
         }
+
         private bool GetActionFromCommand(List<SearchableWebsite> allSearchableWebsites)
         {
             foreach (SearchableWebsite searchableWebsite in allSearchableWebsites)
@@ -97,8 +99,7 @@ namespace Capstone.Actions
 
         private async void LaunchSearch(string search)
         {
-
-            // Create a Uri object from a URI string 
+            // Create a Uri object from a URI string
             var uri = new System.Uri(search);
 
             //launch uri with search
@@ -128,7 +129,6 @@ namespace Capstone.Actions
             }
             catch (Exception)
             {
-
             }
 
             return searchParameters.Trim();

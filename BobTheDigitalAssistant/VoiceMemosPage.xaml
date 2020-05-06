@@ -9,23 +9,23 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="112"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="112" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick"/>
+        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick" />
         <RelativePanel x:Name="VoiceRecordPanel" Grid.Row="2" Grid.Column="0">
-            <Button x:Name="startRecording"  FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" FontFamily="Segoe MDL2 Assets" Content="&#xE1D6;" Click="Button_ClickStart"/>
-            <Button x:Name="stopRecording"  FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" FontFamily="Segoe MDL2 Assets" Content="&#xE15B;" Click="Button_ClickStop"/>
-            <Button x:Name="saveRecording"  FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" FontFamily="Segoe MDL2 Assets" Content="&#xE105;" Click="Button_ClickSave"/>
+            <Button x:Name="startRecording"  FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" FontFamily="Segoe MDL2 Assets" Content="&#xE1D6;" Click="Button_ClickStart" />
+            <Button x:Name="stopRecording"  FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" FontFamily="Segoe MDL2 Assets" Content="&#xE15B;" Click="Button_ClickStop" />
+            <Button x:Name="saveRecording"  FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" FontFamily="Segoe MDL2 Assets" Content="&#xE105;" Click="Button_ClickSave" />
             <TextBox x:Name="displayName" Width="150" RelativePanel.Below="saveRecording" RelativePanel.AlignLeftWith="saveRecording" Header="Display Name:"></TextBox>
-            <Button x:Name="deleteRecording"  RelativePanel.AlignLeftWith="saveRecording" FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" FontFamily="Segoe MDL2 Assets" Content="&#xE107;" Click="Button_ClickDelete"/>
+            <Button x:Name="deleteRecording"  RelativePanel.AlignLeftWith="saveRecording" FontSize="32" Background="{ThemeResource SystemAccentColor}" Foreground="{ThemeResource SystemAccentColorLight3}" Width="150" Height="150" FontFamily="Segoe MDL2 Assets" Content="&#xE107;" Click="Button_ClickDelete" />
         </RelativePanel>
         <ScrollViewer Grid.Row="1" Grid.Column="1">
-            <StackPanel x:Name="VoiceNoteList" Width="300" Margin="0,0,20,20" HorizontalAlignment="Stretch"/>
+            <StackPanel x:Name="VoiceNoteList" Width="300" Margin="0,0,20,20" HorizontalAlignment="Stretch" />
         </ScrollViewer>
     </Grid>
 </Page>

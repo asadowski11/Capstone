@@ -1,9 +1,9 @@
-﻿using Capstone.Common;
-using Capstone.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Capstone.Common;
+using Capstone.Models;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -28,6 +28,7 @@ namespace Capstone.Actions
         }
 
         public ReminderActionTypes ActionType { get; set; }
+
         public override async void PerformAction()
         {
             ReminderActionTypes desiredAction = this.GetActionFromCommand();
@@ -44,9 +45,11 @@ namespace Capstone.Actions
                         RelativePanel.SetAlignVerticalCenterWithPanel(panel, true);
                     }
                     break;
+
                 case ReminderActionTypes.EDIT:
                     this.EditReminder();
                     break;
+
                 case ReminderActionTypes.DELETE:
                     this.DeleteReminder();
                     break;
@@ -226,7 +229,7 @@ namespace Capstone.Actions
             }
             else
             {
-                // TODO ask for the title once the voice detection is set up 
+                // TODO ask for the title once the voice detection is set up
             }
             return title;
         }
@@ -273,6 +276,7 @@ namespace Capstone.Actions
 
             return activatedDateTime;
         }
+
         /// <summary>
         /// Attempts to find the reminder whose activation date matches the passed date in this object's commandString
         /// </summary>

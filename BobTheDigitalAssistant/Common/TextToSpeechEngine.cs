@@ -1,6 +1,5 @@
 ﻿using System;
 using Windows.Media.SpeechSynthesis;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Capstone.Common

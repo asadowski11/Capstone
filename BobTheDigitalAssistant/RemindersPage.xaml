@@ -10,14 +10,14 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="112"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="112" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" HorizontalAlignment="Left" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick"/>
+        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" HorizontalAlignment="Left" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick" />
         <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Reminders</TextBlock>
         <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <VariableSizedWrapGrid x:Name="VariableGrid" MaximumRowsOrColumns="4" ItemHeight="250" ItemWidth="350" Orientation="Horizontal">

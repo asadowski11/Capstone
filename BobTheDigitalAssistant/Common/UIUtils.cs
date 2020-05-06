@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Capstone.Common
 {
-    static class UIUtils
+    internal static class UIUtils
     {
         /// <summary>
         /// Navigates from the passed CurrentPage to the main screen. Useful for something like a back button
@@ -73,6 +73,5 @@ namespace Capstone.Common
             RelativePanel.SetAlignHorizontalCenterWithPanel(scrollPanel, true);
             scrollPanel.Content = textBlock;
         }
-
     }
 }

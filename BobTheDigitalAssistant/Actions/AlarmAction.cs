@@ -1,9 +1,9 @@
-﻿using Capstone.Common;
-using Capstone.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Capstone.Common;
+using Capstone.Models;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -28,6 +28,7 @@ namespace Capstone.Actions
         }
 
         public AlarmActionTypes ActionType { get; set; }
+
         public override async void PerformAction()
         {
             AlarmActionTypes desiredAction = this.GetActionFromCommand();
@@ -44,9 +45,11 @@ namespace Capstone.Actions
                         RelativePanel.SetAlignVerticalCenterWithPanel(panel, true);
                     }
                     break;
+
                 case AlarmActionTypes.EDIT:
                     this.EditAlarm();
                     break;
+
                 case AlarmActionTypes.DELETE:
                     this.DeleteAlarm();
                     break;
@@ -247,6 +250,7 @@ namespace Capstone.Actions
 
             return activatedDateTime;
         }
+
         /// <summary>
         /// Attempts to find the alarm whose activation date matches the passed date in this object's commandString
         /// </summary>

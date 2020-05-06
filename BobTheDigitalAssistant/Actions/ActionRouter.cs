@@ -55,7 +55,7 @@ namespace Capstone.Actions
             actionTree.Add("record", voiceNoteDict);
             actionTree.Add("recording", voiceNoteDict);
         }
-       
+
         private static void SetUpInternetSearchBranches()
         {
             Func<string, Action> internetSearchDict = (commandText) => new WebsiteSearchAction(commandText);
@@ -83,7 +83,6 @@ namespace Capstone.Actions
             actionTree.Add("afternoon", greetingDict);
             actionTree.Add("evening", greetingDict);
             actionTree.Add("night", greetingDict);
-
         }
 
         private static void SetUpTimeBranches()
@@ -178,14 +177,16 @@ namespace Capstone.Actions
             actionTree.Add("tell", jokeDict);
             actionTree.Add("joke", jokeDict);
         }
+
         private static void SetUpAgeBranches()
         {
             Func<string, Action> getAge = (commandText) => new AgeAction(commandText);
-            
+
             actionTree.Add("age", getAge);
             actionTree.Add("born", getAge);
             actionTree.Add("old", getAge);
         }
+
         private static void SetUpDirectBobQuestionBranches()
         {
             Func<string, Action> whatCanYouDoFunction = (commandText) => new WhatCanYouDoAction(commandText);

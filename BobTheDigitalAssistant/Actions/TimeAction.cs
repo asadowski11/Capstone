@@ -1,11 +1,10 @@
-﻿using Capstone.Common;
-using System;
+﻿using System;
+using Capstone.Common;
 
 namespace Capstone.Actions
 {
     public class TimeAction : Action
     {
-
         public TimeAction(string CommandString)
         {
             this.CommandString = CommandString;
@@ -22,7 +21,6 @@ namespace Capstone.Actions
                 string ssml = new SSMLBuilder().Prosody(text, contour: "(20%, +8%) (60%,-8%) (80%, +2%)").Build();
                 TextToSpeechEngine.SpeakInflectedText(this.MediaElement, ssml);
                 this.ShowMessage(text);
-
             }
             else if (this.CommandString.Contains("date"))
             {

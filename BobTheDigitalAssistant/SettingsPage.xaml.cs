@@ -1,20 +1,10 @@
-﻿using Capstone.Common;
-using Capstone.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Capstone.Common;
+using Capstone.Models;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,6 +16,7 @@ namespace Capstone
     public sealed partial class SettingsPage : Page
     {
         private List<Setting> Settings = new List<Setting>();
+
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -41,7 +32,6 @@ namespace Capstone
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             ConfirmCancel();
-
         }
 
         private async void ConfirmCancel()

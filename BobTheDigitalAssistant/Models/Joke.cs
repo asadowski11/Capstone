@@ -12,7 +12,9 @@ namespace Capstone.Models
             this.Text = Text;
         }
 
-        private Joke() : this("") { }
+        private Joke() : this("")
+        {
+        }
 
         public static Joke FromDataRow(SqliteDataReader reader)
         {

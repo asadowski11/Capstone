@@ -1,9 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 
 namespace Capstone.Models
 {
@@ -18,7 +15,6 @@ namespace Capstone.Models
 
         public Setting() : this(-1, "", new List<SettingOption> { })
         {
-
         }
 
         public Setting(int SettingID, string DisplayName, List<SettingOption> Options)
@@ -63,7 +59,6 @@ namespace Capstone.Models
 
         public SettingOption() : this(-1, "", false)
         {
-
         }
 
         public SettingOption(int OptionID, string DisplayName, bool IsSelected)

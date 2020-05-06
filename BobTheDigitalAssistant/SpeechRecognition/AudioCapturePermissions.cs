@@ -1,7 +1,7 @@
-﻿using Capstone.Common;
-using Capstone.Models;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Capstone.Common;
+using Capstone.Models;
 using Windows.Media.Capture;
 using Windows.UI.Popups;
 
@@ -48,7 +48,8 @@ namespace Captsone.SpeechRecognition
                 // Thrown when permission to use the audio capture device is denied.
                 // If this occurs, show an error or disable recognition functionality.
                 var dialog = new MessageDialog("Microphone permissions are allowed in app settings, but are disabled in system settings. Do you want to enable microphone access for this app?");
-                dialog.Commands.Add(new UICommand("No", (command) => {
+                dialog.Commands.Add(new UICommand("No", (command) =>
+                {
                     // get the setting for voice detection in the database, mark it as disabled, and update it in the database
                     Setting voiceDetectionSetting = StoredProcedures.QuerySettingByName("Voice Activation");
                     voiceDetectionSetting.SelectOption("Disabled");

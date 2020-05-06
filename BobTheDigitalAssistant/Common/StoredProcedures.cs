@@ -9,7 +9,7 @@ using Windows.Storage;
 
 namespace Capstone.Common
 {
-    class StoredProcedures
+    internal class StoredProcedures
     {
         public static async Task CreateDatabase()
         {
@@ -36,6 +36,7 @@ namespace Capstone.Common
                 connection.Close();
             }
         }
+
         public static SqliteConnection OpenDatabase()
         {
             string targetDbPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "Database\\BobDB.db");
@@ -60,6 +61,7 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
         public static void UpdateReminder(int ID, string Title, DateTime ReminderDateAndTime, string Description, bool isExpired)
         {
             // escape the single ticks
@@ -79,6 +81,7 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
         public static void DeleteReminder(int ID)
         {
             int intID = ID;
@@ -89,6 +92,7 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
         public static Reminder QueryReminder(int ID = -1)
         {
             Reminder reminder = new Reminder();
@@ -125,7 +129,7 @@ namespace Capstone.Common
         public static List<Reminder> QueryAllReminders()
         {
             List<Reminder> reminders = new List<Reminder>();
-            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.isExpired, TReminderDates.reminderDate 
+            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.isExpired, TReminderDates.reminderDate
                             FROM TReminders, TReminderDates
                             WHERE TReminderDates.reminderID = TReminders.reminderID AND TReminders.isDeleted <> 1
                             ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
@@ -148,7 +152,7 @@ namespace Capstone.Common
         public static List<Reminder> QueryAllUnexpiredReminders()
         {
             List<Reminder> reminders = new List<Reminder>();
-            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.IsExpired, TReminderDates.reminderDate 
+            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.IsExpired, TReminderDates.reminderDate
                             FROM TReminders, TReminderDates
                             WHERE TReminderDates.reminderID = TReminders.reminderID AND TReminders.isDeleted <> 1 AND TReminders.isExpired <> 1
                             ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
@@ -339,7 +343,7 @@ namespace Capstone.Common
         {
             List<Alarm> alarms = new List<Alarm>();
             string query = @"SELECT TAlarms.alarmID, TAlarms.alarmTitle, TAlarms.isDeleted, TAlarms.alarmTime, TAlarms.isExpired, TAlarmDates.alarmDate
-                            FROM TAlarms, TAlarmDates 
+                            FROM TAlarms, TAlarmDates
                             WHERE TAlarmDates.alarmID = TAlarms.alarmID AND TAlarms.isDeleted <> 1
                             ORDER BY TAlarmDates.alarmDate,TAlarms.alarmTime";
             using (SqliteConnection connection = OpenDatabase())
@@ -361,8 +365,8 @@ namespace Capstone.Common
         public static List<Alarm> QueryAllUnexpiredAlarms()
         {
             List<Alarm> alarms = new List<Alarm>();
-            string query = @"SELECT TAlarms.alarmID, TAlarms.alarmTitle, TAlarms.isDeleted, TAlarms.alarmTime, TAlarms.isExpired, TAlarmDates.alarmDate 
-                            FROM TAlarms, TAlarmDates 
+            string query = @"SELECT TAlarms.alarmID, TAlarms.alarmTitle, TAlarms.isDeleted, TAlarms.alarmTime, TAlarms.isExpired, TAlarmDates.alarmDate
+                            FROM TAlarms, TAlarmDates
                             WHERE TAlarmDates.alarmID = TAlarms.alarmID AND TAlarms.isDeleted <> 1 AND TAlarms.isExpired <> 1
                             ORDER BY TAlarmDates.alarmDate,TAlarms.alarmTime";
             using (SqliteConnection connection = OpenDatabase())
@@ -383,7 +387,6 @@ namespace Capstone.Common
 
         public static void CreateVoiceNote(string FileName, string DsiplayName, int RecordingDuration, string FilePath, DateTime RecordDate, DateTime RecordTime)
         {
-
             string strRecordTime = RecordTime.ToString("HH:mm");
             string strRecordDate = RecordDate.ToString("yyyy-MM-dd HH:mm");
             SqliteConnection conn = OpenDatabase();
@@ -393,6 +396,7 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
         public static void DeleteVoiceNote(int ID)
         {
             int intID = ID;
@@ -403,6 +407,7 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
+
         public static void UpdateVoiceNote(int ID, string Title)
         {
             int intID = ID;
@@ -413,7 +418,6 @@ namespace Capstone.Common
             command.ExecuteNonQuery();
             conn.Close();
         }
-
 
         public static List<VoiceMemo> QueryAllVoiceMemos()
         {
@@ -508,7 +512,7 @@ namespace Capstone.Common
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT TSettings.settingID, TSettings.settingDisplayName AS 'Setting Name', group_concat((TSettingOptions.settingOptionID || ':' || TSettingOptions.optionDisplayName || ':' || TSettingOptions.isSelected)) AS 'options'
-                                            FROM TSettings,TSettingOptions 
+                                            FROM TSettings,TSettingOptions
                                             WHERE TSettings.settingID = TSettingOptions.settingID
 	                                              AND TSettings.settingDisplayName = '{DisplayName}'
                                             GROUP BY TSettings.settingID".Replace("{DisplayName}", settingName);
@@ -534,7 +538,7 @@ namespace Capstone.Common
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT TSettings.settingID, TSettings.settingDisplayName AS 'Setting Name', group_concat((TSettingOptions.settingOptionID || ':' || TSettingOptions.optionDisplayName || ':' || TSettingOptions.isSelected)) AS 'options'
-                                            FROM TSettings,TSettingOptions 
+                                            FROM TSettings,TSettingOptions
                                             WHERE TSettings.settingID = TSettingOptions.settingID
 	                                              AND TSettings.settingDisplayName NOT LIKE '\_%' ESCAPE '\'
                                             GROUP BY TSettings.settingID";
@@ -592,6 +596,7 @@ namespace Capstone.Common
             conn.Close();
             return provider;
         }
+
         public static MapProvider QueryMapProvider(string ProviderName)
         {
             MapProvider mapProvider = null;
@@ -612,6 +617,7 @@ namespace Capstone.Common
             conn.Close();
             return mapProvider;
         }
+
         public static SearchableWebsite QuerySearchableWebsite(int ID = -1)
         {
             SearchableWebsite searchableWebsite = new SearchableWebsite();
@@ -643,6 +649,7 @@ namespace Capstone.Common
             conn.Close();
             return searchableWebsite;
         }
+
         public static SearchEngine QuerySearchEngine(int ID = -1)
         {
             SearchEngine searchEngine = new SearchEngine();
@@ -674,7 +681,6 @@ namespace Capstone.Common
             conn.Close();
             return searchEngine;
         }
-
 
         public static SearchEngine QuerySearchEngineByName(string SearchEngineName)
         {
@@ -716,32 +722,32 @@ namespace Capstone.Common
             return searchableWebsites;
         }
 
-            /// <summary>
-            /// Pulls a random joke from the database and returns it
-            /// </summary>
-            /// <returns></returns>
-            public static Joke QueryRandomJoke()
+        /// <summary>
+        /// Pulls a random joke from the database and returns it
+        /// </summary>
+        /// <returns></returns>
+        public static Joke QueryRandomJoke()
+        {
+            Joke joke = null;
+            using (SqliteConnection connection = OpenDatabase())
             {
-                Joke joke = null;
-                using (SqliteConnection connection = OpenDatabase())
+                connection.Open();
+                using (SqliteCommand command = connection.CreateCommand())
                 {
-                    connection.Open();
-                    using (SqliteCommand command = connection.CreateCommand())
-                    {
-                        command.CommandText = "SELECT * FROM TJokes WHERE jokeID IN (SELECT jokeID FROM TJokes ORDER BY RANDOM() LIMIT 1)";
-                        SqliteDataReader reader = command.ExecuteReader();
-                        reader.Read();
-                        joke = Joke.FromDataRow(reader);
-                        reader.Close();
-                    }
+                    command.CommandText = "SELECT * FROM TJokes WHERE jokeID IN (SELECT jokeID FROM TJokes ORDER BY RANDOM() LIMIT 1)";
+                    SqliteDataReader reader = command.ExecuteReader();
+                    reader.Read();
+                    joke = Joke.FromDataRow(reader);
+                    reader.Close();
                 }
-                return joke;
             }
+            return joke;
+        }
 
-            private static string EscapeSingleTicks(string text)
-            {
-                var tickRegex = new Regex("'");
-                return tickRegex.Replace(text, "''");
-            }
+        private static string EscapeSingleTicks(string text)
+        {
+            var tickRegex = new Regex("'");
+            return tickRegex.Replace(text, "''");
         }
     }
+}

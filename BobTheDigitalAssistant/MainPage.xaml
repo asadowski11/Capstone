@@ -11,39 +11,39 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <!--this colummn holds the menu-->
-            <ColumnDefinition x:Name="MenuColumn" Width="320"/>
+            <ColumnDefinition x:Name="MenuColumn" Width="320" />
             <!--this column holds the main content-->
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="112"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition x:Name="TextBoxRow"  Height="224"/>
+            <RowDefinition Height="112" />
+            <RowDefinition Height="*" />
+            <RowDefinition x:Name="TextBoxRow"  Height="224" />
         </Grid.RowDefinitions>
         <!--The main menu bar-->
         <ScrollViewer x:Name="MenuPanel"  Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}">
             <StackPanel Grid.RowSpan="3" Grid.Row="0" Grid.Column="0">
-                <Button x:Name="SettingsButton" Background="Transparent" Content="Settings" HorizontalAlignment="Stretch" Height="62" Margin="25" Click="SettingsButton_Click"/>
-                <Button x:Name="RemindersButton" Background="Transparent" Content="Reminders" HorizontalAlignment="Stretch" Height="62" Margin="25,0,25,25" Click="RemindersButton_Click"/>
-                <Button x:Name="AlarmsButton" Background="Transparent" Content="Alarms" HorizontalAlignment="Stretch" Height="62" Margin="25,0,25,25" Click="AlarmsButton_Click"/>
-                <Button x:Name="VoiceNotesButton" Background="Transparent" Content="Voice Notes" HorizontalAlignment="Stretch" Height="62" Margin="25,0,25,25" Click="VoiceNotesButton_Click"/>
-                <Button x:Name="DataPrivacyButton" Background="Transparent" Content="Data Privacy Tips" HorizontalAlignment="Stretch" Margin="25,0,25,25" Height="62" Click="DataPrivacyButton_Click"/>
-                <Button x:Name="LibrariesButton" Background="Transparent" Content="Libraries We Use" HorizontalAlignment="Stretch" Margin="25,0,25,25" Height="62" Click="LibrariesButton_Click"/>
+                <Button x:Name="SettingsButton" Background="Transparent" Content="Settings" HorizontalAlignment="Stretch" Height="62" Margin="25" Click="SettingsButton_Click" />
+                <Button x:Name="RemindersButton" Background="Transparent" Content="Reminders" HorizontalAlignment="Stretch" Height="62" Margin="25,0,25,25" Click="RemindersButton_Click" />
+                <Button x:Name="AlarmsButton" Background="Transparent" Content="Alarms" HorizontalAlignment="Stretch" Height="62" Margin="25,0,25,25" Click="AlarmsButton_Click" />
+                <Button x:Name="VoiceNotesButton" Background="Transparent" Content="Voice Notes" HorizontalAlignment="Stretch" Height="62" Margin="25,0,25,25" Click="VoiceNotesButton_Click" />
+                <Button x:Name="DataPrivacyButton" Background="Transparent" Content="Data Privacy Tips" HorizontalAlignment="Stretch" Margin="25,0,25,25" Height="62" Click="DataPrivacyButton_Click" />
+                <Button x:Name="LibrariesButton" Background="Transparent" Content="Libraries We Use" HorizontalAlignment="Stretch" Margin="25,0,25,25" Height="62" Click="LibrariesButton_Click" />
             </StackPanel>
         </ScrollViewer>
         <Button Grid.Row="0" x:Name="MenuButton" Height="62" Foreground="White" VerticalAlignment="Top" Click="MenuButton_OnClick" HorizontalAlignment="Left" Margin="25,25,0,0" Width="62" Grid.Column="1">
             <Button.FocusVisualSecondaryBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="Black" />
+                    <GradientStop Color="White" Offset="1" />
                 </LinearGradientBrush>
             </Button.FocusVisualSecondaryBrush>
-            <SymbolIcon Symbol="GlobalNavigationButton" Height="20" VerticalAlignment="Bottom"/>
+            <SymbolIcon Symbol="GlobalNavigationButton" Height="20" VerticalAlignment="Bottom" />
         </Button>
         <!--the width for now is just temporary. It will be overridden in code-->
         <RelativePanel x:Name="DynamicArea" Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="25,0,25,0" Visibility="Visible">
         </RelativePanel>
-        <TextBox Grid.Row="2" Grid.Column="1" x:Name="CommandBox" Margin="25" Text="" TextWrapping="Wrap" PlaceholderText="Type a command for Bob to do, or question for him to answer" VerticalAlignment="Top" KeyDown="CommandBox_KeyDown"/>
-        <MediaElement x:Name="media" Visibility="Collapsed"/>
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="CommandBox" Margin="25" Text="" TextWrapping="Wrap" PlaceholderText="Type a command for Bob to do, or question for him to answer" VerticalAlignment="Top" KeyDown="CommandBox_KeyDown" />
+        <MediaElement x:Name="media" Visibility="Collapsed" />
     </Grid>
 </Page>

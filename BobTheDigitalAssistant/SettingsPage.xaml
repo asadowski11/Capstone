@@ -10,16 +10,16 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="112"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="112" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="112"/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="112" />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick"/>
+        <Button Style="{StaticResource NavigationBackButtonNormalStyle}" Grid.Row="0" Margin="25,10,10,10" Height="62" Width="62" Click="BackButton_OnClick" />
         <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Settings</TextBlock>
         <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel x:Name="SettingsStackPanel" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Stretch"></StackPanel>

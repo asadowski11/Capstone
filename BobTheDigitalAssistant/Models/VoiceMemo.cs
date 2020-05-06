@@ -6,6 +6,7 @@ namespace Capstone.Models
     public class VoiceMemo
     {
         public int VoiceMemoID { get; set; }
+
         /// <summary>
         /// Contains the name of the file, which isn't necessarily what gets displayed to the user
         /// </summary>
@@ -15,13 +16,13 @@ namespace Capstone.Models
         /// This is what gets displayed to the user through the UI
         /// </summary>
         public string DisplayName { get; set; }
+
         public int RecordingDuration { get; set; }
         public string FullFilePath { get; set; }
         public DateTime DateRecorded { get; set; }
 
         public VoiceMemo() : this(-1, "", "", 0, "", DateTime.MaxValue)
         {
-
         }
 
         public VoiceMemo(int VoiceMemoID, string FileName, string DisplayName, int RecordingDuration, string FullFilePath, DateTime DateRecorded)
@@ -39,8 +40,6 @@ namespace Capstone.Models
             VoiceMemo createdVoiceMemo = new VoiceMemo(int.Parse(reader["voiceMemoID"].ToString()), reader["fileName"].ToString(), reader["displayName"].ToString(),
               int.Parse(reader["recordingDuration"].ToString()), reader["filePath"].ToString(), DateTime.Parse(reader["recordDate"].ToString()));
             return createdVoiceMemo;
-
-          
         }
     }
 }

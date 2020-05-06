@@ -11,7 +11,6 @@ namespace Capstone.Models
 
         public SearchEngine() : this(-1, "", "", "")
         {
-
         }
 
         public SearchEngine(int SearchEngineID, string Name, string BaseURL, string QueryString)

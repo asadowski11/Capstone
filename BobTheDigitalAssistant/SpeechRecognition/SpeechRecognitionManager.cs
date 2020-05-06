@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Capstone.Common;
-using Capstone.Models;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Xaml.Controls;
 
@@ -11,10 +10,13 @@ namespace Capstone.SpeechRecognition
     {
         // the current class that has the listener's attention
         private static Type CurrentListener { get; set; }
+
         // used by the current listener to tell it when the current listener is done listening
         public static bool IsCurrentListenerDone { get; set; }
+
         // the reference to what the objects the main page uses when listening
         private static Action<string> MainPageFunction { get; set; }
+
         private static TextBox MainPageTextBox { get; set; }
 
         /// <summary>

@@ -1,9 +1,9 @@
-﻿using Capstone.Common;
-using System;
+﻿using System;
+using Capstone.Common;
 
 namespace Capstone.Actions
 {
-    class GreetingAction:Action
+    internal class GreetingAction : Action
     {
         public GreetingAction(string CommandString)
         {

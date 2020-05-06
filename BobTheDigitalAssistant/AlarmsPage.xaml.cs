@@ -1,12 +1,12 @@
-﻿using Capstone.Common;
-using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
+﻿using System.Collections.Generic;
+using Capstone.Common;
 using Capstone.Models;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Text;
 using Windows.UI;
+using Windows.UI.Text;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,6 +18,7 @@ namespace Capstone
     public sealed partial class AlarmsPage : Page
     {
         private readonly List<Alarm> Alarms;
+
         public AlarmsPage()
         {
             this.InitializeComponent();
@@ -60,7 +61,6 @@ namespace Capstone
                 {
                     children.RemoveAt(children.Count - 1);
                 }
-
             }
             this.Alarms.ForEach(this.AddAlarmToScreen);
         }

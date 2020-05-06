@@ -1,7 +1,7 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Data.Sqlite;
 
 namespace Capstone.Models
 {
@@ -10,12 +10,15 @@ namespace Capstone.Models
         public int WeatherProviderID { get; set; }
         public string Name { get; set; }
         public WeatherProviderAccessTypes AccessType { get; set; }
+
         /// <summary>
         /// The list of urls that the weather provider needs to use
         /// </summary>
         public List<string> urls = new List<string>();
 
-        public WeatherProvider() : this(-1, "", WeatherProviderAccessTypes.EXTERNAL_URL) { }
+        public WeatherProvider() : this(-1, "", WeatherProviderAccessTypes.EXTERNAL_URL)
+        {
+        }
 
         public WeatherProvider(int WeatherProviderID, string Name, WeatherProviderAccessTypes AccessType)
         {

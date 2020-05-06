@@ -4,14 +4,9 @@ using System.Threading.Tasks;
 using Capstone.Common;
 using Capstone.Helpers;
 using Capstone.Models;
-using Windows.UI;
-using Windows.UI.Text;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Shapes;
 
 namespace Capstone
 {
@@ -20,12 +15,12 @@ namespace Capstone
     /// </summary>
     public sealed partial class VoiceMemosPage : Page
     {
-
-        AudioRecorder _audioRecorder;
+        private AudioRecorder _audioRecorder;
 
         public List<VoiceMemo> VoiceMemos { get; set; }
 
         private VoiceMemo CreateVoiceMemo = new VoiceMemo();
+
         public VoiceMemosPage()
         {
             this.InitializeComponent();
@@ -33,7 +28,6 @@ namespace Capstone
             //used to record, stop, and play voice note
             this._audioRecorder = new AudioRecorder();
             this.PopulateListOfVoiceMemos();
-
         }
 
         private void HideInitialControls()
@@ -62,7 +56,6 @@ namespace Capstone
                 _audioRecorder.DisposeMemoryBuffer();
                 UIUtils.GoToMainPage(this);
             }
-
         }
 
         private List<VoiceMemo> ReadVoiceMemosFromDatabase()
@@ -83,10 +76,8 @@ namespace Capstone
             this.VoiceNoteList.Children.Add(VoiceMemoUIHelper.BuildVoiceMemoPanel(VoiceMemoToAdd, this._audioRecorder, PopulateListOfVoiceMemos));
         }
 
-
         private async void Button_ClickDelete(object sender, RoutedEventArgs e)
         {
-
             //we need to make sure user understands nothing will be saved
             bool discardFile = false;
             discardFile = await DisplayDeleteFileDialog();
@@ -107,6 +98,7 @@ namespace Capstone
             OnStartRecordingToggle();
             this._audioRecorder.Record();
         }
+
         private void Button_ClickStop(object sender, RoutedEventArgs e)
         {
             //toggle buttons
@@ -209,6 +201,5 @@ namespace Capstone
             this.displayName.Text = "";
             this.startRecording.Visibility = Visibility.Visible;
         }
-
     }
 }

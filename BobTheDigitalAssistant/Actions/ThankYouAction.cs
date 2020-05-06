@@ -2,13 +2,13 @@
 
 namespace Capstone.Actions
 {
-    class ThankYouAction:Action
+    internal class ThankYouAction : Action
     {
-
         public ThankYouAction(string CommandString)
         {
             this.CommandString = CommandString;
         }
+
         public override void PerformAction()
         {
             this.ClearArea();

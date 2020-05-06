@@ -1,11 +1,10 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
+using Microsoft.Data.Sqlite;
 
 namespace Capstone.Models
 {
     public class Reminder
     {
-
         public int ReminderID { get; set; }
         public string Title { get; set; }
         public DateTime ActivateDateAndTime { get; set; }

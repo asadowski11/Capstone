@@ -13,6 +13,7 @@ namespace Capstone.Actions
     public class DirectionsAction : Action
     {
         private string DestinationName { get; set; }
+
         // TODO change to a different type once we know more about the location stuff for objects
         private string StartingPoint { get; set; }
 
@@ -55,9 +56,10 @@ namespace Capstone.Actions
                 ProvideDirectionsSuccessMessage(strDestination);
             }
         }
+
         private async void ProvideDirectionsSuccessMessage(string destination)
         {
-            // show a link to the search 
+            // show a link to the search
             this.ClearArea();
             var linkElement = new HyperlinkButton();
             linkElement.Content = $"Directions to {destination.ToLower()}";
@@ -104,7 +106,6 @@ namespace Capstone.Actions
                 this.ShowMessage(message);
             }
             return query;
-
         }
     }
 }

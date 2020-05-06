@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 
 namespace Capstone.Providers
 {
-    class LocationProvider
+    internal class LocationProvider
     {
         private static async Task<GeolocationAccessStatus> RequestLocationAccess()
         {
@@ -30,6 +26,7 @@ namespace Capstone.Providers
                     var locator = new Geolocator();
                     var position = await locator.GetGeopositionAsync();
                     return position;
+
                 case GeolocationAccessStatus.Unspecified:
                     throw new LocationProviderException("Unspecified Geolocation status");
                 case GeolocationAccessStatus.Denied:

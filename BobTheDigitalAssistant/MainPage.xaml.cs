@@ -1,15 +1,14 @@
-﻿using Capstone.Actions;
-using System;
+﻿using System;
+using Capstone.Actions;
+using Capstone.Common;
+using Capstone.SpeechRecognition;
+using Captsone.SpeechRecognition;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Core;
-using Capstone.Common;
-using Capstone.SpeechRecognition;
 using Windows.UI.Xaml.Navigation;
-using Capstone.Models;
-using Captsone.SpeechRecognition;
 
 namespace Capstone
 {
@@ -19,6 +18,7 @@ namespace Capstone
     public sealed partial class MainPage : Page
     {
         private bool IsMenuExpanded = false;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -28,8 +28,6 @@ namespace Capstone
             // prevent the application from closing when the user hits the x button. This will alarms and notifications to still trigger FIXME we will have to figure something out since apps can't be published to the store with a restricted capability
             //SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += CloseHandle;
             Window.Current.SizeChanged += SizeChangedHandler;
-            
-
         }
 
         private void MenuButton_OnClick(object sender, RoutedEventArgs e)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
@@ -11,6 +10,7 @@ namespace Capstone.Common
         {
             // used to determine if there's an error
             NONE = -1,
+
             SUNDAY = DayOfWeek.Sunday,
             MONDAY = DayOfWeek.Monday,
             TUESDAY = DayOfWeek.Tuesday,
@@ -24,6 +24,7 @@ namespace Capstone.Common
         {
             // used to indicate an error
             NONE = -1,
+
             JANUARY = 1,
             FEBRUARY = 2,
             MARCH = 3,
@@ -45,6 +46,7 @@ namespace Capstone.Common
         {
             // used to represent an error
             NONE = -1,
+
             SECOND = 0,
             MINUTE = 1,
             HOUR = 2,
@@ -52,12 +54,14 @@ namespace Capstone.Common
             WEEK = 4,
             MONTH = 5,
             YEAR = 6,
+
             // this isn't really a unit, but putting it here is the easiest because of where this enum is used
             TOMORROW = 7
         }
 
         // constant values for names assigned to times of day
         public static readonly string MORNING = "8:00 am";
+
         public static readonly string NOON = "12:00 pm";
         public static readonly string DAY = "1:00 pm";
         public static readonly string AFTERNOON = "4:00 pm";
@@ -157,27 +161,35 @@ namespace Capstone.Common
                     case Units.SECOND:
                         offsetDateTime = now.AddSeconds(parsedNumber);
                         break;
+
                     case Units.MINUTE:
                         offsetDateTime = now.AddMinutes(parsedNumber);
                         break;
+
                     case Units.HOUR:
                         offsetDateTime = now.AddHours(parsedNumber);
                         break;
+
                     case Units.DAY:
                         offsetDateTime = now.AddDays(parsedNumber);
                         break;
+
                     case Units.WEEK:
                         offsetDateTime = now.AddDays(7 * parsedNumber);
                         break;
+
                     case Units.MONTH:
                         offsetDateTime = now.AddMonths(parsedNumber);
                         break;
+
                     case Units.YEAR:
                         offsetDateTime = now.AddYears(parsedNumber);
                         break;
+
                     case Units.TOMORROW:
                         offsetDateTime = now.AddDays(1);
                         break;
+
                     case Units.NONE:
                     default:
                         throw new DateParseException("Something went wrong with adding the unit to the date");
@@ -288,7 +300,7 @@ namespace Capstone.Common
                 {
                     time = time.AddHours(12);
                     // if time is still less than now, then add another 12 hours
-                    if(now.TimeOfDay >= time.TimeOfDay)
+                    if (now.TimeOfDay >= time.TimeOfDay)
                     {
                         time = time.AddHours(12);
                         dayOffset = 1;
@@ -513,18 +525,25 @@ namespace Capstone.Common
             {
                 case DaysOfWeek.SUNDAY:
                     return DayOfWeek.Sunday;
+
                 case DaysOfWeek.MONDAY:
                     return DayOfWeek.Monday;
+
                 case DaysOfWeek.TUESDAY:
                     return DayOfWeek.Tuesday;
+
                 case DaysOfWeek.WEDNESDAY:
                     return DayOfWeek.Wednesday;
+
                 case DaysOfWeek.THURSDAY:
                     return DayOfWeek.Thursday;
+
                 case DaysOfWeek.FRIDAY:
                     return DayOfWeek.Friday;
+
                 case DaysOfWeek.SATURDAY:
                     return DayOfWeek.Saturday;
+
                 case DaysOfWeek.NONE:
                 default:
                     throw new DateParseException($"The string [{text}] does not contain a day of the week!");
@@ -552,21 +571,27 @@ namespace Capstone.Common
                     case "morning":
                         replacedTimeValue = MORNING;
                         break;
+
                     case "noon":
                         replacedTimeValue = NOON;
                         break;
+
                     case "afternoon":
                         replacedTimeValue = AFTERNOON;
                         break;
+
                     case "day":
                         replacedTimeValue = DAY;
                         break;
+
                     case "evening":
                         replacedTimeValue = EVENING;
                         break;
+
                     case "night":
                         replacedTimeValue = NIGHT;
                         break;
+
                     case "midnight":
                         replacedTimeValue = MIDNIGHT;
                         break;
@@ -636,6 +661,7 @@ namespace Capstone.Common
             }
             return parsedUnit;
         }
+
         private static string ReplaceMonthNamesWithMonthNumber(string text)
         {
             string result = text;

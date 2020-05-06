@@ -1,16 +1,15 @@
-﻿using Capstone.Models;
-using Microsoft.Data.Sqlite;
-using Microsoft.Toolkit.Uwp.Notifications;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Capstone.Models;
+using Microsoft.Data.Sqlite;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 
 namespace Capstone.Common
 {
     public static class AlarmAndReminderTracker
     {
-
         public static Boolean hasStarted { get; private set; } = false;
 
         public static void Start()

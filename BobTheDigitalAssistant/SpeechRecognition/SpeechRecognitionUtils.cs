@@ -1,8 +1,7 @@
-﻿using Capstone.Common;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
+using Capstone.Common;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
@@ -13,12 +12,17 @@ namespace Capstone.SpeechRecognition
     {
         private static SpeechRecognizer recognizer;
         public static bool IsStarted { get; private set; } = false;
+
         // if the user has disabled the "get to know you" setting, this is the error message
         private static readonly uint HResultPrivacyStatementDeclined = 0x80045509;
+
         private static readonly string activatorString = "hey bob";
+
         // the text box to populate the spoken words with
         public static TextBox commandBox;
+
         private static Thread thread;
+
         // holds what the recognizer thinks the user is saying
         private static string SpokenText = "";
 
@@ -78,14 +82,12 @@ namespace Capstone.SpeechRecognition
                         }
                         catch (Exception exception)
                         {
-
                             if ((uint)exception.HResult == HResultPrivacyStatementDeclined)
                             {
                                 var message = new MessageDialog("The privacy statement was declined." +
                                                                 "Go to Settings -> Privacy -> Speech, inking and typing, and ensure you" +
                                                                 "have viewed the privacy policy, and 'Get To Know You' is enabled.");
                                 await message.ShowAsync();
-
                             }
                         }
                     }
@@ -162,7 +164,6 @@ namespace Capstone.SpeechRecognition
                         commandBox.Text = tempText;
                     }
                 });
-
             }
         }
 
@@ -179,7 +180,6 @@ namespace Capstone.SpeechRecognition
             {
                 // only keep the stuff after the "hey bob" and get rid of the rest
                 text = activatorString + " " + splitSpokenText[1];
-
             }
             else
             {

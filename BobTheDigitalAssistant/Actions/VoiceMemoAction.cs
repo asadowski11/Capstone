@@ -1,7 +1,6 @@
 ﻿using System;
 using Capstone.Common;
 using Capstone.Helpers;
-using Capstone.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -66,7 +65,6 @@ namespace Capstone.Actions
             this.DynamicArea.Children.Add(SaveRecordingButton);
             this.DynamicArea.Children.Add(DeleteRecordingButton);
             this.DynamicArea.Children.Add(RecordingNameBox);
-
         }
 
         /// <summary>

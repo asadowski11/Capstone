@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.ExtendedExecution;
 
@@ -27,6 +24,7 @@ namespace Capstone.Helpers
                 case ExtendedExecutionResult.Allowed:
                     session = newSession;
                     break;
+
                 case ExtendedExecutionResult.Denied:
                     newSession.Dispose();
                     break;

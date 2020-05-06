@@ -1,14 +1,10 @@
-﻿using Capstone.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Capstone.Common;
 using Capstone.Models;
 using Capstone.Models.json.NationalWeatherService;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Devices.Geolocation;
 using Windows.Web.Http;
 
 namespace Capstone.Providers

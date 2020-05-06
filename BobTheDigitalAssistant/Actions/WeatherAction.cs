@@ -1,8 +1,8 @@
-﻿using Capstone.Common;
+﻿using System;
+using System.Collections.Generic;
+using Capstone.Common;
 using Capstone.Models;
 using Capstone.Providers;
-using System;
-using System.Collections.Generic;
 
 namespace Capstone.Actions
 {

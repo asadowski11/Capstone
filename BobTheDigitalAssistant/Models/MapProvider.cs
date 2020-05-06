@@ -1,7 +1,7 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Data.Sqlite;
 
 namespace Capstone.Models
 {
@@ -17,7 +17,9 @@ namespace Capstone.Models
         /// </summary>
         public Dictionary<string, string> URLParts { get; } = new Dictionary<string, string>();
 
-        public MapProvider() : this(-1, "", "", MapProviderAccessTypes.EXTERNAL_URL) { }
+        public MapProvider() : this(-1, "", "", MapProviderAccessTypes.EXTERNAL_URL)
+        {
+        }
 
         public MapProvider(int MapProviderID, string Name, string BaseURL, MapProviderAccessTypes AccessType)
         {
@@ -26,6 +28,7 @@ namespace Capstone.Models
             this.BaseURL = BaseURL;
             this.AccessType = AccessType;
         }
+
         public static MapProvider FromDataRow(SqliteDataReader reader)
         {
             try

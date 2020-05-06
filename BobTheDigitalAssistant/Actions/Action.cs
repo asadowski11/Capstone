@@ -1,6 +1,4 @@
 ﻿using Capstone.Common;
-using System.Threading;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Capstone.Actions
@@ -94,5 +92,4 @@ namespace Capstone.Actions
             }
         }
     }
-
 }
