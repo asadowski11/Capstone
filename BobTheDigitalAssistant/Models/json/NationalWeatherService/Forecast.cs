@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Capstone.Models.json.NationalWeatherService
+namespace BobTheDigitalAssistant.Models.json.NationalWeatherService
 {
     public class Forecast
     {

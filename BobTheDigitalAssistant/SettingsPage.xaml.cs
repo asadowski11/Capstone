@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Capstone.Common;
-using Capstone.Models;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Capstone
+namespace BobTheDigitalAssistant
 {
     /// <summary>
     /// The page that displays all the settings that the user can change

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Capstone.Models
+namespace BobTheDigitalAssistant.Models
 {
     /// <summary>
     /// Contains info for a single bit of weather, including temperature, humidity, wind, and precipitation

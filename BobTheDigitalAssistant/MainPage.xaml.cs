@@ -1,7 +1,7 @@
 ﻿using System;
-using Capstone.Actions;
-using Capstone.Common;
-using Capstone.SpeechRecognition;
+using BobTheDigitalAssistant.Actions;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.SpeechRecognition;
 using Captsone.SpeechRecognition;
 using Windows.System;
 using Windows.UI.Core;
@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Capstone
+namespace BobTheDigitalAssistant
 {
     /// <summary>
     /// The main page that is shown to the user when they open up the application
@@ -107,11 +107,11 @@ namespace Capstone
         private void performActionFromCommandBoxText(string text)
         {
             // get the action for the text in the text box
-            Func<string, Actions.Action> actionPrimer = ActionRouter.GetFunctionFromCommandString(text);
+            Func<string, BobTheDigitalAssistant.Actions.Action> actionPrimer = ActionRouter.GetFunctionFromCommandString(text);
 
             if (actionPrimer != null)
             {
-                Actions.Action action = actionPrimer.Invoke(text);
+                BobTheDigitalAssistant.Actions.Action action = actionPrimer.Invoke(text);
                 action.PerformAction(this.media, this.DynamicArea);
             }
             else

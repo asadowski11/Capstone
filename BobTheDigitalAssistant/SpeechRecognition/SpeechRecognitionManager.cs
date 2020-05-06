@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Capstone.Common;
+using BobTheDigitalAssistant.Common;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.SpeechRecognition
+namespace BobTheDigitalAssistant.SpeechRecognition
 {
     public class SpeechRecognitionManager
     {

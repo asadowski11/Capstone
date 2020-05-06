@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Capstone.Common;
-using Capstone.Helpers;
-using Capstone.Models;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
+using BobTheDigitalAssistant.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Capstone
+namespace BobTheDigitalAssistant
 {
     /// <summary>
     /// A page to view and create voice Memos from as well as listen to them and delete them

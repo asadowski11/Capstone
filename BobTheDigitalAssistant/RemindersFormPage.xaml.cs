@@ -1,10 +1,10 @@
-﻿using Capstone.Common;
-using Capstone.Models;
+﻿using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Capstone
+namespace BobTheDigitalAssistant
 {
     /// <summary>
     /// The form for editing and creating a Reminder. Technically this page is only used to edit a Reminder, as "creating" a Reminder involves passing in a blank Reminder to this page

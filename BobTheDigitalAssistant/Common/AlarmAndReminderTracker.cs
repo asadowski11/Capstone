@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Capstone.Models;
+using BobTheDigitalAssistant.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     public static class AlarmAndReminderTracker
     {

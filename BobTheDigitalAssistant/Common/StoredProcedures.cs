@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Capstone.Models;
+using BobTheDigitalAssistant.Models;
 using Microsoft.Data.Sqlite;
 using Windows.Storage;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     internal class StoredProcedures
     {

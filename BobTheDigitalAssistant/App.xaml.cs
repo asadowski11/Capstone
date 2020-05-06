@@ -1,14 +1,14 @@
 using System;
 using System.Threading;
-using Capstone.Common;
-using Capstone.Helpers;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Capstone
+namespace BobTheDigitalAssistant
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

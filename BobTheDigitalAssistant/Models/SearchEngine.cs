@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 
-namespace Capstone.Models
+namespace BobTheDigitalAssistant.Models
 {
     public class SearchEngine
     {

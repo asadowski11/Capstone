@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Capstone.Common;
-using Capstone.Models;
-using Capstone.Providers;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
+using BobTheDigitalAssistant.Providers;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class WeatherAction : Action
     {

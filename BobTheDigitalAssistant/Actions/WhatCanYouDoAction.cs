@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Capstone.Common;
+using BobTheDigitalAssistant.Common;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class WhatCanYouDoAction : Action
     {

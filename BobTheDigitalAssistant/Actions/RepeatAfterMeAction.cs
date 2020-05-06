@@ -1,8 +1,8 @@
 ﻿using System;
-using Capstone.Common;
-using Capstone.SpeechRecognition;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.SpeechRecognition;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class RepeatAfterMeAction : Action
     {

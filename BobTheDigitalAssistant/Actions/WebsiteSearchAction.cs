@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
-using Capstone.Common;
-using Capstone.Models;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class WebsiteSearchAction : Action
     {

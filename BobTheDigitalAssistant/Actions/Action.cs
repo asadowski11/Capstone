@@ -1,7 +1,7 @@
-﻿using Capstone.Common;
+﻿using BobTheDigitalAssistant.Common;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     /// <summary>
     /// A base class for all actions that can be taken by the assistant

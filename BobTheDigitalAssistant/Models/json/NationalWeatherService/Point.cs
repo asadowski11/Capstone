@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Newtonsoft.Json;
 
-namespace Capstone.Models.json.NationalWeatherService
+namespace BobTheDigitalAssistant.Models.json.NationalWeatherService
 {
     [DisplayName("Point")]
     [Description("Represents a point obtained from the NWS points endpoint")]

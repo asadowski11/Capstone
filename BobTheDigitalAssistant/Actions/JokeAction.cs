@@ -1,7 +1,7 @@
-﻿using Capstone.Common;
-using Capstone.Models;
+﻿using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     internal class JokeAction : Action
     {

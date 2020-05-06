@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Capstone.Common;
-using Capstone.Models;
-using Capstone.Models.json.NationalWeatherService;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
+using BobTheDigitalAssistant.Models.json.NationalWeatherService;
 using Newtonsoft.Json;
 using Windows.Web.Http;
 
-namespace Capstone.Providers
+namespace BobTheDigitalAssistant.Providers
 {
     public static class WeatherService
     {

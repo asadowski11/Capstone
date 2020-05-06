@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     internal static class UIUtils
     {

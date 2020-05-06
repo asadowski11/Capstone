@@ -1,7 +1,7 @@
 ﻿using System;
-using Capstone.Common;
+using BobTheDigitalAssistant.Common;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class TimeAction : Action
     {

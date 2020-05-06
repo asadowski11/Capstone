@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
-using Capstone.Common;
-using Capstone.Models;
-using Capstone.Providers;
-using Capstone.SpeechRecognition;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
+using BobTheDigitalAssistant.Providers;
+using BobTheDigitalAssistant.SpeechRecognition;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class DirectionsAction : Action
     {

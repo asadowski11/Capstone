@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Capstone.Common;
-using Capstone.Models;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.Media.Capture;
 using Windows.UI.Popups;
 

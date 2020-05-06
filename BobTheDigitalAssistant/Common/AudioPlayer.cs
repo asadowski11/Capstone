@@ -2,7 +2,7 @@
 using Windows.Media.Core;
 using Windows.Media.Playback;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     public class AudioPlayer
     {

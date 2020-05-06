@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     public static class DateTimeParser
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Windows.ApplicationModel.ExtendedExecution;
 
-namespace Capstone.Helpers
+namespace BobTheDigitalAssistant.Helpers
 {
     public static class ExtendedExecutionHelper
     {

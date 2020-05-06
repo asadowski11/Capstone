@@ -1,10 +1,10 @@
 ﻿using System;
-using Capstone.Common;
-using Capstone.Helpers;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class VoiceMemoAction : Action
     {

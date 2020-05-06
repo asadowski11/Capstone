@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 
-namespace Capstone.Providers
+namespace BobTheDigitalAssistant.Providers
 {
     internal class LocationProvider
     {

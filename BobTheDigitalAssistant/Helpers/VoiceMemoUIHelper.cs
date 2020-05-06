@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Capstone.Common;
-using Capstone.Models;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
-namespace Capstone.Helpers
+namespace BobTheDigitalAssistant.Helpers
 {
     public static class VoiceMemoUIHelper
     {

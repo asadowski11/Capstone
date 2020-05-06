@@ -1,4 +1,4 @@
-﻿using Capstone.Common;
+﻿using BobTheDigitalAssistant.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests

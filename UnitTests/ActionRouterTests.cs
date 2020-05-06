@@ -1,4 +1,4 @@
-﻿using Capstone.Actions;
+﻿using BobTheDigitalAssistant.Actions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -65,7 +65,7 @@ namespace UnitTests
             ActionRouter.SetUp();
             // the command string
             const string commandString = "Set an alarm for 5:30 A.M.";
-            Func<string, Capstone.Actions.Action> returnedFunction = ActionRouter.GetFunctionFromCommandString(commandString);
+            Func<string, BobTheDigitalAssistant.Actions.Action> returnedFunction = ActionRouter.GetFunctionFromCommandString(commandString);
             Assert.IsNotNull(returnedFunction);
             AlarmAction returnedAction = (AlarmAction)returnedFunction(commandString);
             // check the alarm action's values
@@ -86,7 +86,7 @@ namespace UnitTests
             // tests that the GetFunctionFromCommandString function still works even if it's not working on a nested Dictionary
             ActionRouter.SetUp();
             const string commandString = "Get the weather for tomorrow";
-            Func<string, Capstone.Actions.Action> returnedFunction = ActionRouter.GetFunctionFromCommandString(commandString);
+            Func<string, BobTheDigitalAssistant.Actions.Action> returnedFunction = ActionRouter.GetFunctionFromCommandString(commandString);
             Assert.IsNotNull(returnedFunction);
             WeatherAction returnedAction = (WeatherAction)returnedFunction(commandString);
             Assert.IsNotNull(returnedAction);

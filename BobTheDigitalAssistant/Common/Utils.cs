@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using Capstone.Models;
+using BobTheDigitalAssistant.Models;
 using Windows.UI.Core;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     public static class Utils
     {

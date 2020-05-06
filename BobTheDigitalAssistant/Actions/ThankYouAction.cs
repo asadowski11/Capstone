@@ -1,6 +1,6 @@
-﻿using Capstone.Common;
+﻿using BobTheDigitalAssistant.Common;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     internal class ThankYouAction : Action
     {

@@ -2,7 +2,7 @@
 using Windows.Media.SpeechSynthesis;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     public static class TextToSpeechEngine
     {

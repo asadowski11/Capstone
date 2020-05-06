@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
-namespace Capstone.Models
+namespace BobTheDigitalAssistant.Models
 {
     /// <summary>
     /// A Setting is an object representing a configurable option for the application

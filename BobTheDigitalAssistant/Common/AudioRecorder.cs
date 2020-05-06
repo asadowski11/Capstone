@@ -8,7 +8,7 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
 
-namespace Capstone.Common
+namespace BobTheDigitalAssistant.Common
 {
     public class AudioRecorder
     {

@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Capstone.Common;
-using Capstone.Models;
+using BobTheDigitalAssistant;
+using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Capstone.Actions
+namespace BobTheDigitalAssistant.Actions
 {
     public class ReminderAction : Action
     {

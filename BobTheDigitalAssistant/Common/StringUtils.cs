@@ -1,4 +1,4 @@
-﻿namespace Capstone.Common
+﻿namespace BobTheDigitalAssistant.Common
 {
     public static class StringUtils
     {
