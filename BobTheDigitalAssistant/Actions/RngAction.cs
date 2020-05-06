@@ -73,6 +73,7 @@ namespace BobTheDigitalAssistant.Actions
             int pickedSide = new Random().Next(1, parsedSideCount + 1);
             // TODO play a sound of a die rolling
             TextToSpeechEngine.SpeakText(this.MediaElement, $"You rolled a {pickedSide}");
+            this.ShowMessage(pickedSide.ToString());
         }
 
         private void FlipCoin()
@@ -83,6 +84,7 @@ namespace BobTheDigitalAssistant.Actions
             string text = $"It landed on {sideName}";
             // TODO play a sound of a coin flipping or something
             TextToSpeechEngine.SpeakText(this.MediaElement, text);
+            this.ShowMessage(sideName);
         }
 
         private void PickRandomNumber()
@@ -122,6 +124,7 @@ namespace BobTheDigitalAssistant.Actions
                     int pickedNumber = new Random().Next(lowerBound, upperBound);
                     // TODO play a sound maybe? idk
                     TextToSpeechEngine.SpeakText(this.MediaElement, $"It's {pickedNumber}");
+                    this.ShowMessage(pickedNumber.ToString());
                 }
             }
         }
