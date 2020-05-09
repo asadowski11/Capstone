@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Models;
 using Windows.Media.SpeechRecognition;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
@@ -84,10 +85,17 @@ namespace BobTheDigitalAssistant.SpeechRecognition
                         {
                             if ((uint)exception.HResult == HResultPrivacyStatementDeclined)
                             {
-                                var message = new MessageDialog("The privacy statement was declined." +
-                                                                "Go to Settings -> Privacy -> Speech, inking and typing, and ensure you" +
-                                                                "have viewed the privacy policy, and 'Get To Know You' is enabled.");
-                                await message.ShowAsync();
+                                Utils.RunOnMainThread(async () =>
+                                {
+                                    // turn off speech recognition in bob
+                                    Setting speechRecognitionSetting = StoredProcedures.QuerySettingByName("Voice Activation");
+                                    speechRecognitionSetting.SelectOption("Disabled");
+                                    StoredProcedures.SelectOption(speechRecognitionSetting.SettingID, speechRecognitionSetting.GetSelectedOption().OptionID);
+                                    var message = new MessageDialog("Microsoft's privacy statement was declined." +
+                                                                    "Go to Settings -> Privacy -> Speech, and turn on online speech recognition.\nBob's speech recognition capabilities will be turned off. To turn it back on, you must manually re-enable it in app settings.");
+                                    await message.ShowAsync();
+                                });
+                                break;
                             }
                         }
                     }
