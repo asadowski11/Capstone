@@ -71,9 +71,16 @@ namespace BobTheDigitalAssistant.Actions
             }
             // pick the random number with the range [1, numberOfSides]
             int pickedSide = new Random().Next(1, parsedSideCount + 1);
-            // TODO play a sound of a die rolling
-            TextToSpeechEngine.SpeakText(this.MediaElement, $"You rolled a {pickedSide}");
-            this.ShowMessage(pickedSide.ToString());
+            AudioPlayer.PlaySound("die_roll", () =>
+            {
+                Utils.RunOnMainThread(() =>
+                {
+                    TextToSpeechEngine.SpeakText(this.MediaElement, $"You rolled a {pickedSide}");
+                    this.ShowMessage(pickedSide.ToString());
+                });
+            });
+
+
         }
 
         private void FlipCoin()
@@ -82,9 +89,14 @@ namespace BobTheDigitalAssistant.Actions
             int side = new Random().Next(2);
             string sideName = side == 0 ? "Heads" : "Tails";
             string text = $"It landed on {sideName}";
-            // TODO play a sound of a coin flipping or something
-            TextToSpeechEngine.SpeakText(this.MediaElement, text);
-            this.ShowMessage(sideName);
+            AudioPlayer.PlaySound("coin_flip", () =>
+            {
+                Utils.RunOnMainThread(() =>
+                {
+                    TextToSpeechEngine.SpeakText(this.MediaElement, text);
+                    this.ShowMessage(sideName);
+                });
+            });
         }
 
         private void PickRandomNumber()
@@ -92,40 +104,65 @@ namespace BobTheDigitalAssistant.Actions
             // there will be 2 numbers that the user picks (e.g. "pick a random number between 1 and 5")
             var numberRegex = new Regex("[0-9]+|one");
             var matches = numberRegex.Matches(this.CommandString);
+            int generatedNumber = -1;
+            // the default lower and upper bounds are 1 and 100
+            int lowerBound = 1;
+            int upperBound = 100;
+            // controls if we show an error message instead of a generated number
+            bool successfullyGenerated = true;
             // if there's less than 2 matches, tell the user they need 2 numbers
-            if (matches.Count < 2)
+            if (matches.Count == 1)
             {
                 TextToSpeechEngine.SpeakText(this.MediaElement, "Sorry, but in order to pick a random number I need 2 numbers to pick between");
+                successfullyGenerated = false;
+            }
+            else if (matches.Count >= 2)
+            {
+                lowerBound = matches[0].Value.ToLower() == "one" ? 1 : int.Parse(matches[0].Value);
+                upperBound = matches[1].Value.ToLower() == "one" ? 1 : int.Parse(matches[1].Value);
+
+            }
+            // now generate the number
+            try
+            {
+                generatedNumber = GenerateRandomNumber(lowerBound, upperBound);
+            }
+            catch (ArgumentException)
+            {
+                successfullyGenerated = false;
+            }
+            if (successfullyGenerated)
+            {
+                // TODO play a sound maybe? idk
+                TextToSpeechEngine.SpeakText(this.MediaElement, $"It's {generatedNumber}");
+                this.ShowMessage(generatedNumber.ToString());
+            }
+        }
+
+        private int GenerateRandomNumber(int lowerBound, int upperBound)
+        {
+            // get the actual upper and lower bounds (the user could have put the higher number first, but they could also have put it last so we need to figure out which it is)
+            if (lowerBound > upperBound)
+            {
+                var temp = lowerBound;
+                lowerBound = upperBound;
+                upperBound = temp;
+            }
+            // if the user said "exclusive", move the lower bound up and the upper bound down
+            if (this.CommandString.ToLower().Contains("exclusive"))
+            {
+                lowerBound++;
+                upperBound--;
+            }
+            // make sure the upper bound is greater than the lower bound
+            if (upperBound == lowerBound)
+            {
+                TextToSpeechEngine.SpeakText(this.MediaElement, $"Sorry, but I can't pick a whole number between {lowerBound} and {upperBound}");
+                throw new ArgumentException();
             }
             else
             {
-                int lowerBound = matches[0].Value.ToLower() == "one" ? 1 : int.Parse(matches[0].Value);
-                int upperBound = matches[1].Value.ToLower() == "one" ? 1 : int.Parse(matches[1].Value);
-                // get the actual upper and lower bounds (the user could have put the higher number first, but they could also have put it last so we need to figure out which it is)
-                if (lowerBound > upperBound)
-                {
-                    var temp = lowerBound;
-                    lowerBound = upperBound;
-                    upperBound = temp;
-                }
-                // if the user said "exclusive", move the lower bound up and the upper bound down
-                if (this.CommandString.ToLower().Contains("exclusive"))
-                {
-                    lowerBound++;
-                    upperBound--;
-                }
-                // make sure the upper bound is greater than the lower bound
-                if (upperBound == lowerBound)
-                {
-                    TextToSpeechEngine.SpeakText(this.MediaElement, $"Sorry, but I can't pick a whole number between {lowerBound} and {upperBound}");
-                }
-                else
-                {
-                    int pickedNumber = new Random().Next(lowerBound, upperBound);
-                    // TODO play a sound maybe? idk
-                    TextToSpeechEngine.SpeakText(this.MediaElement, $"It's {pickedNumber}");
-                    this.ShowMessage(pickedNumber.ToString());
-                }
+                return new Random().Next(lowerBound, upperBound);
             }
         }
 
