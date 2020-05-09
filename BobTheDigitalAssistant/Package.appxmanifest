@@ -10,7 +10,7 @@
   <Identity
     Name="23055CurtisLanglitz.BobTheDigitalAssistant"
     Publisher="CN=2A115461-3848-48B9-BEE0-2CC5AD147A13"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="84f80608-d002-48f7-946c-de2da90bff26" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
