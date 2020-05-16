@@ -54,6 +54,10 @@ namespace BobTheDigitalAssistant.Providers
                 // indicate an error to the caller
                 coords = null;
             }
+            catch(NullReferenceException)
+            {
+                coords = null;
+            }
             return coords;
         }
     }
