@@ -1,4 +1,4 @@
-﻿DROP TABLE IF EXISTS "TSettingOptions";
+DROP TABLE IF EXISTS "TSettingOptions";
 DROP TABLE IF EXISTS "TSettings";
 DROP TABLE IF EXISTS "TSearchEngines";
 DROP TABLE IF EXISTS "TSearchableWebsites";
@@ -6,10 +6,10 @@ DROP TABLE IF EXISTS "TAlarmDates";
 DROP TABLE IF EXISTS "TAlarms";
 DROP TABLE IF EXISTS "TReminderDates";
 DROP TABLE IF EXISTS "TReminders";
+DROP TABLE IF EXISTS "TMapProviders";
 DROP TABLE IF EXISTS "TMapProvidersURLS";
 DROP TABLE IF EXISTS "TMapProviderAccessTypes";
 DROP TABLE IF EXISTS "TMapProvidersURLParts";
-DROP TABLE IF EXISTS "TMapProviders";
 DROP TABLE IF EXISTS "TVoiceMemos";
 DROP TABLE IF EXISTS "TUserInfos";
 DROP TABLE IF EXISTS "TCaches";
@@ -20,7 +20,6 @@ DROP TABLE IF EXISTS "TWeatherProviderURLParts";
 DROP TABLE IF EXISTS "TWeatherProviderAccessTypes";
 DROP TABLE IF EXISTS "TWeatherProviders";
 DROP TABLE IF EXISTS "TJokes";
-DROP TABLE IF EXISTS "TVersion";
 
 CREATE TABLE "TSettings"
 (
@@ -51,7 +50,6 @@ CREATE TABLE "TSearchableWebsites"
 	,"searchableWebsiteName"			NVARCHAR(255)	NOT NULL
 	,"searchableWebsiteBaseURL"			NVARCHAR(255)	NOT NULL
 	,"searchableWebsiteQueryString"	    NVARCHAR(255)	NOT NULL
-	,"spaceReplacement"					TEXT			NOT NULL DEFAULT '+'
 );
 
 CREATE TABLE "TAlarms"
@@ -198,12 +196,6 @@ CREATE TABLE "TJokes" (
 	,"jokeText"	TEXT	NOT NULL	UNIQUE
 );
 
--- used to keep track of the database version so we know when to run any update scripts
-CREATE TABLE TVersion(
-	 versionID	 INTEGER PRIMARY KEY
-	,versionName TEXT NOT NULL UNIQUE
-);
-
 /*INSERT STATEMENTS*/
 INSERT INTO "TWeatherProviders" ("weatherProviderID", "weatherProviderName") VALUES ('1', 'National Weather Service');
 INSERT INTO "TWeatherProviderAccessTypes" ("weatherProviderAccessTypeID", "weatherProviderID", "weatherProviderAccessType") VALUES ('1', '1', 'CURL');
@@ -223,7 +215,6 @@ INSERT INTO TSettingOptions(settingID, optionDisplayName, isSelected)
 VALUES					   (1, "Google", 0)
 ,						   (1, "Duck Duck Go", 0)
 ,						   (1, "Bing", 0)
-,						   (1, "Yahoo", 0)
 						   -- voice activation
 ,						   (2, "Enabled", 0)
 ,						   (2, "Disabled", 0)
@@ -253,29 +244,16 @@ INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProvid
 
 
 --searchable websites
-INSERT INTO "TSearchableWebsites" ("searchableWebsiteName", "searchableWebsiteBaseURL", "searchableWebsiteQueryString", "spaceReplacement") 
-VALUES	 ('Amazon', 'https://amazon.com', '/s?k=', '+')
-		,('Youtube', 'https://www.youtube.com', '/results?search_query=', '+')
-		,('Walmart', 'https://www.walmart.com', '/search/?query=', '+')
-		,('Wikipedia', 'https://en.wikipedia.org/wiki/', '', '_')
-		,('Target', 'https://www.target.com/', 's?searchTerm=', '+')
-		,('GameStop', 'https://www.gamestop.com/', 'search/?q=', '+')
-		,('Reddit', 'https://www.reddit.com/', 'search/?q=', '%20')
-		,('Twitch', 'https://www.twitch.tv/', 'search?term=', '%20')
-		,('Ebay', 'https://www.ebay.com/', 'sch/i.html?_nkw=', '+')
-		,('Apple', 'https://www.apple.com/', '/search/', '-')
-		,('StackOverflow', 'https://stackoverflow.com/', 'search?q=', '+')
-		,('Sephora', 'https://www.sephora.com/', 'search?keyword=', '%20')
-		,('Twitter', 'https://twitter.com/', 'search?q=', '%20')
-		,('Pinterest', 'https://www.pinterest.com/', 'search/pins/?q=', '%20');
+INSERT INTO "TSearchableWebsites" ("searchableWebsitesID", "searchableWebsiteName", "searchableWebsiteBaseURL", "searchableWebsiteQueryString") 
+VALUES	 ('1', 'Amazon', 'https://amazon.com', '/s?k=')
+		,('2', 'Youtube', 'https://www.youtube.com', '/results?search_query=')
+		,('3', 'Walmart', 'https://www.walmart.com', '/search/?query=');
 
 --search engines
 INSERT INTO "TSearchEngines" ("searchEngineID", "searchEngineName", "searchEngineBaseURL", "searchEngineQueryString") 
-VALUES	 ('1', 'Google', 'https://google.com', '/search?q=')
-		,('2', 'Bing', 'https://bing.com', '/search?q=')
-		,('3', 'Duck Duck Go', 'https://duckduckgo.com', '/?q=')
-		,('4', 'Yahoo', 'https://search.yahoo.com/', 'search?p=');
-
+VALUES ('1', 'Google', 'https://google.com', '/search?q='),
+		('2', 'Bing', 'https://bing.com', '/search?q='),
+		('3', 'Duck Duck Go', 'https://duckduckgo.com', '/?q=');
 
 
 
@@ -305,4 +283,3 @@ VALUES			  ('What do you get when you put a vest on an alligator? An investigato
 ,				  ('Why didn''t the bike cross the road? Because it was two tired.')
 ,				  ('What do you call a pig that does karate? A pork chop.');
 
-INSERT INTO TVersion(versionName) VALUES ('2');

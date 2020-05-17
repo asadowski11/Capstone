@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BobTheDigitalAssistant.Models;
@@ -12,7 +13,7 @@ namespace BobTheDigitalAssistant.Common
     internal class StoredProcedures
     {
         // the file location of where a sql update script needs to be stored
-        private static readonly string UPDATE_SCRIPT_PATH = $"{Utils.GetAppPackagePath()}\\Database\\update.sql";
+        private static readonly string UPDATE_SCRIPT_PATH = $"{Utils.GetAppPackagePath()}\\Database\\Patches";
 
         public static async Task CreateDatabase()
         {
@@ -30,7 +31,7 @@ namespace BobTheDigitalAssistant.Common
             if (!File.Exists(targetDbPath))
             {
                 SqliteConnection connection = new SqliteConnection($"Data Source={targetDbPath};");
-
+                connection.Open();
                 string initialScript = File.ReadAllText($"{Utils.GetAppPackagePath()}\\Database\\InitialScript.sql");
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = initialScript;
@@ -41,39 +42,43 @@ namespace BobTheDigitalAssistant.Common
             // now check if there's an update script
             if (CheckForUpdateScript())
             {
-                // if we don't have the versions table that means we need to execute the update script, else check the version as defined in the header comment
-                if (!DoesTableExist("TVersions"))
-                {
-                    ExecuteUpdateScript();
-                }
-                else
-                {
-                    // the table already exists, so we need to get the current database version and compare it to the version listed in the update script
-                    int dbVersion = GetDatabaseVersion();
-                    string updateScriptText = File.ReadAllText(UPDATE_SCRIPT_PATH);
-                    string versionHeader = new Regex("DATABASE VERSION [0-9]+").Match(updateScriptText).Value;
-                    int version = int.Parse(versionHeader.Split(" ")[2]);
-                    if (version > dbVersion)
-                    {
-                        ExecuteUpdateScript();
-                    }
-                }
+                // execute all the applicable update scripts
+                ExecuteUpdateScripts();
             }
         }
 
         private static bool CheckForUpdateScript()
         {
-            return File.Exists(UPDATE_SCRIPT_PATH);
+            return Directory.Exists(UPDATE_SCRIPT_PATH);
         }
 
-        private static void ExecuteUpdateScript()
+        private static void ExecuteUpdateScripts()
         {
             using (SqliteConnection connection = OpenDatabase())
             using (SqliteCommand command = connection.CreateCommand())
             {
-                command.CommandText = File.ReadAllText(UPDATE_SCRIPT_PATH);
-                // execute the command
-                command.ExecuteNonQuery();
+                var updateScriptFiles = Directory.GetFiles(UPDATE_SCRIPT_PATH);
+                // filter out the scripts whose version is less than the current database version
+                int dbVersion = GetDatabaseVersion();
+                List<string> scriptsToApply = updateScriptFiles.ToList<string>().FindAll(scriptPath => dbVersion < GetUpdateScriptVersion(scriptPath));
+                // because we can't rely on script names for the order they belong, we have to sort by script version
+                scriptsToApply.Sort((first, second) =>
+                {
+                    // get the version of each files
+                    int firstVersion = GetUpdateScriptVersion(first);
+                    int secondVersion = GetUpdateScriptVersion(second);
+                    return firstVersion.CompareTo(secondVersion);
+                });
+                // for each script, apply it to the database
+                scriptsToApply.ForEach(scriptPath =>
+                {
+                    // read the script contents
+                    string scriptContents = File.ReadAllText(scriptPath);
+                    // set the command text and execute it
+                    command.CommandText = scriptContents;
+                    // execute the command
+                    command.ExecuteNonQuery();
+                });
             }
         }
 
@@ -96,12 +101,12 @@ namespace BobTheDigitalAssistant.Common
         {
             int version = 0;
             // first check if the table exists since it was not a part of the initial release
-            if (DoesTableExist("TVersions"))
+            if (DoesTableExist("TVersion"))
             {
                 using (SqliteConnection connection = OpenDatabase())
                 using (SqliteCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM TVersions";
+                    command.CommandText = "SELECT * FROM TVersion";
                     SqliteDataReader reader = command.ExecuteReader();
                     reader.Read();
                     version = int.Parse(reader["versionName"].ToString());
@@ -109,6 +114,24 @@ namespace BobTheDigitalAssistant.Common
                 }
             }
             return version;
+        }
+
+        private static int GetUpdateScriptVersion(string updateScriptPath)
+        {
+            int updateScriptVersion = 0;
+            try
+            {
+                // read all the text from the update script file and find the database version header
+                var scriptContents = File.ReadAllText(updateScriptPath);
+                string versionHeader = new Regex("DATABASE VERSION [0-9]+").Match(scriptContents).Value;
+                updateScriptVersion = int.Parse(versionHeader.Split(" ")[2]);
+            }
+            catch (Exception)
+            {
+                // no op
+            }
+
+            return updateScriptVersion;
         }
 
         public static SqliteConnection OpenDatabase()
@@ -679,7 +702,7 @@ namespace BobTheDigitalAssistant.Common
 
             SqliteConnection conn = OpenDatabase();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TSearchableWebsites.searchableWebsitesID, TSearchableWebsites.searchableWebsiteName, TSearchableWebsites.searchableWebsiteBaseURL, TSearchableWebsites.searchableWebsiteQueryString From TSearchableWebsites Where TSearchableWebsites.searchableWebsitesID = COALESCE({intID}, TSearchableWebsites.searchableWebsitesID);";
+            command.CommandText = $"Select TSearchableWebsites.searchableWebsitesID, TSearchableWebsites.searchableWebsiteName, TSearchableWebsites.searchableWebsiteBaseURL, TSearchableWebsites.searchableWebsiteQueryString, TSearchableWebsites.spaceReplacement From TSearchableWebsites Where TSearchableWebsites.searchableWebsitesID = COALESCE({intID}, TSearchableWebsites.searchableWebsitesID);";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
@@ -748,7 +771,7 @@ namespace BobTheDigitalAssistant.Common
         public static List<SearchableWebsite> QueryAllSearchableWebsites()
         {
             List<SearchableWebsite> searchableWebsites = new List<SearchableWebsite>();
-            string query = @"Select searchableWebsitesID, searchableWebsiteName, searchableWebsiteBaseURL, searchableWebsiteQueryString From TSearchableWebsites;";
+            string query = @"Select searchableWebsitesID, searchableWebsiteName, searchableWebsiteBaseURL, searchableWebsiteQueryString, spaceReplacement From TSearchableWebsites;";
             using (SqliteConnection connection = OpenDatabase())
             {
                 SqliteCommand command = connection.CreateCommand();

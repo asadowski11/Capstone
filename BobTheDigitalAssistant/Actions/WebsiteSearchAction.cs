@@ -85,7 +85,7 @@ namespace BobTheDigitalAssistant.Actions
         //put together base url, query search, and the search parameters
         private string BuildSearchQuery(SearchableWebsite websiteSearch, string toSearch)
         {
-            string searchQuery = websiteSearch.BaseURL + websiteSearch.QueryString + WebUtility.UrlEncode(toSearch);
+            string searchQuery = websiteSearch.BaseURL + websiteSearch.QueryString + WebUtility.UrlEncode(toSearch).Replace("+", websiteSearch.SpaceReplacement);
 
             return searchQuery;
         }
@@ -118,7 +118,7 @@ namespace BobTheDigitalAssistant.Actions
                 searchParameters = splitParams[splitParams.Length - 1].Trim();
                 if (isSearchableWebsite)
                 {
-                    Regex removeSearchWords = new Regex($"(?i)(in|at|on)? ?{this.desiredSearchableWebsite.Name}(?-i)");
+                    Regex removeSearchWords = new Regex($"(?i) (in|at|on)? ?{this.desiredSearchableWebsite.Name}(?-i)");
                     searchParameters = removeSearchWords.Replace(searchParameters, string.Empty);
                 }
                 else
