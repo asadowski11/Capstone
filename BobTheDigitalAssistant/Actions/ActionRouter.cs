@@ -33,7 +33,7 @@ namespace BobTheDigitalAssistant.Actions
             SetUpThankYouBranches();
             SetUpDirectBobQuestionBranches();
             SetUpGreetingsBranch();
-
+            SetUpRngBranches();
             IsSetup = true;
         }
 
@@ -210,6 +210,23 @@ namespace BobTheDigitalAssistant.Actions
                 {"me", repeatAfterMeAction}
             };
             actionTree.Add("repeat", repeatAfterMeDict);
+        }
+
+        private static void SetUpRngBranches()
+        {
+            Func<string, Action> rngAction = (commandText) => new RngAction(commandText);
+            var rngDict = new Dictionary<string, dynamic>()
+            {
+                {"number", rngAction },
+                {"coin", rngAction },
+                {"die", rngAction },
+                {"dice", rngAction },
+                {"a", rngAction }
+            };
+
+            actionTree.Add("pick", rngDict);
+            actionTree.Add("flip", rngDict);
+            actionTree.Add("roll", rngDict);
         }
 
         /// <summary>
