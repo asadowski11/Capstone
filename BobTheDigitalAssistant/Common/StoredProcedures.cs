@@ -11,6 +11,9 @@ namespace BobTheDigitalAssistant.Common
 {
     internal class StoredProcedures
     {
+        // the file location of where a sql update script needs to be stored
+        private static readonly string UPDATE_SCRIPT_PATH = $"{Utils.GetAppPackagePath()}\\Database\\update.sql";
+
         public static async Task CreateDatabase()
         {
             StorageFolder localStateFolder = ApplicationData.Current.LocalFolder;
@@ -27,20 +30,92 @@ namespace BobTheDigitalAssistant.Common
             if (!File.Exists(targetDbPath))
             {
                 SqliteConnection connection = new SqliteConnection($"Data Source={targetDbPath};");
-                connection.Open();
-                string initialScript = File.ReadAllText($"{Windows.ApplicationModel.Package.Current.InstalledLocation.Path}\\Database\\InitialScript.sql");
+
+                string initialScript = File.ReadAllText($"{Utils.GetAppPackagePath()}\\Database\\InitialScript.sql");
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = initialScript;
                 command.ExecuteNonQuery();
                 command.Dispose();
                 connection.Close();
             }
+            // now check if there's an update script
+            if (CheckForUpdateScript())
+            {
+                // if we don't have the versions table that means we need to execute the update script, else check the version as defined in the header comment
+                if (!DoesTableExist("TVersions"))
+                {
+                    ExecuteUpdateScript();
+                }
+                else
+                {
+                    // the table already exists, so we need to get the current database version and compare it to the version listed in the update script
+                    int dbVersion = GetDatabaseVersion();
+                    string updateScriptText = File.ReadAllText(UPDATE_SCRIPT_PATH);
+                    string versionHeader = new Regex("DATABASE VERSION [0-9]+").Match(updateScriptText).Value;
+                    int version = int.Parse(versionHeader.Split(" ")[2]);
+                    if (version > dbVersion)
+                    {
+                        ExecuteUpdateScript();
+                    }
+                }
+            }
+        }
+
+        private static bool CheckForUpdateScript()
+        {
+            return File.Exists(UPDATE_SCRIPT_PATH);
+        }
+
+        private static void ExecuteUpdateScript()
+        {
+            using (SqliteConnection connection = OpenDatabase())
+            using (SqliteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = File.ReadAllText(UPDATE_SCRIPT_PATH);
+                // execute the command
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private static bool DoesTableExist(string tableName)
+        {
+            bool exists;
+            using (SqliteConnection connection = OpenDatabase())
+            using (SqliteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}'";
+                SqliteDataReader reader = command.ExecuteReader();
+                reader.Read();
+                exists = reader.HasRows;
+                reader.Close();
+            }
+            return exists;
+        }
+
+        private static int GetDatabaseVersion()
+        {
+            int version = 0;
+            // first check if the table exists since it was not a part of the initial release
+            if (DoesTableExist("TVersions"))
+            {
+                using (SqliteConnection connection = OpenDatabase())
+                using (SqliteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT * FROM TVersions";
+                    SqliteDataReader reader = command.ExecuteReader();
+                    reader.Read();
+                    version = int.Parse(reader["versionName"].ToString());
+                    reader.Close();
+                }
+            }
+            return version;
         }
 
         public static SqliteConnection OpenDatabase()
         {
             string targetDbPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "Database\\BobDB.db");
             SqliteConnection conn = new SqliteConnection(@"Data Source = " + targetDbPath);
+            conn.Open();
             return conn;
         }
 
@@ -53,7 +128,6 @@ namespace BobTheDigitalAssistant.Common
             // gives the month/day/year format
             string strDate = ReminderDateAndTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"INSERT INTO TReminders(reminderTitle, reminderTime, isDeleted, reminderDescription, isExpired) Values('{Title}','{strTime}', 0, '{Description}', 0);";
             command.ExecuteNonQuery();
@@ -73,7 +147,6 @@ namespace BobTheDigitalAssistant.Common
             // gives the month/day/year format
             string strDate = ReminderDateAndTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Update TReminders Set reminderTime = '{strTime}', reminderTitle = '{Title}', reminderDescription = '{Description}', isExpired = {(isExpired ? 1 : 0)} Where reminderID = {intID};";
             command.ExecuteNonQuery();
@@ -86,7 +159,6 @@ namespace BobTheDigitalAssistant.Common
         {
             int intID = ID;
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Update TReminders Set isDeleted = 1 Where reminderID = {intID};";
             command.ExecuteNonQuery();
@@ -107,7 +179,6 @@ namespace BobTheDigitalAssistant.Common
             }
 
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderDescription, TReminders.reminderTime, TReminderDates.reminderDate, TReminders.isExpired, TReminders.isDeleted From TReminders, TReminderDates Where TReminders.reminderID = TReminderDates.reminderID and TReminders.reminderID = COALESCE({intID}, TReminders.reminderID); ";
             using (SqliteDataReader reader = command.ExecuteReader())
@@ -135,7 +206,6 @@ namespace BobTheDigitalAssistant.Common
                             ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -158,7 +228,6 @@ namespace BobTheDigitalAssistant.Common
                             ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -176,7 +245,6 @@ namespace BobTheDigitalAssistant.Common
         {
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 using (SqliteCommand command = connection.CreateCommand())
                 {
                     command.CommandText = $"update TReminders set isExpired = 1 where reminderID = {ID}";
@@ -190,7 +258,6 @@ namespace BobTheDigitalAssistant.Common
             Reminder queriedReminder = null;
             using (SqliteConnection conn = OpenDatabase())
             {
-                conn.Open();
                 using (SqliteCommand latestIDCommand = conn.CreateCommand())
                 {
                     latestIDCommand.CommandText = "SELECT MAX(reminderID) as reminderID from TReminders";
@@ -208,7 +275,6 @@ namespace BobTheDigitalAssistant.Common
         {
             using (SqliteConnection conn = OpenDatabase())
             {
-                conn.Open();
                 using (SqliteCommand maxIDCommand = conn.CreateCommand())
                 using (SqliteCommand deleteLatestCommand = conn.CreateCommand())
                 {
@@ -230,7 +296,6 @@ namespace BobTheDigitalAssistant.Common
             string strTime = AlarmDateTime.ToString("HH:mm");
             string strDate = AlarmDateTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"INSERT INTO TAlarms(AlarmTitle, AlarmTime, isDeleted, isExpired) Values('{Title}','{strTime}', 0, 0);";
             command.ExecuteNonQuery();
@@ -247,7 +312,6 @@ namespace BobTheDigitalAssistant.Common
             string strTime = AlarmDateTime.ToString("HH:mm");
             string strDate = AlarmDateTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Update TAlarms Set AlarmTime = '{strTime}', AlarmTitle = '{Title}', isExpired = {(isExpired ? 1 : 0)} Where AlarmID = {intID};";
             command.ExecuteNonQuery();
@@ -260,7 +324,6 @@ namespace BobTheDigitalAssistant.Common
         {
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 using (SqliteCommand command = connection.CreateCommand())
                 {
                     command.CommandText = $"update TAlarms set isExpired = 1 where alarmID = {ID}";
@@ -273,7 +336,6 @@ namespace BobTheDigitalAssistant.Common
         {
             int intID = ID;
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Update TAlarms Set isDeleted = 1 Where AlarmID = {intID};";
             command.ExecuteNonQuery();
@@ -285,7 +347,6 @@ namespace BobTheDigitalAssistant.Common
             Alarm queriedAlarm = null;
             using (SqliteConnection conn = OpenDatabase())
             {
-                conn.Open();
                 using (SqliteCommand latestIDCommand = conn.CreateCommand())
                 {
                     latestIDCommand.CommandText = "SELECT MAX(alarmID) as alarmID from TAlarms";
@@ -303,7 +364,6 @@ namespace BobTheDigitalAssistant.Common
         {
             using (SqliteConnection conn = OpenDatabase())
             {
-                conn.Open();
                 using (SqliteCommand maxIDCommand = conn.CreateCommand())
                 using (SqliteCommand deleteLatestCommand = conn.CreateCommand())
                 {
@@ -322,7 +382,6 @@ namespace BobTheDigitalAssistant.Common
         {
             Alarm alarm = new Alarm();
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TAlarms.AlarmID, TAlarms.AlarmTitle, TAlarms.AlarmTime, TAlarmDates.AlarmDate, TAlarms.isDeleted, TAlarms.isExpired From TAlarms, TAlarmDates Where TAlarms.AlarmID = TAlarmDates.AlarmID and TAlarms.AlarmID = COALESCE({ID}, TAlarms.AlarmID); ";
             using (SqliteDataReader reader = command.ExecuteReader())
@@ -348,7 +407,6 @@ namespace BobTheDigitalAssistant.Common
                             ORDER BY TAlarmDates.alarmDate,TAlarms.alarmTime";
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -371,7 +429,6 @@ namespace BobTheDigitalAssistant.Common
                             ORDER BY TAlarmDates.alarmDate,TAlarms.alarmTime";
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -390,7 +447,6 @@ namespace BobTheDigitalAssistant.Common
             string strRecordTime = RecordTime.ToString("HH:mm");
             string strRecordDate = RecordDate.ToString("yyyy-MM-dd HH:mm");
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"INSERT INTO TVoiceMemos(fileName,displayName,recordingDuration,filePath,recordDate,recordTime) Values('{FileName}', '{EscapeSingleTicks(DsiplayName)}', '{RecordingDuration}', '{FilePath}', '{strRecordDate}', '{strRecordTime}'); ";
             command.ExecuteNonQuery();
@@ -401,7 +457,6 @@ namespace BobTheDigitalAssistant.Common
         {
             int intID = ID;
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Delete From TVoiceMemos Where TVoiceMemos.voiceMemoID = {intID};";
             command.ExecuteNonQuery();
@@ -412,7 +467,6 @@ namespace BobTheDigitalAssistant.Common
         {
             int intID = ID;
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Update TVoiceMemos Set displayName = '{Title}' Where voiceMemoID = {intID};";
             command.ExecuteNonQuery();
@@ -426,7 +480,6 @@ namespace BobTheDigitalAssistant.Common
                             ORDER BY recordDate, recordTime;";
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -445,7 +498,6 @@ namespace BobTheDigitalAssistant.Common
             VoiceMemo memo = new VoiceMemo();
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 using (SqliteCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT * FROM TVoiceMemos WHERE voiceMemoID = (SELECT MAX(voiceMemoID) From TVoiceMemos)";
@@ -473,7 +525,6 @@ namespace BobTheDigitalAssistant.Common
             }
 
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TSettings.settingID, TSettings.settingDisplayName,TSettingOptions.settingOptionID, TSettingOptions.optionDisplayName,TSettingOptions.isSelected From TSettings, TSettingOptions Where TSettings.settingID = COALESCE({intID}, TSettings.settingID) and TSettings.settingID = TSettingOptions.settingID;";
             using (SqliteDataReader reader = command.ExecuteReader())
@@ -508,7 +559,6 @@ namespace BobTheDigitalAssistant.Common
             Setting setting = null;
             using (var connection = OpenDatabase())
             {
-                connection.Open();
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT TSettings.settingID, TSettings.settingDisplayName AS 'Setting Name', group_concat((TSettingOptions.settingOptionID || ':' || TSettingOptions.optionDisplayName || ':' || TSettingOptions.isSelected)) AS 'options'
@@ -534,7 +584,6 @@ namespace BobTheDigitalAssistant.Common
             List<Setting> settings = new List<Setting>();
             using (var connection = OpenDatabase())
             {
-                connection.Open();
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT TSettings.settingID, TSettings.settingDisplayName AS 'Setting Name', group_concat((TSettingOptions.settingOptionID || ':' || TSettingOptions.optionDisplayName || ':' || TSettingOptions.isSelected)) AS 'options'
@@ -558,7 +607,6 @@ namespace BobTheDigitalAssistant.Common
         {
             using (var connection = OpenDatabase())
             {
-                connection.Open();
                 using (var resetAllOptionsCommand = connection.CreateCommand())
                 using (var selectOptionCommand = connection.CreateCommand())
                 {
@@ -580,7 +628,6 @@ namespace BobTheDigitalAssistant.Common
         {
             WeatherProvider provider = null;
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = @"SELECT TWeatherProviders.weatherProviderID, TWeatherProviders.weatherProviderName, TWeatherProviderURLS.weatherProviderURL AS 'baseURL', group_concat(TWeatherProviderURLParts.weatherProviderURLPartURLString,'###') AS 'urlParts', TWeatherProviderAccessTypes.weatherProviderAccessType AS 'type'
                                     FROM TWeatherProviders, TWeatherProviderURLS, TWeatherProviderURLParts, TWeatherProviderAccessTypes
@@ -602,7 +649,6 @@ namespace BobTheDigitalAssistant.Common
             MapProvider mapProvider = null;
 
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TmapProviders.mapProviderID, TmapProviders.mapProviderName,TMapProvidersURLS.mapProviderURL AS 'baseURL',TMapProvidersURLParts.mapProviderURLPartType, group_concat(TMapProvidersURLParts.mapProviderURLPartURL,'###') AS 'urlParts',TmapProviderAccessTypes.mapProviderAccessType AS 'type' " +
                 $"From TmapProviders, TMapProvidersURLS, TmapProvidersURLParts, TmapProviderAccessTypes " +
@@ -632,7 +678,6 @@ namespace BobTheDigitalAssistant.Common
             }
 
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TSearchableWebsites.searchableWebsitesID, TSearchableWebsites.searchableWebsiteName, TSearchableWebsites.searchableWebsiteBaseURL, TSearchableWebsites.searchableWebsiteQueryString From TSearchableWebsites Where TSearchableWebsites.searchableWebsitesID = COALESCE({intID}, TSearchableWebsites.searchableWebsitesID);";
             using (SqliteDataReader reader = command.ExecuteReader())
@@ -664,7 +709,6 @@ namespace BobTheDigitalAssistant.Common
             }
 
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TSearchEngines.searchEngineID, TSearchEngines.searchEngineName, TSearchEngines.searchEngineBaseURL, TSearchEngines.searchEngineQueryString From TSearchEngines Where TSearchEngines.searchEngineID = COALESCE({intID}, TSearchEngines.searchEngineID);";
             using (SqliteDataReader reader = command.ExecuteReader())
@@ -688,7 +732,6 @@ namespace BobTheDigitalAssistant.Common
             SearchEngineName = EscapeSingleTicks(SearchEngineName);
             SearchEngine searchEngine = new SearchEngine();
             SqliteConnection conn = OpenDatabase();
-            conn.Open();
             SqliteCommand command = conn.CreateCommand();
             command.CommandText = $"Select TSearchEngines.searchEngineID, TSearchEngines.searchEngineName, TSearchEngines.searchEngineBaseURL, TSearchEngines.searchEngineQueryString From TSearchEngines Where TSearchEngines.searchEngineName = '{SearchEngineName}';";
             using (SqliteDataReader reader = command.ExecuteReader())
@@ -708,7 +751,6 @@ namespace BobTheDigitalAssistant.Common
             string query = @"Select searchableWebsitesID, searchableWebsiteName, searchableWebsiteBaseURL, searchableWebsiteQueryString From TSearchableWebsites;";
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 SqliteCommand command = connection.CreateCommand();
                 command.CommandText = query;
                 using (SqliteDataReader reader = command.ExecuteReader())
@@ -731,7 +773,6 @@ namespace BobTheDigitalAssistant.Common
             Joke joke = null;
             using (SqliteConnection connection = OpenDatabase())
             {
-                connection.Open();
                 using (SqliteCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT * FROM TJokes WHERE jokeID IN (SELECT jokeID FROM TJokes ORDER BY RANDOM() LIMIT 1)";

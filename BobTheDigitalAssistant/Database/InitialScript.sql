@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS "TWeatherProviderURLParts";
 DROP TABLE IF EXISTS "TWeatherProviderAccessTypes";
 DROP TABLE IF EXISTS "TWeatherProviders";
 DROP TABLE IF EXISTS "TJokes";
+DROP TABLE IF EXISTS "TVersions";
 
 CREATE TABLE "TSettings"
 (
@@ -39,7 +40,7 @@ CREATE TABLE "TSettingOptions"
 CREATE TABLE "TSearchEngines"
 (
 	 "searchEngineID"			INTEGER			PRIMARY KEY	NOT NULL
-	,"searchEngineName"			NVARCHAR(255)	NOT NULL
+	,"searchEngineName"			NVARCHAR(255)	NOT NULL UNIQUE
 	,"searchEngineBaseURL"		NVARCHAR(255)	NOT NULL
 	,"searchEngineQueryString"  NVARCHAR(255)	NOT NULL
 );
@@ -196,6 +197,12 @@ CREATE TABLE "TJokes" (
 	,"jokeText"	TEXT	NOT NULL	UNIQUE
 );
 
+-- used to keep track of the database version so we know when to run any update scripts
+CREATE TABLE TVersions(
+	 versionID	 INTEGER PRIMARY KEY
+	,versionName TEXT NOT NULL UNIQUE
+);
+
 /*INSERT STATEMENTS*/
 INSERT INTO "TWeatherProviders" ("weatherProviderID", "weatherProviderName") VALUES ('1', 'National Weather Service');
 INSERT INTO "TWeatherProviderAccessTypes" ("weatherProviderAccessTypeID", "weatherProviderID", "weatherProviderAccessType") VALUES ('1', '1', 'CURL');
@@ -245,9 +252,12 @@ INSERT INTO "TMapProvidersURLS" ("mapProviderURLID", "mapProviderID", "mapProvid
 
 --searchable websites
 INSERT INTO "TSearchableWebsites" ("searchableWebsitesID", "searchableWebsiteName", "searchableWebsiteBaseURL", "searchableWebsiteQueryString") 
-VALUES	('1', 'Amazon', 'https://amazon.com', '/s?k='),
-		('2', 'Youtube', 'https://www.youtube.com', '/results?search_query='),
-		('3', 'Walmart', 'https://www.walmart.com', '/search/?query=');
+VALUES	 ('1', 'Amazon', 'https://amazon.com', '/s?k=')
+		,('2', 'Youtube', 'https://www.youtube.com', '/results?search_query=')
+		,('3', 'Walmart', 'https://www.walmart.com', '/search/?query=');
+		--,('Wikipedia', 'https://en.wikipedia.org/wiki/', '')
+		--,('Target', 'https://www.target.com/', 's?searchTerm=')
+		--,('GameStop', 'https://www.gamestop.com/', 'search/?q=');
 
 --search engines
 INSERT INTO "TSearchEngines" ("searchEngineID", "searchEngineName", "searchEngineBaseURL", "searchEngineQueryString") 
@@ -282,3 +292,5 @@ VALUES			  ('What do you get when you put a vest on an alligator? An investigato
 ,				  ('Why did the picture go to prison? Because it was framed.')
 ,				  ('Why didn''t the bike cross the road? Because it was two tired.')
 ,				  ('What do you call a pig that does karate? A pork chop.');
+
+INSERT INTO TVersions(versionName) VALUES ('2');

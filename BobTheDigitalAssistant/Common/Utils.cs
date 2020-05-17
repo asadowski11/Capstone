@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using BobTheDigitalAssistant.Models;
+using Windows.ApplicationModel;
 using Windows.UI.Core;
 
 namespace BobTheDigitalAssistant.Common
@@ -39,6 +40,11 @@ namespace BobTheDigitalAssistant.Common
             Thread thread = new Thread(new ThreadStart(action));
             thread.IsBackground = isBackground;
             thread.Start();
+        }
+
+        public static string GetAppPackagePath()
+        {
+            return Package.Current.InstalledLocation.Path;
         }
     }
 }
