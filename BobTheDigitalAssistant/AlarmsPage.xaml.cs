@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Text;
@@ -154,6 +155,8 @@ namespace BobTheDigitalAssistant
         private void DeleteAlarm(Alarm AlarmToDelete)
         {
             StoredProcedures.DeleteAlarm(AlarmToDelete.AlarmID);
+            // unschedule the alarm as well
+            AlarmAndReminderHelper.UnscheduleAlarm(AlarmToDelete);
             // clear the list of reminders and re-populate them
             this.Alarms.Clear();
             this.Alarms.AddRange(GetAlarmsFromDatabase());

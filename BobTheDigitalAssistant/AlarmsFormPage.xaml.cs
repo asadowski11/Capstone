@@ -1,4 +1,5 @@
 ﻿using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
@@ -54,9 +55,11 @@ namespace BobTheDigitalAssistant
                 if (this.AlarmToEdit.AlarmID == -1)
                 {
                     StoredProcedures.CreateAlarm(this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime);
+                    AlarmAndReminderHelper.ScheduleAlarm(StoredProcedures.QueryLatestAlarm());
                 }
                 else
                 {
+                    AlarmAndReminderHelper.RescheduleAlarm(this.AlarmToEdit);
                     StoredProcedures.UpdateAlarm(this.AlarmToEdit.AlarmID, this.AlarmToEdit.Title, this.AlarmToEdit.ActivateDateAndTime, false);
                 }
                 UIUtils.GoBack(this, typeof(AlarmsPage));

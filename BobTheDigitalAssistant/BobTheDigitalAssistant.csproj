@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="Common\AlarmAndReminderTracker.cs" />
     <Compile Include="Common\AudioPlayer.cs" />
+    <Compile Include="Helpers\AlarmAndReminderHelper.cs" />
     <Compile Include="Models\Joke.cs" />
     <Compile Include="Common\AudioRecorder.cs" />
     <Compile Include="Helpers\VoiceMemoUIHelper.cs" />
@@ -221,7 +222,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Database\InitialScript.sql" />
     <None Include="Package.StoreAssociation.xml" />
-    <Content Include="Database\update.sql" />
+    <Content Include="Database\Patches\version2.sql" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -1,72 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 using BobTheDigitalAssistant.Models;
-using Microsoft.Data.Sqlite;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 
-namespace BobTheDigitalAssistant.Common
+namespace BobTheDigitalAssistant.Helpers
 {
-    public static class AlarmAndReminderTracker
+    public class AlarmAndReminderHelper
     {
-        public static Boolean hasStarted { get; private set; } = false;
-
-        public static void Start()
+        private static readonly string TOAST_GROUP = "BobTheDigitalAssistant";
+        private static readonly ToastNotifier toastNotifier = ToastNotificationManager.CreateToastNotifier();
+        public static void ScheduleAlarm(Alarm alarmToSchedule)
         {
-            var trackerThread = new Thread(new ThreadStart(TrackAlarmsAndReminders));
-            // make sure it's a background thread so that it doesn't interrupt the main process
-            trackerThread.IsBackground = true;
-            trackerThread.Start();
-            hasStarted = true;
+            var toast = new ScheduledToastNotification(CreateAlarmToast(alarmToSchedule).GetXml(), alarmToSchedule.ActivateDateAndTime);
+            toast.Id = GetAlarmNotificationID(alarmToSchedule);
+            toast.Group = TOAST_GROUP;
+            toast.Tag = toast.Id;
+            toastNotifier.AddToSchedule(toast);
         }
 
-        private static void TrackAlarmsAndReminders()
+        public static void ScheduleReminder(Reminder reminderToSchedule)
         {
-            // this lets us repeatedly check
-            while (true)
+            // TODO
+        }
+
+        public static void RescheduleAlarm(Alarm alarmToReschedule)
+        {
+            UnscheduleAlarm(alarmToReschedule);
+            ScheduleAlarm(alarmToReschedule);
+        }
+
+        public static void RescheduleReminder(Reminder reminderToReschedule)
+        {
+            // TODO
+        }
+
+        public static void UnscheduleAlarm(Alarm alarmToUnschedule)
+        {
+            IReadOnlyList<ScheduledToastNotification> scheduledToasts = toastNotifier.GetScheduledToastNotifications();
+            // find the scheduled toast to cancel
+            ScheduledToastNotification foundNotification = scheduledToasts.First(toast => toast.Id == GetAlarmNotificationID(alarmToUnschedule) && toast.Group == TOAST_GROUP && toast.Tag == GetAlarmNotificationID(alarmToUnschedule));
+            if (foundNotification != null)
             {
-                // get all the alarms and reminders from the database
-                try
-                {
-                    List<Alarm> alarms = StoredProcedures.QueryAllUnexpiredAlarms();
-                    List<Reminder> reminders = StoredProcedures.QueryAllUnexpiredReminders();
-                    var time = DateTime.Now;
-                    // for each expired alarm, mark it as so in the database
-                    alarms.ForEach(alarm =>
-                    {
-                        if (alarm.ActivateDateAndTime <= time)
-                        {
-                            // expire the alarm in the database
-                            StoredProcedures.ExpireAlarm(alarm.AlarmID);
-                        }
-                    });
-                    // for each expired reminder, mark it as so in the database
-                    reminders.ForEach(reminder =>
-                    {
-                        if (reminder.ActivateDateAndTime <= time)
-                        {
-                            // expire the reminder from the database
-                            StoredProcedures.ExpireReminder(reminder.ReminderID);
-                        }
-                    });
-                }
-                catch (SqliteException)
-                {
-                    Console.WriteLine("Something went wrong with the database!");
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Something bad happened and I don't know what!");
-                }
-                // sleep for 2 seconds
-                Thread.Sleep(2_000);
+                toastNotifier.RemoveFromSchedule(foundNotification);
             }
         }
 
-        private static void ShowAlarmToast(Alarm alarm)
+        public static void UnscheduleReminder(Reminder reminderToUnschedule)
         {
-            var toastContent = new ToastContent()
+            // TODO
+        }
+
+        private static ToastContent CreateAlarmToast(Alarm alarm)
+        {
+            return new ToastContent()
             {
                 Visual = new ToastVisual()
                 {
@@ -114,17 +102,11 @@ namespace BobTheDigitalAssistant.Common
                 },
                 Scenario = ToastScenario.Alarm
             };
-
-            // Create the toast notification
-            var toastNotif = new ToastNotification(toastContent.GetXml());
-
-            // And send the notification
-            ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
         }
 
-        private static void ShowReminderToast(Reminder reminder)
+        private static ToastContent CreateReminderToast(Reminder reminder)
         {
-            var toastContent = new ToastContent()
+            return new ToastContent()
             {
                 Visual = new ToastVisual()
                 {
@@ -176,12 +158,15 @@ namespace BobTheDigitalAssistant.Common
                 //},
                 Scenario = ToastScenario.Reminder
             };
+        }
 
-            // Create the toast notification
-            var toastNotif = new ToastNotification(toastContent.GetXml());
-
-            // And send the notification
-            ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
+        private static string GetAlarmNotificationID(Alarm alarm)
+        {
+            return $"Bob_alarm{alarm.AlarmID}";
+        }
+        private static string GetReminderNotificationID(Reminder reminder)
+        {
+            return "";
         }
     }
 }

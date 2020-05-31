@@ -4,7 +4,9 @@
 
 -- adding more specific websites to search
 CREATE UNIQUE INDEX website_name ON TSearchableWebsites(searchableWebsiteName); -- make sure website name is now unique
-ALtER TABLE TSearchableWebsites ADD COLUMN spaceReplacement TEXT DEFAULT '+'; -- used to represent what each website replaces spaces with
+ALTER TABLE TSearchableWebsites ADD COLUMN spaceReplacement TEXT DEFAULT '+'; -- used to represent what each website replaces spaces with
+ALTER TABLE TAlarms ADD COLUMN isSet BIT DEFAULT 0;
+ALTER TABLE TReminders ADD COLUMN isSet BIT DEFAULT 0;
 
 INSERT OR IGNORE INTO TSearchableWebsites(searchableWebsiteName, searchableWebsiteBaseURL, searchableWebsiteQueryString, spaceReplacement)
 VALUES						   ('Wikipedia', 'https://en.wikipedia.org/wiki/', '', '_')

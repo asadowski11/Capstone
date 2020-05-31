@@ -61,6 +61,7 @@ CREATE TABLE "TAlarms"
 	,"alarmTitle"   NVARCHAR(255)	NOT NULL
 	,"isDeleted"    BIT				NOT NULL
 	,"isExpired"	BIT				NOT NULL
+	,"isSet"		BIT				NOT NULL
 );
 
 CREATE TABLE "TAlarmDates"
@@ -79,6 +80,7 @@ CREATE TABLE "TReminders"
 	,"reminderDescription" NVARCHAR(1024)   NOT NULL
 	,"isDeleted"		   BIT				NOT NULL
 	,"isExpired"		   BIT				NOT NULL
+	,"isSet"			   BIT				NOT NULL
 );
 
 CREATE TABLE "TReminderDates"

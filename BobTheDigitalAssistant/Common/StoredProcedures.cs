@@ -152,7 +152,7 @@ namespace BobTheDigitalAssistant.Common
             string strDate = ReminderDateAndTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"INSERT INTO TReminders(reminderTitle, reminderTime, isDeleted, reminderDescription, isExpired) Values('{Title}','{strTime}', 0, '{Description}', 0);";
+            command.CommandText = $"INSERT INTO TReminders(reminderTitle, reminderTime, isDeleted, reminderDescription, isExpired, isSet) Values('{Title}','{strTime}', 0, '{Description}', 0, 1);";
             command.ExecuteNonQuery();
             command.CommandText = $"INSERT INTO TReminderDates(reminderID, reminderDate) Select MAX(reminderID), '{strDate}' FROM TReminders;";
             command.ExecuteNonQuery();
@@ -203,7 +203,7 @@ namespace BobTheDigitalAssistant.Common
 
             SqliteConnection conn = OpenDatabase();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"Select TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderDescription, TReminders.reminderTime, TReminderDates.reminderDate, TReminders.isExpired, TReminders.isDeleted From TReminders, TReminderDates Where TReminders.reminderID = TReminderDates.reminderID and TReminders.reminderID = COALESCE({intID}, TReminders.reminderID); ";
+            command.CommandText = $"Select TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderDescription, TReminders.reminderTime, TReminderDates.reminderDate, TReminders.isExpired, TReminders.isDeleted, TReminders.isSet From TReminders, TReminderDates Where TReminders.reminderID = TReminderDates.reminderID and TReminders.reminderID = COALESCE({intID}, TReminders.reminderID); ";
             using (SqliteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
@@ -223,7 +223,7 @@ namespace BobTheDigitalAssistant.Common
         public static List<Reminder> QueryAllReminders()
         {
             List<Reminder> reminders = new List<Reminder>();
-            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.isExpired, TReminderDates.reminderDate
+            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.isExpired, TReminders.isSet, TReminderDates.reminderDate
                             FROM TReminders, TReminderDates
                             WHERE TReminderDates.reminderID = TReminders.reminderID AND TReminders.isDeleted <> 1
                             ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";
@@ -320,7 +320,7 @@ namespace BobTheDigitalAssistant.Common
             string strDate = AlarmDateTime.ToString("yyyy-MM-dd");
             SqliteConnection conn = OpenDatabase();
             SqliteCommand command = conn.CreateCommand();
-            command.CommandText = $"INSERT INTO TAlarms(AlarmTitle, AlarmTime, isDeleted, isExpired) Values('{Title}','{strTime}', 0, 0);";
+            command.CommandText = $"INSERT INTO TAlarms(AlarmTitle, AlarmTime, isDeleted, isExpired, isSet) Values('{Title}','{strTime}', 0, 0, 1);";
             command.ExecuteNonQuery();
             command.CommandText = $"INSERT INTO TAlarmDates(AlarmID, AlarmDate) Select MAX(AlarmID), '{strDate}' FROM TAlarms;";
             command.ExecuteNonQuery();
