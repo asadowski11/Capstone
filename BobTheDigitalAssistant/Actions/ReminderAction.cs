@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BobTheDigitalAssistant.Common;
 using BobTheDigitalAssistant.Models;
+using BobTheDigitalAssistant.SpeechRecognition;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -35,14 +36,18 @@ namespace BobTheDigitalAssistant.Actions
 			switch (desiredAction)
 			{
 				case ReminderActionTypes.CREATE:
-					var reminder = await this.NewReminder();
-					this.ClearArea();
-					if (this.DynamicArea != null)
+					var reminder = await this.NewReminderAsync();
+					// if the reminder is null, don't do anything
+					if (reminder != null)
 					{
-						RelativePanel panel = CreateReminderCard(reminder);
-						this.DynamicArea.Children.Add(panel);
-						RelativePanel.SetAlignHorizontalCenterWithPanel(panel, true);
-						RelativePanel.SetAlignVerticalCenterWithPanel(panel, true);
+						this.ClearArea();
+						if (this.DynamicArea != null)
+						{
+							RelativePanel panel = CreateReminderCard(reminder);
+							this.DynamicArea.Children.Add(panel);
+							RelativePanel.SetAlignHorizontalCenterWithPanel(panel, true);
+							RelativePanel.SetAlignVerticalCenterWithPanel(panel, true);
+						}
 					}
 					break;
 
@@ -93,14 +98,25 @@ namespace BobTheDigitalAssistant.Actions
 			return editButton;
 		}
 
-		private async Task<Reminder> CreateReminder()
+		private async Task<Reminder> CreateReminderAsync()
 		{
 			Reminder createdReminder = new Reminder();
 			DateTime dateTime = GetReminderDateAndTime();
-			string title = FindReminderTitle();
-			// description can't be easily input with text, so don't set it
-			createdReminder.Title = title;
-			createdReminder.ActivateDateAndTime = dateTime;
+			string title = await GetReminderTitleAsync();
+			if (title == null)
+			{
+				string message = "Sorry, but reminders require a title. If you don't need a title, try setting an alarm instead.";
+				TextToSpeechEngine.SpeakText(this.MediaElement, message);
+				this.ShowMessage(message);
+				createdReminder = null;
+			}
+			else
+			{
+				// description can't be easily input with text, so don't set it
+				createdReminder.Title = title;
+				createdReminder.ActivateDateAndTime = dateTime;
+			}
+
 			return createdReminder;
 		}
 
@@ -218,7 +234,7 @@ namespace BobTheDigitalAssistant.Actions
 			this.ShowMessage(text);
 		}
 
-		private string FindReminderTitle()
+		private async Task<string> GetReminderTitleAsync()
 		{
 			string title = "";
 			var titleIdentifierRegex = new Regex("(?<=(named |called |titled )).+");
@@ -229,7 +245,19 @@ namespace BobTheDigitalAssistant.Actions
 			}
 			else
 			{
-				// TODO ask for the title once the voice detection is set up
+				// ask the user to give a title if listening is enabled, else tell the user to retry with a title
+				if (Utils.IsListeningSettingEnabled())
+				{
+					TextToSpeechEngine.SpeakText(this.MediaElement, "Sure, what's the title of the reminder?");
+					await SpeechRecognitionManager.RequestListen(this.GetType(), (text) => title = text);
+				}
+				else
+				{
+					// title should be null, which will be used in the calling method to tell the user that title is required
+					title = null;
+				}
+
+
 			}
 			return title;
 		}
@@ -302,17 +330,22 @@ namespace BobTheDigitalAssistant.Actions
 			return foundReminder;
 		}
 
-		private async Task<Reminder> NewReminder()
+		private async Task<Reminder> NewReminderAsync()
 		{
-			Reminder createdReminder = await this.CreateReminder();
-			// insert the reminder into the database
-			StoredProcedures.CreateReminder(createdReminder.Title, createdReminder.ActivateDateAndTime, createdReminder.Description);
-			string mainPart = $"Alright, reminder set for ";
-			string datePart = createdReminder.ActivateDateAndTime.ToString("MMM d");
-			string timePart = createdReminder.ActivateDateAndTime.ToString("h:mm tt");
-			string rawSSML = new SSMLBuilder().Add(mainPart).SayAs(datePart, SSMLBuilder.SayAsTypes.DATE).Add(" at ").SayAs(timePart, SSMLBuilder.SayAsTypes.TIME).BuildWithoutWrapperElement();
-			string prosodySSML = new SSMLBuilder().Prosody(rawSSML, pitch: "+5%", contour: "(10%,+5%) (50%,-5%) (80%,-5%)").Build();
-			TextToSpeechEngine.SpeakInflectedText(this.MediaElement, prosodySSML);
+			Reminder createdReminder = await this.CreateReminderAsync();
+			// if the reminder is null, then don't do anything
+			if (createdReminder != null)
+			{
+				// insert the reminder into the database
+				StoredProcedures.CreateReminder(createdReminder.Title, createdReminder.ActivateDateAndTime, createdReminder.Description);
+				string mainPart = $"Alright, reminder set for ";
+				string datePart = createdReminder.ActivateDateAndTime.ToString("MMM d");
+				string timePart = createdReminder.ActivateDateAndTime.ToString("h:mm tt");
+				string rawSSML = new SSMLBuilder().Add(mainPart).SayAs(datePart, SSMLBuilder.SayAsTypes.DATE).Add(" at ").SayAs(timePart, SSMLBuilder.SayAsTypes.TIME).BuildWithoutWrapperElement();
+				string prosodySSML = new SSMLBuilder().Prosody(rawSSML, pitch: "+5%", contour: "(10%,+5%) (50%,-5%) (80%,-5%)").Build();
+				TextToSpeechEngine.SpeakInflectedText(this.MediaElement, prosodySSML);
+			}
+
 			return createdReminder;
 		}
 	}

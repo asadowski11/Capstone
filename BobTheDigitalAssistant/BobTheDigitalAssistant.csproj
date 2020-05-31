@@ -99,10 +99,10 @@
     <Compile Include="Actions\WeatherAction.cs" />
     <Compile Include="Actions\WebsiteSearchAction.cs" />
     <Compile Include="Actions\WhatCanYouDoAction.cs" />
-    <Compile Include="AlarmsFormPage.xaml.cs">
+    <Compile Include="Pages\AlarmsFormPage.xaml.cs">
       <DependentUpon>AlarmsFormPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AlarmsPage.xaml.cs">
+    <Compile Include="Pages\AlarmsPage.xaml.cs">
       <DependentUpon>AlarmsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
@@ -111,7 +111,7 @@
     <Compile Include="Common\AlarmAndReminderTracker.cs" />
     <Compile Include="Common\AudioPlayer.cs" />
     <Compile Include="Helpers\AlarmAndReminderHelper.cs" />
-    <Compile Include="Models\Joke.cs" />
+    <Compile Include="Models\database\Joke.cs" />
     <Compile Include="Common\AudioRecorder.cs" />
     <Compile Include="Helpers\VoiceMemoUIHelper.cs" />
     <Compile Include="SpeechRecognition\SpeechRecognitionManager.cs" />
@@ -122,44 +122,44 @@
     <Compile Include="Common\TextToSpeechEngine.cs" />
     <Compile Include="Common\UIUtils.cs" />
     <Compile Include="Common\Utils.cs" />
-    <Compile Include="LibrariesWeUse.xaml.cs">
+    <Compile Include="Pages\LibrariesWeUse.xaml.cs">
       <DependentUpon>LibrariesWeUse.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataPrivacyTips.xaml.cs">
+    <Compile Include="Pages\DataPrivacyTips.xaml.cs">
       <DependentUpon>DataPrivacyTips.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FirstTimeSetup.xaml.cs">
+    <Compile Include="Pages\FirstTimeSetup.xaml.cs">
       <DependentUpon>FirstTimeSetup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ExtendedExecutionHelper.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Alarm.cs" />
+    <Compile Include="Models\database\Alarm.cs" />
     <Compile Include="Models\json\NationalWeatherService\Forecast.cs" />
     <Compile Include="Models\json\NationalWeatherService\Point.cs" />
-    <Compile Include="Models\MapProvider.cs" />
-    <Compile Include="Models\Reminder.cs" />
-    <Compile Include="Models\SearchableWebsite.cs" />
-    <Compile Include="Models\SearchEngine.cs" />
-    <Compile Include="Models\Setting.cs" />
-    <Compile Include="Models\VoiceMemo.cs" />
-    <Compile Include="Models\WeatherInfo.cs" />
-    <Compile Include="Models\WeatherProvider.cs" />
+    <Compile Include="Models\database\MapProvider.cs" />
+    <Compile Include="Models\database\Reminder.cs" />
+    <Compile Include="Models\database\SearchableWebsite.cs" />
+    <Compile Include="Models\database\SearchEngine.cs" />
+    <Compile Include="Models\database\Setting.cs" />
+    <Compile Include="Models\database\VoiceMemo.cs" />
+    <Compile Include="Models\database\WeatherInfo.cs" />
+    <Compile Include="Models\database\WeatherProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\LocationProvider.cs" />
     <Compile Include="Providers\WeatherService.cs" />
-    <Compile Include="RemindersFormPage.xaml.cs">
+    <Compile Include="Pages\RemindersFormPage.xaml.cs">
       <DependentUpon>RemindersFormPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RemindersPage.xaml.cs">
+    <Compile Include="Pages\RemindersPage.xaml.cs">
       <DependentUpon>RemindersPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsPage.xaml.cs">
+    <Compile Include="Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpeechRecognition\AudioCapturePermissions.cs" />
-    <Compile Include="VoiceMemosPage.xaml.cs">
+    <Compile Include="Pages\VoiceMemosPage.xaml.cs">
       <DependentUpon>VoiceMemosPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -231,43 +231,43 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AlarmsFormPage.xaml">
+    <Page Include="Pages\AlarmsFormPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AlarmsPage.xaml">
+    <Page Include="Pages\AlarmsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="LibrariesWeUse.xaml">
+    <Page Include="Pages\LibrariesWeUse.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DataPrivacyTips.xaml">
+    <Page Include="Pages\DataPrivacyTips.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FirstTimeSetup.xaml">
+    <Page Include="Pages\FirstTimeSetup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="Pages\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="RemindersFormPage.xaml">
+    <Page Include="Pages\RemindersFormPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RemindersPage.xaml">
+    <Page Include="Pages\RemindersPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SettingsPage.xaml">
+    <Page Include="Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="VoiceMemosPage.xaml">
+    <Page Include="Pages\VoiceMemosPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
