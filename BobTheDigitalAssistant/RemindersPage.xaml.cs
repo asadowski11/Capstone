@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Text;
@@ -177,6 +178,8 @@ namespace BobTheDigitalAssistant
         private void DeleteReminder(Reminder ReminderToDelete)
         {
             StoredProcedures.DeleteReminder(ReminderToDelete.ReminderID);
+            // cancel the scheduled notification for the reminder
+            AlarmAndReminderHelper.UnscheduleReminder(ReminderToDelete);
             // clear the list of reminders and re-populate them
             this.Reminders.Clear();
             this.Reminders.AddRange(GetRemindersFromDatabase());

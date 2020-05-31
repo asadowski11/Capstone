@@ -1,4 +1,5 @@
 ﻿using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using BobTheDigitalAssistant.Models;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
@@ -57,10 +58,14 @@ namespace BobTheDigitalAssistant
                 if (this.ReminderToEdit.ReminderID == -1)
                 {
                     StoredProcedures.CreateReminder(this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description);
+                    // schedule the notification for it
+                    AlarmAndReminderHelper.ScheduleReminder(StoredProcedures.QueryLatestReminder());
                 }
                 else
                 {
                     StoredProcedures.UpdateReminder(this.ReminderToEdit.ReminderID, this.ReminderToEdit.Title, this.ReminderToEdit.ActivateDateAndTime, this.ReminderToEdit.Description, false);
+                    // reschedule the reminder
+                    AlarmAndReminderHelper.RescheduleReminder(this.ReminderToEdit);
                 }
                 UIUtils.GoBack(this, typeof(RemindersPage));
             }
@@ -94,7 +99,7 @@ namespace BobTheDigitalAssistant
             var timeHours = this.ReminderTimePicker.Time.Hours;
             var timeMinutes = this.ReminderTimePicker.Time.Minutes;
             var timeDay = this.ReminderDatePicker.Date.Value.DayOfYear;
-            return timeDay > now.DayOfYear || timeHours > now.Hour || (timeHours >= now.Hour && timeMinutes >= now.Minute);
+            return timeDay > now.DayOfYear || timeHours > now.Hour || (timeHours >= now.Hour && timeMinutes > now.Minute);
         }
 
         private void CancelReminderButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)

@@ -245,7 +245,7 @@ namespace BobTheDigitalAssistant.Common
         public static List<Reminder> QueryAllUnexpiredReminders()
         {
             List<Reminder> reminders = new List<Reminder>();
-            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.IsExpired, TReminderDates.reminderDate
+            string query = @"SELECT TReminders.reminderID, TReminders.reminderTitle, TReminders.reminderTime, TReminders.reminderDescription, TReminders.isDeleted, TReminders.IsExpired, TReminders.isSet, TReminderDates.reminderDate
                             FROM TReminders, TReminderDates
                             WHERE TReminderDates.reminderID = TReminders.reminderID AND TReminders.isDeleted <> 1 AND TReminders.isExpired <> 1
                             ORDER BY TReminderDates.reminderDate,TReminders.reminderTime;";

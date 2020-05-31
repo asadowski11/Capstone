@@ -88,7 +88,7 @@ namespace BobTheDigitalAssistant
             var timeHours = this.AlarmTimePicker.Time.Hours;
             var timeMinutes = this.AlarmTimePicker.Time.Minutes;
             var timeDay = this.AlarmDatePicker.Date.Value.DayOfYear;
-            return timeDay > now.DayOfYear || timeHours > now.Hour || (timeHours >= now.Hour && timeMinutes >= now.Minute);
+            return timeDay > now.DayOfYear || timeHours > now.Hour || (timeHours >= now.Hour && timeMinutes > now.Minute);
         }
 
         private void CancelAlarmButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
