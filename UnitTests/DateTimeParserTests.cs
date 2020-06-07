@@ -301,5 +301,14 @@ namespace UnitTests
             Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithTime));
             Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithDateAndTime));
         }
+
+        [TestMethod]
+        public void TestDoesStringHaveDateOrTimeHandlesRelativeWords()
+        {
+            var textWithRelativeDate = "tomorrow";
+            var textWithRelativeTime = "noon";
+            Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithRelativeDate));
+            Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithRelativeTime));
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿DROP TABLE IF EXISTS "TSettingOptions";
+DROP TABLE IF EXISTS "TSettingOptions";
 DROP TABLE IF EXISTS "TSettings";
 DROP TABLE IF EXISTS "TSearchEngines";
 DROP TABLE IF EXISTS "TSearchableWebsites";
@@ -269,7 +269,8 @@ VALUES	 ('Amazon', 'https://amazon.com', '/s?k=', '+')
 		,('StackOverflow', 'https://stackoverflow.com/', 'search?q=', '+')
 		,('Sephora', 'https://www.sephora.com/', 'search?keyword=', '%20')
 		,('Twitter', 'https://twitter.com/', 'search?q=', '%20')
-		,('Pinterest', 'https://www.pinterest.com/', 'search/pins/?q=', '%20');
+		,('Pinterest', 'https://www.pinterest.com/', 'search/pins/?q=', '%20')
+		,('Facebook', 'https://www.facebook.com/', 'search/top/?q=', '%20');
 
 --search engines
 INSERT INTO "TSearchEngines" ("searchEngineID", "searchEngineName", "searchEngineBaseURL", "searchEngineQueryString") 

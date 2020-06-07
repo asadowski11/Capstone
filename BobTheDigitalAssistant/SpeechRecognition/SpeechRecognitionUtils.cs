@@ -169,6 +169,10 @@ namespace BobTheDigitalAssistant.SpeechRecognition
 					{
 						string tempText = SpokenText + " " + args.Hypothesis.Text;
 						EnsureSpokenTextDoesNotContainStuffBeforeActivatorString(ref tempText);
+						if (!StringUtils.StartsWith(tempText, activatorString))
+						{
+							tempText = activatorString + " " + tempText.Trim();
+						}
 						commandBox.Text = tempText;
 					}
 				});
@@ -186,7 +190,7 @@ namespace BobTheDigitalAssistant.SpeechRecognition
 			var splitSpokenText = text.ToLower().Split(activatorString + " ");
 			if (splitSpokenText.Length > 1)
 			{
-				// only keep the stuff after the "hey bob" and get rid of the rest
+				// only keep the stuff after and including the "hey bob" and get rid of the rest
 				text = activatorString + " " + splitSpokenText[1];
 			}
 			else

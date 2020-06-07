@@ -1,4 +1,4 @@
-﻿-----------------------------------------
+-----------------------------------------
 -- DATABASE VERSION 2
 -----------------------------------------
 
@@ -19,7 +19,8 @@ VALUES						   ('Wikipedia', 'https://en.wikipedia.org/wiki/', '', '_')
 							  ,('StackOverflow', 'https://stackoverflow.com/', 'search?q=', '+')
 							  ,('Sephora', 'https://www.sephora.com/', 'search?keyword=', '%20')
 							  ,('Twitter', 'https://twitter.com/', 'search?q=', '%20')
-							  ,('Pinterest', 'https://www.pinterest.com/', 'search/pins/?q=', '%20');
+							  ,('Pinterest', 'https://www.pinterest.com/', 'search/pins/?q=', '%20')
+							  ,('Facebook', 'https://www.facebook.com/', 'search/top/?q=', '%20');
 
 -- add yahoo to the list of search engines because we forgot about it
 INSERT INTO TSearchEngines(searchEngineName, searchEngineBaseURL, searchEngineQueryString)

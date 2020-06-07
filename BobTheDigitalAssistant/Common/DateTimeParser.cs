@@ -130,6 +130,7 @@ namespace BobTheDigitalAssistant.Common
 			catch (DateParseException)
 			{
 				// if we get here then we know that there is no date, so check for the time
+				text = DateTimeParser.ReplaceDaytimeNamesWithTimeValue(text);
 				hasDateOrTime = StringUtils.IsNotBlank(DateTimeParser.GetTimePartOfString(text));
 			}
 			return hasDateOrTime;
