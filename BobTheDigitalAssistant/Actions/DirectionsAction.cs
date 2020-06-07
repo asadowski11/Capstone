@@ -19,11 +19,11 @@ namespace BobTheDigitalAssistant.Actions
 
 		public async override void PerformAction()
 		{
-			CommandString = CommandString.ToUpper();
+			this.CommandString = this.CommandString.ToUpper();
 			string strDestination = "";
-			if (CommandString.Contains(" TO "))
+			if (this.CommandString.Contains(" TO "))
 			{
-				strDestination = CommandString.Substring(CommandString.IndexOf(" TO ") + 4);
+				strDestination = this.CommandString.Substring(this.CommandString.IndexOf(" TO ") + 4);
 			}
 			else
 			{
@@ -33,7 +33,7 @@ namespace BobTheDigitalAssistant.Actions
 				if (!await SpeechRecognitionManager.RequestListen(this.GetType(), (text) =>
 				{
 					strDestination = text;
-					GetDirections(text);
+					this.GetDirections(text);
 				}))
 				{
 					string message = "Sorry, but something went wrong. To get directions, say \"Hey Bob, how do I get to destination\"";
@@ -42,13 +42,13 @@ namespace BobTheDigitalAssistant.Actions
 				}
 				else
 				{
-					ProvideDirectionsSuccessMessage(strDestination);
+					this.ProvideDirectionsSuccessMessage(strDestination);
 				}
 			}
 			if (StringUtils.IsNotBlank(strDestination))
 			{
-				GetDirections(strDestination);
-				ProvideDirectionsSuccessMessage(strDestination);
+				this.GetDirections(strDestination);
+				this.ProvideDirectionsSuccessMessage(strDestination);
 			}
 		}
 
@@ -58,7 +58,7 @@ namespace BobTheDigitalAssistant.Actions
 			this.ClearArea();
 			var linkElement = new HyperlinkButton();
 			linkElement.Content = $"Directions to {destination.ToLower()}";
-			string directionsLink = await GetDirectionsLink(destination);
+			string directionsLink = await this.GetDirectionsLink(destination);
 			if (directionsLink != null)
 			{
 				linkElement.NavigateUri = new Uri(directionsLink);
@@ -72,7 +72,7 @@ namespace BobTheDigitalAssistant.Actions
 
 		private async void GetDirections(string destination)
 		{
-			string query = await GetDirectionsLink(destination);
+			string query = await this.GetDirectionsLink(destination);
 			if (query != null)
 			{
 				var uriMap = new Uri(query);

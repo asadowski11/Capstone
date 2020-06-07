@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BobTheDigitalAssistant.Common;
+using BobTheDigitalAssistant.Helpers;
 using BobTheDigitalAssistant.Models;
 using BobTheDigitalAssistant.SpeechRecognition;
 using Windows.UI;
@@ -43,7 +44,7 @@ namespace BobTheDigitalAssistant.Actions
 						this.ClearArea();
 						if (this.DynamicArea != null)
 						{
-							RelativePanel panel = CreateReminderCard(reminder);
+							RelativePanel panel = this.CreateReminderCard(reminder);
 							this.DynamicArea.Children.Add(panel);
 							RelativePanel.SetAlignHorizontalCenterWithPanel(panel, true);
 							RelativePanel.SetAlignVerticalCenterWithPanel(panel, true);
@@ -100,23 +101,36 @@ namespace BobTheDigitalAssistant.Actions
 
 		private async Task<Reminder> CreateReminderAsync()
 		{
+			this.ClearArea();
 			Reminder createdReminder = new Reminder();
-			DateTime dateTime = GetReminderDateAndTime();
-			string title = await GetReminderTitleAsync();
-			if (title == null)
+			DateTime? dateTime = this.GetReminderDateAndTime();
+			// if the date is null, then we need to tell the user that a date and time is required
+			if (dateTime != null)
 			{
-				string message = "Sorry, but reminders require a title. If you don't need a title, try setting an alarm instead.";
+				string title = await this.GetReminderTitleAsync();
+				if (title == null)
+				{
+					string message = "Sorry, but reminders require a title. If you don't need a title, try setting an alarm instead.";
+					TextToSpeechEngine.SpeakText(this.MediaElement, message);
+					this.ShowMessage(message);
+					createdReminder = null;
+				}
+				else
+				{
+					// description can't be easily input with text, so don't set it
+					createdReminder.Title = title;
+					createdReminder.ActivateDateAndTime = dateTime.Value;
+				}
+
+			}
+			else
+			{
+				// tell the user that a date is needed, and set the alarm to null so the calling code can handle it
+				var message = "Sorry, but to create a reminder I need a date and time to set the reminder off at. Please try again.";
 				TextToSpeechEngine.SpeakText(this.MediaElement, message);
 				this.ShowMessage(message);
 				createdReminder = null;
 			}
-			else
-			{
-				// description can't be easily input with text, so don't set it
-				createdReminder.Title = title;
-				createdReminder.ActivateDateAndTime = dateTime;
-			}
-
 			return createdReminder;
 		}
 
@@ -191,23 +205,26 @@ namespace BobTheDigitalAssistant.Actions
 
 		private void DeleteLatestReminder()
 		{
+			// get the latest reminder from the database, since we need to cancel the scheduled toast for it
+			Reminder latestReminder = StoredProcedures.QueryLatestReminder();
+			AlarmAndReminderHelper.UnscheduleReminder(latestReminder);
 			StoredProcedures.DeleteLatestReminder();
 			// if we have a dynamic area, remove the children from it
 			if (this.DynamicArea != null)
 			{
-				ShowMessage("Reminder deleted.");
+				this.ShowMessage($"Deleted reminder {latestReminder.Title}");
 			}
 		}
 
 		private void DeleteReminder()
 		{
-			Reminder reminderToDelete = GetReminderForClosestMatchToPassedDate();
+			Reminder reminderToDelete = this.GetReminderForClosestMatchToPassedDate();
 			if (reminderToDelete != null)
 			{
 				StoredProcedures.DeleteReminder(reminderToDelete.ReminderID);
 				string message = new SSMLBuilder().Prosody("Successfully deleted reminder.", contour: "(1%,+2%) (50%,-1%) (80%,-1%)").Build();
 				TextToSpeechEngine.SpeakInflectedText(this.MediaElement, message);
-				ShowMessage($"Successfully deleted reminder {reminderToDelete.Title}");
+				this.ShowMessage($"Successfully deleted reminder {reminderToDelete.Title}");
 			}
 			else
 			{
@@ -286,20 +303,23 @@ namespace BobTheDigitalAssistant.Actions
 			}
 		}
 
-		private DateTime GetReminderDateAndTime()
+		private DateTime? GetReminderDateAndTime()
 		{
-			DateTime activatedDateTime;
+			DateTime? activatedDateTime = null;
 
 			try
 			{
 				var titleRegex = new Regex("(?i)(called|titled|named)(?-i)");
 				var commandWithoutTitle = titleRegex.Split(this.CommandString)[0].Trim();
-				activatedDateTime = DateTimeParser.ParseDateTimeFromText(commandWithoutTitle);
+				if (DateTimeParser.DoesStringHaveDateOrTime(commandWithoutTitle))
+				{
+					activatedDateTime = DateTimeParser.ParseDateTimeFromText(commandWithoutTitle);
+				}
 			}
 			catch (DateParseException)
 			{
 				// TODO ask for the date and time since it could not be parsed once the speech recognition is set up
-				activatedDateTime = DateTime.Now;
+				activatedDateTime = null;
 			}
 
 			return activatedDateTime;
@@ -338,6 +358,8 @@ namespace BobTheDigitalAssistant.Actions
 			{
 				// insert the reminder into the database
 				StoredProcedures.CreateReminder(createdReminder.Title, createdReminder.ActivateDateAndTime, createdReminder.Description);
+				// schedule a toast notification for the reminder
+				AlarmAndReminderHelper.ScheduleReminder(StoredProcedures.QueryLatestReminder());
 				string mainPart = $"Alright, reminder set for ";
 				string datePart = createdReminder.ActivateDateAndTime.ToString("MMM d");
 				string timePart = createdReminder.ActivateDateAndTime.ToString("h:mm tt");

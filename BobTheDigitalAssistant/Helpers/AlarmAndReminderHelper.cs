@@ -10,10 +10,11 @@ namespace BobTheDigitalAssistant.Helpers
 	public class AlarmAndReminderHelper
 	{
 		private static readonly string TOAST_GROUP = "BobTheDigitalAssistant";
+		// created statically to keep a single open resource instead of spending cpu time creating a new one every time we need it.
 		private static readonly ToastNotifier toastNotifier = ToastNotificationManager.CreateToastNotifier();
 
 		/// <summary>
-		/// schedules a toast notification for the passed alarm
+		/// Creates a scheduled toast notification with the passed <paramref name="alarmToSchedule"/>'s information to be displayed by the user at the alarm's activate date and time
 		/// </summary>
 		/// <param name="alarmToSchedule"></param>
 		public static void ScheduleAlarm(Alarm alarmToSchedule)
@@ -48,14 +49,19 @@ namespace BobTheDigitalAssistant.Helpers
 
 		public static void UnscheduleAlarm(Alarm alarmToUnschedule)
 		{
-			ScheduledToastNotification foundNotification = FindToastNotification(GetAlarmNotificationID(alarmToUnschedule));
+			ScheduledToastNotification foundNotification = FindToastNotificationForID(GetAlarmNotificationID(alarmToUnschedule));
 			if (foundNotification != null)
 			{
 				toastNotifier.RemoveFromSchedule(foundNotification);
 			}
 		}
 
-		private static ScheduledToastNotification FindToastNotification(string id)
+		/// <summary>
+		/// returns the <see cref="ScheduledToastNotification"/> whose id matches the passed id and whose <see cref="ScheduledToastNotification.Group"/> matches <see cref="TOAST_GROUP"/>
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns>the ScheduledToastNotification if one was found, else returns null</returns>
+		private static ScheduledToastNotification FindToastNotificationForID(string id)
 		{
 			IReadOnlyList<ScheduledToastNotification> scheduledToasts = toastNotifier.GetScheduledToastNotifications();
 			// find the scheduled toast to cancel
@@ -69,16 +75,24 @@ namespace BobTheDigitalAssistant.Helpers
 			}
 		}
 
-
+		/// <summary>
+		/// Removes from the OS's notification schedule the scheduled notification for the passed <paramref name="reminderToUnschedule"/>
+		/// </summary>
+		/// <param name="reminderToUnschedule"></param>
 		public static void UnscheduleReminder(Reminder reminderToUnschedule)
 		{
-			ScheduledToastNotification foundNotification = FindToastNotification(GetReminderNotificationID(reminderToUnschedule));
+			ScheduledToastNotification foundNotification = FindToastNotificationForID(GetReminderNotificationID(reminderToUnschedule));
 			if (foundNotification != null)
 			{
 				toastNotifier.RemoveFromSchedule(foundNotification);
 			}
 		}
 
+		/// <summary>
+		/// Creates and returns a <see cref="ToastContent"/> object with the passed alarm's details
+		/// </summary>
+		/// <param name="alarm"></param>
+		/// <returns></returns>
 		private static ToastContent CreateAlarmToast(Alarm alarm)
 		{
 			return new ToastContent()
@@ -131,6 +145,11 @@ namespace BobTheDigitalAssistant.Helpers
 			};
 		}
 
+		/// <summary>
+		/// Creates and returns a <see cref="ToastContent"/> object with the passed reminder's details
+		/// </summary>
+		/// <param name="alarm"></param>
+		/// <returns></returns>
 		private static ToastContent CreateReminderToast(Reminder reminder)
 		{
 			return new ToastContent()
@@ -191,6 +210,7 @@ namespace BobTheDigitalAssistant.Helpers
 		{
 			return $"Bob_alarm{alarm.AlarmID}";
 		}
+
 		private static string GetReminderNotificationID(Reminder reminder)
 		{
 			return $"Bob_reminder{reminder.ReminderID}";

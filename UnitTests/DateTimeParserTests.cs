@@ -288,5 +288,18 @@ namespace UnitTests
             var actualDate = DateTimeParser.ParseDateTimeFromText(inputString, startingDate);
             Assert.AreEqual(expectedDate, actualDate);
         }
+
+        [TestMethod]
+        public void TestDoesStringHaveDateOrTime()
+        {
+            var textWithoutDateOrTime = "hi there";
+            var textWithDate = "May 5th";
+            var textWithTime = "5 am";
+            var textWithDateAndTime = "May 5th at 5 am";
+            Assert.IsFalse(DateTimeParser.DoesStringHaveDateOrTime(textWithoutDateOrTime));
+            Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithDate));
+            Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithTime));
+            Assert.IsTrue(DateTimeParser.DoesStringHaveDateOrTime(textWithDateAndTime));
+        }
     }
 }

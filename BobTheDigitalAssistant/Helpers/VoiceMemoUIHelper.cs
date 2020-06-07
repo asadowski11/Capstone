@@ -170,7 +170,7 @@ namespace BobTheDigitalAssistant.Helpers
 		{
 			var deleteButton = new Button();
 			deleteButton.Content = "Delete";
-			deleteButton.Click += (sender, arguments) => DeleteVoiceMemoAsync(VoiceMemoToAdd, audioRecorder, Callback);
+			deleteButton.Click += async (sender, arguments) => await DeleteVoiceMemoAsync(VoiceMemoToAdd, audioRecorder, Callback);
 			return deleteButton;
 		}
 
@@ -285,12 +285,12 @@ namespace BobTheDigitalAssistant.Helpers
 		/// </summary>
 		/// <param name="VoiceMemoToPlay"></param>
 		/// <param name="audioRecorder"></param>
-		private static async void PlayVoiceMemo(VoiceMemo VoiceMemoToPlay, AudioRecorder audioRecorder)
+		private static void PlayVoiceMemo(VoiceMemo VoiceMemoToPlay, AudioRecorder audioRecorder)
 		{
 			//don't let playback if in recording session
 			if (!audioRecorder.IsRecording)
 			{
-				await audioRecorder.PlayFromDisk(VoiceMemoToPlay.FileName);
+				audioRecorder.PlayFromDisk(VoiceMemoToPlay.FileName);
 			}
 		}
 	}
