@@ -13,9 +13,12 @@ namespace BobTheDigitalAssistant.Actions
 			"tell jokes",
 			"search the web for you",
 			"display driving directions to a place for you in your browser",
-			"search specific sites like YouTube and Amazon",
+			"search specific sites like Amazon and Wikipedia",
 			"tell the time and date",
-			"create voice notes"
+			"create voice notes",
+			"flip a coin",
+			"roll a die",
+			"pick a random number"
 		};
 
 		public WhatCanYouDoAction(string CommandString)
@@ -27,10 +30,10 @@ namespace BobTheDigitalAssistant.Actions
 		{
 			// pick 2 actions that bob can do and recommend them.
 			Random random = new Random();
-			string firstSuggestion = AvailableActions[random.Next(0, AvailableActions.Count)];
+			string firstSuggestion = this.AvailableActions[random.Next(0, this.AvailableActions.Count)];
 			string secondSuggestion;
 			// a body-less while loop that keeps picking a suggestion until it's not the first suggestion
-			while ((secondSuggestion = AvailableActions[random.Next(0, AvailableActions.Count)]) == firstSuggestion) ;
+			while ((secondSuggestion = this.AvailableActions[random.Next(0, this.AvailableActions.Count)]) == firstSuggestion) ;
 			this.ClearArea();
 			string text = $"My list of skills is growing, but right now some things I can do are {firstSuggestion}, and {secondSuggestion}";
 			string ssmlText = new SSMLBuilder().Prosody(text, contour: "(5%, +10%) (20%, -5%) (60%, -5%)").Build();
