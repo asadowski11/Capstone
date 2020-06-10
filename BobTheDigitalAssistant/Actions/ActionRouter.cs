@@ -34,6 +34,7 @@ namespace BobTheDigitalAssistant.Actions
 			SetUpDirectBobQuestionBranches();
 			SetUpGreetingsBranch();
 			SetUpRngBranches();
+			SetUpSystemUtilBranches();
 			IsSetup = true;
 		}
 
@@ -157,10 +158,10 @@ namespace BobTheDigitalAssistant.Actions
 			Func<string, Action> getDirectionsFunction = (commandText) => new DirectionsAction(commandText);
 			Dictionary<string, dynamic> otherPhrases = new Dictionary<string, dynamic>()
 			{
-                // for phrases like "how do I get to", and "get me to"
-                {"get", getDirectionsFunction },
-                // for phrases like "take me to"
-                {"take", getDirectionsFunction }
+				// for phrases like "how do I get to", and "get me to"
+				{"get", getDirectionsFunction },
+				// for phrases like "take me to"
+				{"take", getDirectionsFunction }
 			};
 			actionTree.Add("directions", getDirectionsFunction);
 			actionTree.Add("to", otherPhrases);
@@ -227,6 +228,14 @@ namespace BobTheDigitalAssistant.Actions
 			actionTree.Add("pick", rngDict);
 			actionTree.Add("flip", rngDict);
 			actionTree.Add("roll", rngDict);
+		}
+
+		private static void SetUpSystemUtilBranches()
+		{
+			// a bunch of different actions that are related by just being related to managing the pc / system
+			Func<string, Action> batteryLevelAction = (commandText) => new BatteryLevelAction(commandText);
+
+			actionTree.Add("battery", batteryLevelAction);
 		}
 
 		/// <summary>
